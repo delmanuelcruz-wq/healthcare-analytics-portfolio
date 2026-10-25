@@ -2,4 +2,5 @@
 # These are needed for README charts, Excel workbooks and tests.
 matplotlib>=3.9
 openpyxl>=3.1
+markdown>=3.7     # renders each README as an on-site case-study page
 pytest>=8.0

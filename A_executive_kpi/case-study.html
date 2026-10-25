@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Referral-to-treatment executive KPIs</title>
+<meta name="description" content="Open the live dashboard">
+<style>/* Shared dashboard styles - inlined into every project dashboard at build time. */
+:root {
+  color-scheme: light;
+  --page: #f9f9f7;
+  --surface: #fcfcfb;
+  --surface-2: #f3f2ee;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --muted: #6f6d68;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --border: rgba(11, 11, 11, 0.10);
+  --brand: #12344a;
+  --brand-ink: #ffffff;
+  --accent: #0f7c80;
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+  --series-gray: #a8a69f;
+  --seq-1: #cde2fb; --seq-2: #9ec5f4; --seq-3: #6da7ec; --seq-4: #3987e5; --seq-5: #256abf; --seq-6: #184f95; --seq-7: #0d366b;
+  --ord-1: #86b6ef; --ord-2: #5598e7; --ord-3: #2a78d6; --ord-4: #1c5cab; --ord-5: #104281;
+  --good: #0ca30c; --warning: #fab219; --serious: #ec835a; --critical: #d03b3b;
+  --good-ink: #006300;
+  --synthetic-bg: #fff4d6; --synthetic-ink: #5c4300;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --surface-2: #232321;
+    --ink: #f0efec; --ink-2: #c3c2b7; --muted: #9a988f; --grid: #2c2c2a; --axis: #383835;
+    --border: rgba(255, 255, 255, 0.10); --brand: #0f2a3b; --accent: #3fb0b3;
+    --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500; --series-gray: #6a6862;
+    --seq-1: #13304f; --seq-2: #184f95; --seq-3: #1c5cab; --seq-4: #256abf; --seq-5: #3987e5; --seq-6: #6da7ec; --seq-7: #b7d3f6;
+    --ord-1: #184f95; --ord-2: #1c5cab; --ord-3: #2a78d6; --ord-4: #5598e7; --ord-5: #86b6ef;
+    --good-ink: #0ca30c; --synthetic-bg: #3a2f10; --synthetic-ink: #ffd982;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #1a1a19; --surface-2: #232321;
+  --ink: #f0efec; --ink-2: #c3c2b7; --muted: #9a988f; --grid: #2c2c2a; --axis: #383835;
+  --border: rgba(255, 255, 255, 0.10); --brand: #0f2a3b; --accent: #3fb0b3;
+  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500; --series-gray: #6a6862;
+  --seq-1: #13304f; --seq-2: #184f95; --seq-3: #1c5cab; --seq-4: #256abf; --seq-5: #3987e5; --seq-6: #6da7ec; --seq-7: #b7d3f6;
+  --ord-1: #184f95; --ord-2: #1c5cab; --ord-3: #2a78d6; --ord-4: #5598e7; --ord-5: #86b6ef;
+  --good-ink: #0ca30c; --synthetic-bg: #3a2f10; --synthetic-ink: #ffd982;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--page); color: var(--ink);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.synthetic-bar {
+  background: var(--synthetic-bg); color: var(--synthetic-ink); text-align: center;
+  font-size: 13px; font-weight: 600; padding: 7px 16px; letter-spacing: .01em;
+}
+header.top { background: var(--brand); color: var(--brand-ink); }
+header.top .wrap { padding-top: 26px; padding-bottom: 24px; }
+header.top .eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; opacity: .75; margin: 0 0 6px; }
+header.top h1 { font-size: 28px; line-height: 1.2; margin: 0 0 8px; font-weight: 650; }
+header.top p { margin: 0; max-width: 860px; opacity: .88; }
+header.top .meta { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; opacity: .85; }
+.wrap { max-width: 1280px; margin: 0 auto; padding-left: 24px; padding-right: 24px; }
+main.wrap { padding-top: 24px; padding-bottom: 48px; }
+h2.section { font-size: 18px; margin: 34px 0 4px; font-weight: 650; }
+p.section-lede { margin: 0 0 14px; color: var(--ink-2); max-width: 900px; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr)); gap: 12px; }
+.tile { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px 12px; }
+.tile .label { font-size: 13px; color: var(--ink-2); margin: 0 0 4px; }
+.tile .value { font-size: 30px; font-weight: 600; line-height: 1.15; margin: 0; }
+.tile .delta { font-size: 12.5px; color: var(--muted); margin: 6px 0 0; }
+.tile .delta .up { color: var(--good-ink); font-weight: 600; }
+.tile .delta .down { color: var(--critical); font-weight: 600; }
+.tile .note { font-size: 12px; color: var(--muted); margin: 4px 0 0; }
+
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px 12px; min-width: 0; }
+.card.full { grid-column: 1 / -1; }
+.card h3 { font-size: 15.5px; margin: 0 0 2px; font-weight: 650; }
+.card .sub { font-size: 13px; color: var(--ink-2); margin: 0 0 8px; }
+.card .chart { width: 100%; height: 320px; }
+.card .chart.tall { height: 420px; }
+.chart-scroll { overflow-x: auto; }
+.chart-scroll > .chart { min-width: 720px; }
+.funnel { display: grid; gap: 12px; padding: 6px 0 4px; }
+.funnel-label { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--ink-2); margin-bottom: 4px; }
+.funnel-val { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.funnel-track { background: var(--surface-2); border-radius: 4px; height: 18px; }
+.funnel-bar { height: 18px; border-radius: 0 4px 4px 0; min-width: 2px; }
+.card .takeaway { font-size: 13px; color: var(--ink); background: var(--surface-2); border-radius: 8px; padding: 8px 10px; margin: 8px 0 4px; }
+details.data { margin-top: 6px; font-size: 13px; }
+details.data summary { cursor: pointer; color: var(--accent); font-weight: 600; padding: 4px 0; }
+.table-scroll { overflow-x: auto; max-height: 340px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; margin-top: 6px; }
+table.data { border-collapse: collapse; width: 100%; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+table.data th, table.data td { padding: 6px 10px; border-bottom: 1px solid var(--grid); text-align: left; white-space: nowrap; }
+table.data th { position: sticky; top: 0; background: var(--surface-2); color: var(--ink-2); font-weight: 600; }
+table.data td.num, table.data th.num { text-align: right; }
+
+.defs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 12px; }
+.def { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; font-size: 13.5px; }
+.def b { display: block; margin-bottom: 2px; }
+.def .check { color: var(--ink-2); font-size: 12.5px; margin-top: 4px; }
+
+.qa-list { display: grid; gap: 8px; }
+.qa-item { display: grid; grid-template-columns: 110px 1fr; gap: 12px; align-items: start; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 13.5px; }
+.badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 3px 10px 3px 8px; width: fit-content; }
+.badge .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.badge.pass { background: color-mix(in srgb, var(--good) 14%, transparent); color: var(--good-ink); }
+.badge.pass .dot { background: var(--good); }
+.badge.warn { background: color-mix(in srgb, var(--warning) 20%, transparent); color: var(--ink); }
+.badge.warn .dot { background: var(--warning); }
+.badge.fail { background: color-mix(in srgb, var(--critical) 14%, transparent); color: var(--critical); }
+.badge.fail .dot { background: var(--critical); }
+.qa-item .obs { color: var(--ink-2); font-size: 12.5px; margin-top: 2px; }
+
+.scope { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 12px; }
+.scope .def ul { margin: 6px 0 0; padding-left: 18px; }
+footer.foot { color: var(--muted); font-size: 12.5px; border-top: 1px solid var(--border); margin-top: 40px; padding-top: 16px; }
+
+@media (max-width: 860px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .wrap { padding-left: 16px; padding-right: 16px; }
+  header.top h1 { font-size: 23px; }
+  .qa-item { grid-template-columns: 1fr; gap: 6px; }
+  .card .chart { height: 280px; }
+}
+@media print { .synthetic-bar { -webkit-print-color-adjust: exact; print-color-adjust: exact; } details.data { display: none; } }
+
+
+.crumbs { margin: 0 0 10px; font-size: 13px; }
+.crumbs a { color: var(--brand-ink); opacity: .85; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.actions a { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; text-decoration: none;
+  border-radius: 999px; padding: 8px 16px; border: 1px solid rgba(255,255,255,.45); color: var(--brand-ink); }
+.actions a.primary { background: var(--brand-ink); color: var(--brand); border-color: var(--brand-ink); }
+.toc { display: flex; flex-wrap: wrap; gap: 6px 8px; margin: 0 0 8px; padding: 12px 0 4px; font-size: 13px; }
+.toc a { color: var(--accent); text-decoration: none; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 999px; padding: 3px 10px; }
+.article { max-width: 900px; margin: 0 auto; font-size: 15.5px; }
+.article h2 { font-size: 21px; margin: 38px 0 10px; padding-top: 14px; border-top: 1px solid var(--border); scroll-margin-top: 16px; }
+.article h3 { font-size: 17px; margin: 26px 0 8px; }
+.article p, .article li { line-height: 1.65; }
+.article li { margin: 4px 0; }
+.article a { color: var(--accent); }
+.article code { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: .9em; background: var(--surface-2);
+  padding: 1px 5px; border-radius: 4px; }
+.article pre { background: var(--surface-2); border: 1px solid var(--border); padding: 12px 14px; border-radius: 8px; overflow-x: auto; }
+.article pre code { background: none; padding: 0; }
+.article blockquote { margin: 18px 0; padding: 10px 16px; border-left: 4px solid var(--warning); background: var(--synthetic-bg);
+  color: var(--synthetic-ink); border-radius: 0 8px 8px 0; }
+.article blockquote p { margin: 4px 0; }
+.article img { max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+.article a.shot { display: block; position: relative; text-decoration: none; }
+.article a.shot img { width: 100%; max-height: 520px; object-fit: cover; object-position: top; }
+.article a.shot span { position: absolute; right: 12px; bottom: 12px; background: var(--brand); color: var(--brand-ink);
+  font-size: 13px; font-weight: 600; border-radius: 999px; padding: 6px 14px; }
+.article hr { display: none; }   /* h2 already draws a divider */
+.article pre.mermaid svg { max-width: 100%; height: auto; }
+.article .table-scroll { max-height: none; margin: 12px 0; }
+.article table.data td, .article table.data th { white-space: normal; vertical-align: top; min-width: 80px; }
+.article pre.mermaid { background: var(--surface); text-align: center; }
+</style>
+</head>
+<body>
+<div class="synthetic-bar">SYNTHETIC DEMONSTRATION - fictional organization and 100% generated data. Not operational, medical or financial guidance.</div>
+<header class="top">
+  <div class="wrap">
+    <p class="crumbs"><a href="../index.html">&larr; All projects</a></p>
+    <p class="eyebrow">Portfolio project A · Coralline Infusion Network (fictional)</p>
+    <h1>Project A - Referral-to-treatment executive KPIs</h1>
+    <div class="actions"><a class="primary" href="dashboard.html">Open the live dashboard</a><a rel="noopener" href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/tree/main/A_executive_kpi">View the code on GitHub</a></div>
+  </div>
+</header>
+<main class="wrap">
+  <nav class="toc article" aria-label="On this page"><a href="#1-the-business-question">The business question</a> <a href="#2-fictional-business-context">Fictional business context</a> <a href="#3-what-was-real-vs-what-i-built-here">What was real vs what I built here</a> <a href="#4-data-model-used">Data model used</a> <a href="#5-metric-dictionary">Metric dictionary</a> <a href="#6-data-files">Data files</a> <a href="#7-how-it-works-repeatable-code">How it works (repeatable code)</a> <a href="#8-quality-checks">Quality checks</a> <a href="#9-the-dashboard">The dashboard</a> <a href="#10-what-the-synthetic-data-shows">What the synthetic data shows</a> <a href="#11-limitations-and-next-steps">Limitations and next steps</a></nav>
+  <article class="article">
+<blockquote>
+<p><strong>SYNTHETIC DEMONSTRATION - not operational, medical or financial guidance.</strong>
+Coralline Infusion Network is fictional. Every number here comes from generated data (seed <code>20261024</code>).
+This is a personal, independent reconstruction of skills - not a production deployment and not employer results.</p>
+</blockquote>
+<p><a class="shot" href="dashboard.html"><img alt="Dashboard screenshot" src="dashboard.png"><span>Open the live dashboard</span></a></p>
+<p><strong>Open the interactive version:</strong> <a href="dashboard.html">live dashboard</a> (hover tooltips, data tables under every chart, light/dark).</p>
+<hr />
+<h2 id="1-the-business-question">1. The business question</h2>
+<p>Sales and operations leaders want one page that answers:</p>
+<ul>
+<li>How many <strong>new patients</strong> were referred this month?</li>
+<li>How many of them actually <strong>started treatment</strong>?</li>
+<li>How many <strong>treatment visits</strong> did we complete, and what is already <strong>booked</strong>?</li>
+<li>Which <strong>referral sources</strong> are active, and which have gone quiet - and where are they?</li>
+</ul>
+<p>The hard part is not the charts. It is making sure each number measures what its label says.</p>
+<h2 id="2-fictional-business-context">2. Fictional business context</h2>
+<p>Coralline Infusion Network (fictional) runs eight infusion suites in three states. Patients arrive by referral,
+go through benefits verification and prior authorization, get scheduled, and receive infusions or injections
+over a series of visits. The synthetic universe covers July 2024 to a snapshot on <strong>October 24, 2026</strong>
+(October is a partial month), with ~2,500 patients, 250 provider records and ~10,000 appointments.
+See <a rel="noopener" href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/blob/main/foundation/MANIFEST.md"><code>../foundation/MANIFEST.md</code></a>.</p>
+<h2 id="3-what-was-real-vs-what-i-built-here">3. What was real vs what I built here</h2>
+<div class="table-scroll"><table class="data wrap">
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>On-the-job exposure (described in general terms only)</strong></td>
+<td>Worked with an analytics manager to turn a sales leader's asks into separate, measurable KPIs. Built and saved <strong>two draft monthly trend reports</strong> in Looker: patients created per month, and first treated new patients per month (first appointment + Complete + medication administered + distinct patient count), with the partial month labelled. Captured the rolling-90-day active/dormant provider definitions and the rule that geography means the <em>referring provider's</em> county.</td>
+</tr>
+<tr>
+<td><strong>Not done on the job</strong></td>
+<td>No completed production dashboard, no certified KPIs, no live automation. The completed-visit metric, provider status model, county view and forecast were next steps, not finished work.</td>
+</tr>
+<tr>
+<td><strong>Independently built for this portfolio</strong></td>
+<td>The synthetic data model, all SQL, the QA suite, tests, this dashboard, and the extensions marked below: completed treatment visits, booked pipeline, rolling-90-day provider status, county x specialty view, and the Q2 cohort funnel.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-data-model-used">4. Data model used</h2>
+<pre class="mermaid">erDiagram
+    providers ||--o{ referrals : sends
+    patients ||--o{ referrals : receives
+    referrals ||--o| orders : triggers
+    patients ||--o{ orders : has
+    orders ||--o{ order_status_events : moves_through
+    orders ||--o{ appointments : schedules
+    appointments ||--o{ administrations : "has line items"
+    providers }o--|| postal_county_crosswalk : "practice ZIP"
+    providers ||--o{ provider_specialties : has
+</pre>
+<div class="table-scroll"><table class="data wrap">
+<thead>
+<tr>
+<th>Table</th>
+<th>Grain</th>
+<th>Key</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>patients</code></td>
+<td>one row per synthetic patient</td>
+<td><code>patient_key</code></td>
+</tr>
+<tr>
+<td><code>referrals</code></td>
+<td>one row per referral event (renewals and duplicate faxes included)</td>
+<td><code>referral_key</code></td>
+</tr>
+<tr>
+<td><code>orders</code></td>
+<td>one row per order series (renewals create new series)</td>
+<td><code>order_key</code></td>
+</tr>
+<tr>
+<td><code>appointments</code></td>
+<td>one row per appointment, as of the snapshot</td>
+<td><code>appt_key</code></td>
+</tr>
+<tr>
+<td><code>administrations</code></td>
+<td>one row per medication line item - many per appointment allowed</td>
+<td><code>admin_key</code></td>
+</tr>
+<tr>
+<td><code>providers</code></td>
+<td>one row per provider <em>record</em>; duplicates share <code>source_identity_key</code></td>
+<td><code>provider_key</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Full column-level dictionary: <a rel="noopener" href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/blob/main/foundation/DATA_DICTIONARY.md"><code>../foundation/DATA_DICTIONARY.md</code></a>.</p>
+<h2 id="5-metric-dictionary">5. Metric dictionary</h2>
+<div class="table-scroll"><table class="data wrap">
+<thead>
+<tr>
+<th>Metric</th>
+<th>Definition</th>
+<th>The trap it avoids</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>New referred patients</td>
+<td>Distinct patients with <code>patients.created_at</code> in the month</td>
+<td>Order series (+46% higher here) count renewals and therapy changes for existing patients</td>
+</tr>
+<tr>
+<td>New treatment starts</td>
+<td>Distinct patients whose <strong>first qualifying visit</strong> falls in the month. Qualifying = Complete, medication administered, and at least one administration line actually given</td>
+<td>The first-appointment flag sits on the first <em>booked</em> visit, which may have been cancelled, missed or held</td>
+</tr>
+<tr>
+<td>Completed treatment visits</td>
+<td>Distinct appointments meeting the qualifying rule</td>
+<td>Counting line items (split lots, add-on pre-medication, duplicates) overstates volume</td>
+</tr>
+<tr>
+<td>Booked visits</td>
+<td>Distinct appointments after the snapshot with status Scheduled or Confirmed</td>
+<td>Treating the schedule as a forecast</td>
+</tr>
+<tr>
+<td>Active provider</td>
+<td>Provider person with 1+ referral in (as-of - 90 days, as-of]</td>
+<td>Calendar quarters are not a rolling window</td>
+</tr>
+<tr>
+<td>Dormant provider</td>
+<td>Referred at some earlier point, none in that window</td>
+<td>Never-referred providers are not dormant</td>
+</tr>
+<tr>
+<td>Provider county</td>
+<td>County of the referring provider's practice ZIP (primary crosswalk row)</td>
+<td>Patient home county or infusion-site county answer a different question</td>
+</tr>
+</tbody>
+</table></div>
+<p>Details and edge cases: <a rel="noopener" href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/blob/main/A_executive_kpi/METRIC_DICTIONARY.md"><code>METRIC_DICTIONARY.md</code></a>.</p>
+<h2 id="6-data-files">6. Data files</h2>
+<ul>
+<li>Inputs: <code>../foundation/data/*.csv</code> (synthetic, with checksums and a manifest).</li>
+<li>Outputs written by <code>run.py</code> to <a rel="noopener" href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/tree/main/A_executive_kpi/outputs"><code>outputs/</code></a>: <code>monthly_kpis.csv</code>, <code>future_bookings_weekly.csv</code>,
+  <code>provider_status_monthly.csv</code>, <code>provider_status_current.csv</code>, <code>county_specialty_referrals_12m.csv</code>,
+  <code>q2_2026_cohort_milestones.csv</code>, <code>q2_2026_cohort_funnel.csv</code>, <code>q2_2026_cohort_lead_times.csv</code>, <code>qa_results.csv</code>.</li>
+</ul>
+<h2 id="7-how-it-works-repeatable-code">7. How it works (repeatable code)</h2>
+<div class="table-scroll"><table class="data wrap">
+<thead>
+<tr>
+<th>Step</th>
+<th>File</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Staging</td>
+<td><a rel="noopener" href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/blob/main/A_executive_kpi/sql/01_staging.sql"><code>sql/01_staging.sql</code></a></td>
+<td>Qualifying visits, derived first treatment, deduplicated provider people with county</td>
+</tr>
+<tr>
+<td>Monthly KPIs</td>
+<td><a rel="noopener" href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/blob/main/A_executive_kpi/sql/02_monthly_kpis.sql"><code>sql/02_monthly_kpis.sql</code></a></td>
+<td>Correct measures and their tempting-but-wrong versions side by side</td>
+</tr>
+<tr>
+<td>Pipeline</td>
+<td><a rel="noopener" href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/blob/main/A_executive_kpi/sql/03_future_bookings.sql"><code>sql/03_future_bookings.sql</code></a></td>
+<td>Booked visits by week after the snapshot</td>
+</tr>
+<tr>
+<td>Provider status</td>
+<td><a rel="noopener" href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/blob/main/A_executive_kpi/sql/04_provider_status_monthly.sql"><code>sql/04_provider_status_monthly.sql</code></a>, <a rel="noopener" href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/blob/main/A_executive_kpi/sql/05_provider_status_current.sql"><code>05</code></a></td>
+<td>Rolling-90-day status at each month end, with no future data</td>
+</tr>
+<tr>
+<td>Geography</td>
+<td><a rel="noopener" href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/blob/main/A_executive_kpi/sql/06_county_specialty.sql"><code>sql/06_county_specialty.sql</code></a></td>
+<td>Referrals by provider county x primary specialty</td>
+</tr>
+<tr>
+<td>Cohort</td>
+<td><a rel="noopener" href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/blob/main/A_executive_kpi/sql/07_cohort_milestones.sql"><code>sql/07_cohort_milestones.sql</code></a></td>
+<td>Patient-level milestones for the Q2 2026 cohort</td>
+</tr>
+<tr>
+<td>Build</td>
+<td><a rel="noopener" href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/blob/main/A_executive_kpi/run.py"><code>run.py</code></a></td>
+<td>Runs the SQL, the QA suite, the funnel, CSVs, README charts and the dashboard</td>
+</tr>
+</tbody>
+</table></div>
+<pre><code class="language-bash">python foundation/generate.py         # regenerate synthetic data (byte-identical for the same seed)
+python foundation/build_warehouse.py  # load into SQLite with enforced keys
+python A_executive_kpi/run.py         # build this project
+python -m pytest A_executive_kpi/tests -q
+</code></pre>
+<h2 id="8-quality-checks">8. Quality checks</h2>
+<ul>
+<li><strong>Tests:</strong> <a rel="noopener" href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/blob/main/A_executive_kpi/tests/test_project_a.py"><code>tests/test_project_a.py</code></a> - 14 assertions, including: every patient starts once;
+  visits never exceed line items; planted lines on cancelled appointments never count; duplicate lines never add visits;
+  provider status partitions are complete; a separate pure-Python implementation reproduces the rolling-90-day
+  counts at all 22 snapshots, with no future data used.</li>
+<li><strong>QA log:</strong> <a rel="noopener" href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/blob/main/A_executive_kpi/QA_LOG.md"><code>QA_LOG.md</code></a> - 15 checks run on every build (12 pass, 3 warn, 0 fail). A WARN means a real
+  data issue was found and handled, such as 3 administration lines charted against cancelled visits.</li>
+</ul>
+<h2 id="9-the-dashboard">9. The dashboard</h2>
+<p>Six KPI tiles, seven charts (each with a data table), two action lists, the definitions and the QA results.
+Charts follow a colorblind-checked palette, validated with the palette script. See the screenshot above,
+or open <a href="dashboard.html"><code>dashboard.html</code></a>.</p>
+<h2 id="10-what-the-synthetic-data-shows">10. What the synthetic data shows</h2>
+<p>These insights describe fabricated data and exist to show the reasoning:</p>
+<ul>
+<li><strong>Definitions change the story.</strong> From January 2025 to the October snapshot, order series ran <strong>46% above</strong> new patients. A "new business"
+  chart built on order dates would overstate growth from renewals.</li>
+<li><strong>The flag shortcut misses real starts.</strong> The first-appointment flag method found <strong>1,692</strong> of <strong>1,929</strong> patients who ever
+  started (<strong>12.3% missed</strong>). Their first booked visit was cancelled, missed, or medication was held.</li>
+<li><strong>Line items are not visits.</strong> 9,424 administration lines described 8,642 treated visits. 638 visits carried two or more
+  lines given to the patient.</li>
+<li><strong>The schedule is a pipeline, not a forecast.</strong> Bookings fall sharply after about three weeks. That is booking lead time,
+  not falling demand.</li>
+<li><strong>The referral network is growing, and so is the quiet pool.</strong> 153 active and 71 dormant sources on Oct 24, vs 116 and
+  19 in January 2025. The dormant list is a ready-made outreach list.</li>
+<li><strong>Q2 2026 cohort:</strong> 79% of new patients were treated by the snapshot and 76% within 60 days. Median end-to-end
+  referral to first treatment was <strong>28.9 days</strong>. Authorization clearance (13.7 days) is the largest single step.</li>
+</ul>
+<h2 id="11-limitations-and-next-steps">11. Limitations and next steps</h2>
+<ul>
+<li>Patient creation is a <em>proxy</em> for referral intake. A real build should confirm that the business reads it that way.</li>
+<li>Late updates: 8 past visits had not closed by the snapshot, so recent weeks understate volume until updates land.
+  Next step: daily refresh with an updated-at watermark (see the <a rel="noopener" href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/tree/main/tier2/19_incremental_refresh">refresh case study, workstream 19</a>).</li>
+<li>Provider geography uses fabricated ZIPs mapped to fictional counties. No real map is drawn.</li>
+<li>The booked-visit view is not a forecast. A forecast would need historical booking curves - a natural extension.</li>
+<li>Not built: profitability, sales-rep views (deliberately excluded from the original asks), or live publishing.</li>
+</ul>
+<hr />
+<h3 id="resume-safe-language">Resume-safe language</h3>
+<ul>
+<li><em>On the job:</em> "Built and saved two draft Looker trend reports for monthly referral intake and first administered patient
+  treatments, and documented rolling-90-day definitions for referral-provider activity."</li>
+<li><em>Portfolio:</em> "Independently built a synthetic referral-to-treatment KPI model (SQLite, Python, Plotly) with
+  event-derived first-treatment logic, rolling-90-day provider status, and a 15-check QA suite."</li>
+</ul>
+<p>See <a rel="noopener" href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/blob/main/A_executive_kpi/RECRUITER_SUMMARY.md"><code>RECRUITER_SUMMARY.md</code></a> for a 30-second version.</p>
+  </article>
+  <footer class="foot article">This page is generated from <a href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/blob/main/A_executive_kpi/README.md">README.md</a>. All data is synthetic and the organization is fictional.
+    SYNTHETIC DEMONSTRATION - not operational, medical or financial guidance.</footer>
+</main>
+<script>window.DATA = {};</script>
+<script>/* Shared dashboard helpers - inlined into every project dashboard at build time.
+   Charts read colors from CSS variables, so light/dark themes stay in one place. */
+(function () {
+  // ?theme=light|dark forces a theme (used for README screenshots); otherwise follow the OS.
+  const forced = new URLSearchParams(location.search).get("theme");
+  if (forced === "light" || forced === "dark") document.documentElement.setAttribute("data-theme", forced);
+  const charts = [];
+  const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const fmt = new Intl.NumberFormat("en-US");
+
+  function colors() {
+    return {
+      ink: css("--ink"), ink2: css("--ink-2"), muted: css("--muted"), grid: css("--grid"), axis: css("--axis"),
+      surface: css("--surface"), s1: css("--series-1"), s2: css("--series-2"), s3: css("--series-3"),
+      gray: css("--series-gray"), good: css("--good"), warning: css("--warning"), critical: css("--critical"),
+      seq: [1, 2, 3, 4, 5, 6, 7].map((i) => css(`--seq-${i}`)),
+      ord: [1, 2, 3, 4, 5].map((i) => css(`--ord-${i}`)),
+    };
+  }
+
+  function layout(extra) {
+    const c = colors();
+    const axis = { gridcolor: c.grid, linecolor: c.axis, zeroline: false, tickfont: { color: c.muted, size: 11 },
+                   title: { font: { color: c.ink2, size: 12 } }, automargin: true };
+    const base = {
+      paper_bgcolor: "rgba(0,0,0,0)", plot_bgcolor: "rgba(0,0,0,0)",
+      font: { family: 'system-ui, -apple-system, "Segoe UI", sans-serif', color: c.ink, size: 12 },
+      margin: { l: 48, r: 18, t: 10, b: 40 }, hovermode: "x unified",
+      hoverlabel: { bgcolor: c.surface, bordercolor: c.axis, font: { color: c.ink } },
+      legend: { orientation: "h", x: 0, y: 1.12, font: { color: c.ink2, size: 12 } },
+      xaxis: Object.assign({}, axis, { showgrid: false, showline: true }),
+      yaxis: Object.assign({}, axis, { showline: false, rangemode: "tozero" }),
+      bargap: 0.35,
+    };
+    return deepMerge(base, extra || {});
+  }
+
+  function deepMerge(a, b) {
+    const out = Array.isArray(a) ? a.slice() : Object.assign({}, a);
+    for (const k of Object.keys(b)) {
+      if (b[k] && typeof b[k] === "object" && !Array.isArray(b[k]) && a[k] && typeof a[k] === "object") out[k] = deepMerge(a[k], b[k]);
+      else out[k] = b[k];
+    }
+    return out;
+  }
+
+  const config = { displayModeBar: false, responsive: true };
+
+  function register(fn) { charts.push(fn); }
+  function renderAll() { const c = colors(); charts.forEach((fn) => fn(c)); }
+
+  function table(el, columns, rows) {
+    const head = columns.map((c) => `<th class="${c.num ? "num" : ""}">${c.label}</th>`).join("");
+    const body = rows.map((r) => "<tr>" + columns.map((c) => {
+      let v = r[c.key];
+      if (c.num && typeof v === "number") v = c.pct ? (v * 100).toFixed(1) + "%" : (Number.isInteger(v) ? fmt.format(v) : v.toFixed(c.dp ?? 1));
+      return `<td class="${c.num ? "num" : ""}">${v ?? ""}</td>`;
+    }).join("") + "</tr>").join("");
+    el.innerHTML = `<div class="table-scroll"><table class="data"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+  }
+
+  function tiles(el, items) {
+    el.innerHTML = items.map((t) => {
+      let delta = "";
+      if (t.delta !== undefined && t.delta !== null) {
+        const up = t.delta >= 0;
+        const good = t.upIsGood === undefined ? null : (up === t.upIsGood);
+        const cls = good === null ? "" : (good ? "up" : "down");
+        const sign = up ? "+" : "−";
+        delta = `<p class="delta"><span class="${cls}">${sign}${Math.abs(t.delta).toFixed(1)}%</span> ${t.deltaLabel || ""}</p>`;
+      }
+      return `<div class="tile"><p class="label">${t.label}</p><p class="value">${t.value}</p>${delta}${t.note ? `<p class="note">${t.note}</p>` : ""}</div>`;
+    }).join("");
+  }
+
+  window.Dash = { register, renderAll, layout, config, table, tiles, colors, fmt };
+  document.addEventListener("DOMContentLoaded", renderAll);
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", renderAll);
+  new MutationObserver(renderAll).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+(function () {
+  const dark = document.documentElement.dataset.theme === "dark" ||
+    (!document.documentElement.dataset.theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  mermaid.initialize({ startOnLoad: true, theme: dark ? "dark" : "neutral", securityLevel: "strict" });
+})();
+</script>
+</body>
+</html>

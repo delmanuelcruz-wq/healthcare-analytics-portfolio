@@ -27,13 +27,15 @@ STEPS = [
     ("Tier 3 #07 - service-desk tickets", ["tier3/07_service_desk_tickets/run.py"]),
     ("Tier 3 #08 - field-lineage escalation", ["tier3/08_field_lineage_escalation/run.py"]),
     ("Tier 3 #20 - inventory reconciliation", ["tier3/20_inventory_accounting_recon/run.py"]),
+    ("Case-study pages (README -> case-study.html)", ["shared/case_study.py"]),
 ]
 TEST_DIRS = ["foundation/tests", "A_executive_kpi/tests", "B_payer_scorecard/tests",
              "C_manufacturer_etl_qa/tests", "D_license_compliance_hub/tests",
              "tier2/16_cfo_quarterly_trend/tests", "tier2/09_specialty_referral_sources/tests",
              "tier2/10_fee_schedule_lookup/tests", "tier2/19_incremental_refresh/tests",
              "tier3/01_data_model_grain/tests", "tier3/07_service_desk_tickets/tests",
-             "tier3/08_field_lineage_escalation/tests", "tier3/20_inventory_accounting_recon/tests"]
+             "tier3/08_field_lineage_escalation/tests", "tier3/20_inventory_accounting_recon/tests",
+             "shared/tests"]
 
 
 def build_index():
