@@ -1,0 +1,7 @@
+stage,patients,pct_of_cohort
+New referred patients,332,1.0
+Order series created,308,0.927710843373494
+Cleared to schedule,275,0.8283132530120482
+First visit booked,275,0.8283132530120482
+Treated by snapshot,262,0.7891566265060241
+Treated within 60 days,253,0.7620481927710844

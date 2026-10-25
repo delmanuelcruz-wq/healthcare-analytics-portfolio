@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Specialty Referral Sources</title>
+<meta name="description" content="Synthetic portfolio page: pulmonology and immunology referral-source leaderboard, trend and provider-county view.">
+<style>/*__SHARED_CSS__*/
+.callout { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 10px;
+  padding: 12px 16px; font-size: 14px; margin: 16px 0 0; }
+.callout b { display: block; margin-bottom: 2px; }
+</style>
+<script src="__PLOTLY_CDN__"></script>
+</head>
+<body>
+<div class="synthetic-bar">SYNTHETIC DEMONSTRATION - fictional organization and data. Not operational, medical or financial guidance.</div>
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Tier 2 · Workstream 09 · Coralline Infusion Network (fictional)</p>
+    <h1>Pulmonology and immunology referral sources</h1>
+    <p>Who sends us pulmonology and immunology/allergy patients, how that changed over 12 months, and where those practices are.
+       Each provider is counted once, even when they carry both specialties or have two records.</p>
+    <div class="meta"><span>Window Oct 1, 2025 - Sep 30, 2026 (12 full months)</span><span>Data as of <b id="asof"></b></span>
+      <span>Seed <span id="seed"></span></span></div>
+  </div>
+</header>
+<main class="wrap">
+  <div class="tiles" id="tiles"></div>
+  <div class="callout"><b>Location definition</b>Location = the county of the <u>referring provider's practice</u> (practice ZIP, primary
+    crosswalk row). It is not the patient's home county and not the infusion site's county. <span id="loc-note"></span></div>
+
+  <h2 class="section">Leaderboard</h2>
+  <p class="section-lede">Referral events in the window, duplicate faxes removed. Fictional practices; provider ids are synthetic.</p>
+  <div class="grid-2">
+    <section class="card">
+      <h3>Top 10 referral sources</h3>
+      <p class="sub">Bars split into new-patient referrals and renewals / new therapies.</p>
+      <div class="chart tall" id="c-top"></div>
+    </section>
+    <section class="card">
+      <h3>Referrals per month by specialty group</h3>
+      <p class="sub">Each provider sits in one group: their primary specialty, or "secondary" when PUL/IMM is not primary.</p>
+      <div class="chart tall" id="c-trend"></div>
+      <details class="data"><summary>Show data table</summary><div id="d-trend"></div></details>
+    </section>
+    <section class="card full">
+      <h3>Full leaderboard</h3>
+      <p class="sub">Every in-scope provider with at least one referral in the window.</p>
+      <div id="tbl-board"></div>
+    </section>
+  </div>
+
+  <h2 class="section">Where the referring practices are</h2>
+  <div class="grid-2">
+    <section class="card">
+      <h3>Referrals by provider county</h3>
+      <p class="sub">Darker segment = referrals from patients who live in the same county as the practice.</p>
+      <div class="chart tall" id="c-county"></div>
+    </section>
+    <section class="card">
+      <h3>Why the counting rules matter</h3>
+      <p class="sub">The same window counted three ways.</p>
+      <div id="tbl-audit"></div>
+      <p class="takeaway" id="t-audit"></p>
+      <h3 style="margin-top:14px">County table</h3>
+      <div id="tbl-county"></div>
+    </section>
+  </div>
+
+  <h2 class="section">Quality checks run on this build</h2>
+  <p class="section-lede">WARN means a real issue was found and handled - documented, excluded, or routed for cleanup.</p>
+  <div class="qa-list" id="qa"></div>
+
+  <h2 class="section">What is real and what is simulated</h2>
+  <div class="scope">
+    <div class="def"><b>On-the-job exposure (self-reported, general terms only)</b>
+      <ul><li>Completed a specialty referral-source reporting assignment with geographic and provider segmentation.</li>
+          <li>Delivery and use of that report were not verified.</li></ul></div>
+    <div class="def"><b>Independently built for this portfolio (synthetic)</b>
+      <ul><li>Every provider, practice, county and number on this page.</li>
+          <li>The deduplication rules, SQL, independent Python check, tests and this page.</li></ul></div>
+  </div>
+  <footer class="foot">Coralline Infusion Network is fictional. All data is synthetic, generated from seed <span id="seed2"></span>.
+    SYNTHETIC DEMONSTRATION - not operational, medical or financial guidance.</footer>
+</main>
+<script>/*__DATA__*/</script>
+<script>/*__SHARED_JS__*/</script>
+<script>
+(function () {
+  const D = window.DATA, fmt = Dash.fmt;
+  document.getElementById("asof").textContent = D.meta.as_of;
+  document.getElementById("seed").textContent = D.meta.seed;
+  document.getElementById("seed2").textContent = D.meta.seed;
+  Dash.tiles(document.getElementById("tiles"), D.tiles);
+  const tot = D.county.reduce((a, r) => a + r.referrals_12m, 0);
+  const other = D.county.reduce((a, r) => a + r.from_patients_in_other_counties, 0);
+  document.getElementById("loc-note").textContent =
+    `${Math.round(other / tot * 100)}% of these referrals came from patients living in a different county than the practice.`;
+
+  const top = D.leaderboard.slice(0, 10).reverse();
+  const name = (r) => `${r.provider_id} · ${r.fictional_practice}`;
+  Dash.register((c) => {
+    Plotly.react("c-top", [
+      { type: "bar", orientation: "h", name: "New patient", y: top.map(name), x: top.map((r) => r.new_patient_referrals),
+        marker: { color: c.s1 }, hovertemplate: "%{x}<extra>New patient</extra>" },
+      { type: "bar", orientation: "h", name: "Renewal / new therapy", y: top.map(name), x: top.map((r) => r.renewal_or_new_therapy),
+        marker: { color: c.s2 }, hovertemplate: "%{x}<extra>Renewal / new therapy</extra>" }],
+      Dash.layout({ barmode: "stack", hovermode: "y unified", margin: { l: 10 }, xaxis: { showgrid: true, showline: false },
+                    yaxis: { showgrid: false } }), Dash.config);
+  });
+
+  const groups = [...new Set(D.trend.map((r) => r.specialty_group))];
+  const months = [...new Set(D.trend.map((r) => r.month_start))];
+  Dash.register((c) => {
+    const colors = [c.s1, c.s2, c.s3];
+    Plotly.react("c-trend", groups.map((g, i) => ({
+      type: "bar", name: g, x: months, y: months.map((m) => D.trend.find((r) => r.month_start === m && r.specialty_group === g).referrals),
+      marker: { color: colors[i % 3] }, hovertemplate: "%{y}<extra>" + g + "</extra>" })),
+      Dash.layout({ barmode: "stack", xaxis: { tickformat: "%b %y", dtick: "M1", type: "date" }, legend: { y: 1.16 } }), Dash.config);
+  });
+  Dash.table(document.getElementById("d-trend"), [{ key: "month_start", label: "Month" }, { key: "specialty_group", label: "Group" },
+    { key: "referrals", label: "Referrals", num: true }, { key: "new_patient_referrals", label: "New patient", num: true },
+    { key: "referring_providers", label: "Providers", num: true }], D.trend);
+
+  Dash.table(document.getElementById("tbl-board"), [
+    { key: "rank", label: "#", num: true }, { key: "provider_id", label: "Provider" }, { key: "fictional_practice", label: "Practice" },
+    { key: "specialty_group", label: "Group" }, { key: "county_name", label: "Provider county" }, { key: "state_code", label: "State" },
+    { key: "referrals_12m", label: "Referrals", num: true }, { key: "new_patient_referrals", label: "New patient", num: true },
+    { key: "distinct_patients", label: "Patients", num: true }, { key: "share_of_scope", label: "Share", num: true, pct: true },
+    { key: "last_referral", label: "Last referral" }, { key: "record_count", label: "Records", num: true }], D.leaderboard);
+
+  const cty = D.county.slice().reverse();
+  Dash.register((c) => {
+    const label = (r) => `${r.county_name} (${r.state_code})`;
+    Plotly.react("c-county", [
+      { type: "bar", orientation: "h", name: "Patient in same county", y: cty.map(label),
+        x: cty.map((r) => r.referrals_12m - r.from_patients_in_other_counties), marker: { color: c.s1 },
+        hovertemplate: "%{x}<extra>Same county</extra>" },
+      { type: "bar", orientation: "h", name: "Patient in another county", y: cty.map(label),
+        x: cty.map((r) => r.from_patients_in_other_counties), marker: { color: c.ord[0] },
+        hovertemplate: "%{x}<extra>Other county</extra>" }],
+      Dash.layout({ barmode: "stack", hovermode: "y unified", margin: { l: 10 }, xaxis: { showgrid: true, showline: false },
+                    yaxis: { showgrid: false } }), Dash.config);
+  });
+  Dash.table(document.getElementById("tbl-county"), [{ key: "county_name", label: "Provider county" }, { key: "state_code", label: "State" },
+    { key: "referrals_12m", label: "Referrals", num: true }, { key: "referring_providers", label: "Providers", num: true },
+    { key: "new_patient_referrals", label: "New patient", num: true },
+    { key: "from_patients_in_other_counties", label: "Patients from other counties", num: true }], D.county);
+  Dash.table(document.getElementById("tbl-audit"), [{ key: "method", label: "Method" },
+    { key: "provider_records_or_people", label: "Providers", num: true }, { key: "referrals", label: "Referrals", num: true }], D.audit);
+  const used = D.audit[D.audit.length - 1], bad = D.audit[0];
+  document.getElementById("t-audit").textContent =
+    `The shortcut reports ${fmt.format(bad.referrals)} referrals from ${bad.provider_records_or_people} provider records; the deduplicated answer is ${fmt.format(used.referrals)} from ${used.provider_records_or_people} people.`;
+
+  const icon = { pass: "Pass", warn: "Warn", fail: "Fail" };
+  document.getElementById("qa").innerHTML = D.qa.map((x) =>
+    `<div class="qa-item"><span class="badge ${x.status}"><span class="dot"></span>${icon[x.status]}</span>
+      <div><b>${x.check}</b><div class="obs">${x.observed}</div><div class="obs">Rule: ${x.rule}</div></div></div>`).join("");
+})();
+</script>
+</body>
+</html>

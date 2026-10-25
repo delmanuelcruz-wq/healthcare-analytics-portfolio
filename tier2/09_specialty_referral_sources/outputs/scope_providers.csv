@@ -1,0 +1,63 @@
+provider_id,fictional_practice,primary_specialty,county_key,county_name,state_code,specialty_group,record_count
+PRV0009,Tidal Pulmonary Care (fictional),PUL,CTY13,Palmetto Reach County,NC,Pulmonology,1
+PRV0010,Tidal Pulmonary Care (fictional),PUL,CTY13,Palmetto Reach County,NC,Pulmonology,1
+PRV0011,Harbor Pulmonary Care (fictional),PUL,CTY11,Cedar Landing County,NC,Pulmonology,1
+PRV0012,Harbor Pulmonary Care (fictional),PUL,CTY11,Cedar Landing County,NC,Pulmonology,1
+PRV0017,Pinewood Allergy & Immunology (fictional),IMM,CTY09,Gullwing County,SC,Immunology/Allergy,1
+PRV0018,Pinewood Allergy & Immunology (fictional),IMM,CTY09,Gullwing County,SC,Immunology/Allergy,1
+PRV0019,Pinewood Allergy & Immunology (fictional),IMM,CTY09,Gullwing County,SC,Immunology/Allergy,1
+PRV0049,Seabreeze Allergy & Immunology (fictional),IMM,CTY06,Heronmouth County,SC,Immunology/Allergy,1
+PRV0061,Seabreeze Pulmonary Care (fictional),PUL,CTY07,Sablecrest County,SC,Pulmonology,2
+PRV0062,Seabreeze Pulmonary Care (fictional),PUL,CTY07,Sablecrest County,SC,Pulmonology,1
+PRV0063,Seabreeze Pulmonary Care (fictional),PUL,CTY07,Sablecrest County,SC,Pulmonology,1
+PRV0064,Seabreeze Pulmonary Care (fictional),PUL,CTY07,Sablecrest County,SC,Pulmonology,1
+PRV0071,Oakmoss Pulmonary Care (fictional),PUL,CTY05,Larkspur County,GA,Pulmonology,1
+PRV0072,Oakmoss Pulmonary Care (fictional),PUL,CTY05,Larkspur County,GA,Pulmonology,1
+PRV0078,Harbor Pulmonary Care of Indigo (fictional),PUL,CTY08,Indigo Flats County,SC,Pulmonology,1
+PRV0079,Harbor Pulmonary Care of Indigo (fictional),PUL,CTY08,Indigo Flats County,SC,Pulmonology,1
+PRV0080,Harbor Pulmonary Care of Indigo (fictional),PUL,CTY08,Indigo Flats County,SC,Pulmonology,1
+PRV0091,Lowcountry Rheumatology of Indigo (fictional),RHE,CTY08,Indigo Flats County,SC,PUL/IMM as secondary specialty,1
+PRV0094,Marshland Allergy & Immunology (fictional),IMM,CTY07,Sablecrest County,SC,Immunology/Allergy,1
+PRV0098,Seabreeze Dermatology (fictional),DER,CTY06,Heronmouth County,SC,PUL/IMM as secondary specialty,1
+PRV0100,Magnolia Pulmonary Care (fictional),PUL,CTY13,Palmetto Reach County,NC,Pulmonology,1
+PRV0101,Magnolia Pulmonary Care (fictional),PUL,CTY13,Palmetto Reach County,NC,Pulmonology,1
+PRV0102,Magnolia Pulmonary Care (fictional),PUL,CTY13,Palmetto Reach County,NC,Pulmonology,1
+PRV0103,Magnolia Pulmonary Care (fictional),PUL,CTY13,Palmetto Reach County,NC,Pulmonology,1
+PRV0108,Oakmoss Pulmonary Care of Larkspur (fictional),PUL,CTY05,Larkspur County,GA,Pulmonology,1
+PRV0109,Oakmoss Pulmonary Care of Larkspur (fictional),PUL,CTY05,Larkspur County,GA,Pulmonology,1
+PRV0111,Sandhill Rheumatology of Quarry (fictional),RHE,CTY12,Quarry Hill County,NC,PUL/IMM as secondary specialty,1
+PRV0119,Sandhill Allergy & Immunology (fictional),IMM,CTY02,Tallow Creek County,GA,Immunology/Allergy,1
+PRV0120,Sandhill Allergy & Immunology (fictional),IMM,CTY02,Tallow Creek County,GA,Immunology/Allergy,1
+PRV0121,Sandhill Allergy & Immunology (fictional),IMM,CTY02,Tallow Creek County,GA,Immunology/Allergy,1
+PRV0122,Sandhill Allergy & Immunology (fictional),IMM,CTY02,Tallow Creek County,GA,Immunology/Allergy,1
+PRV0129,Seabreeze Digestive Health of Saltmeadow (fictional),GI,CTY01,Saltmeadow County,GA,PUL/IMM as secondary specialty,1
+PRV0130,Pinewood Digestive Health (fictional),GI,CTY01,Saltmeadow County,GA,PUL/IMM as secondary specialty,1
+PRV0145,Bluestem Allergy & Immunology (fictional),IMM,CTY14,Ospreyford County,NC,Immunology/Allergy,1
+PRV0147,Magnolia Kidney Care (fictional),NEP,CTY02,Tallow Creek County,GA,PUL/IMM as secondary specialty,1
+PRV0148,Bayline Allergy & Immunology (fictional),IMM,CTY08,Indigo Flats County,SC,Immunology/Allergy,1
+PRV0154,Bayline Family Medicine (fictional),PCP,CTY05,Larkspur County,GA,PUL/IMM as secondary specialty,1
+PRV0172,Harbor Pulmonary Care of Gullwing (fictional),PUL,CTY09,Gullwing County,SC,Pulmonology,1
+PRV0173,Harbor Pulmonary Care of Gullwing (fictional),PUL,CTY09,Gullwing County,SC,Pulmonology,1
+PRV0174,Harbor Pulmonary Care of Gullwing (fictional),PUL,CTY09,Gullwing County,SC,Pulmonology,1
+PRV0176,Seabreeze Pulmonary Care of Tallow (fictional),PUL,CTY02,Tallow Creek County,GA,Pulmonology,1
+PRV0184,Lowcountry Pulmonary Care (fictional),PUL,CTY06,Heronmouth County,SC,Pulmonology,1
+PRV0198,Riverbend Pulmonary Care (fictional),PUL,CTY07,Sablecrest County,SC,Pulmonology,1
+PRV0199,Riverbend Pulmonary Care (fictional),PUL,CTY07,Sablecrest County,SC,Pulmonology,1
+PRV0200,Marshland Allergy & Immunology of Saltmeadow (fictional),IMM,CTY01,Saltmeadow County,GA,Immunology/Allergy,1
+PRV0201,Marshland Allergy & Immunology of Saltmeadow (fictional),IMM,CTY01,Saltmeadow County,GA,Immunology/Allergy,1
+PRV0202,Marshland Allergy & Immunology of Saltmeadow (fictional),IMM,CTY01,Saltmeadow County,GA,Immunology/Allergy,1
+PRV0203,Marshland Allergy & Immunology of Saltmeadow (fictional),IMM,CTY01,Saltmeadow County,GA,Immunology/Allergy,1
+PRV0215,Magnolia Pulmonary Care of Brinemoor (fictional),PUL,CTY10,Brinemoor County,NC,Pulmonology,1
+PRV0216,Magnolia Pulmonary Care of Brinemoor (fictional),PUL,CTY10,Brinemoor County,NC,Pulmonology,1
+PRV0217,Magnolia Pulmonary Care of Brinemoor (fictional),PUL,CTY10,Brinemoor County,NC,Pulmonology,1
+PRV0218,Magnolia Pulmonary Care of Brinemoor (fictional),PUL,CTY10,Brinemoor County,NC,Pulmonology,1
+PRV0219,Oakmoss Allergy & Immunology (fictional),IMM,CTY01,Saltmeadow County,GA,Immunology/Allergy,1
+PRV0220,Oakmoss Allergy & Immunology (fictional),IMM,CTY01,Saltmeadow County,GA,Immunology/Allergy,1
+PRV0227,Sandhill Pulmonary Care (fictional),PUL,CTY09,Gullwing County,SC,Pulmonology,1
+PRV0228,Sandhill Pulmonary Care (fictional),PUL,CTY09,Gullwing County,SC,Pulmonology,1
+PRV0229,Sandhill Pulmonary Care (fictional),PUL,CTY09,Gullwing County,SC,Pulmonology,1
+PRV0230,Sandhill Pulmonary Care (fictional),PUL,CTY09,Gullwing County,SC,Pulmonology,2
+PRV0232,Harbor Pulmonary Care of Cypressmoor (fictional),PUL,CTY03,Cypressmoor County,GA,Pulmonology,1
+PRV0233,Harbor Pulmonary Care of Cypressmoor (fictional),PUL,CTY03,Cypressmoor County,GA,Pulmonology,1
+PRV0234,Harbor Pulmonary Care of Cypressmoor (fictional),PUL,CTY03,Cypressmoor County,GA,Pulmonology,1
+PRV0235,Harbor Pulmonary Care of Cypressmoor (fictional),PUL,CTY03,Cypressmoor County,GA,Pulmonology,1

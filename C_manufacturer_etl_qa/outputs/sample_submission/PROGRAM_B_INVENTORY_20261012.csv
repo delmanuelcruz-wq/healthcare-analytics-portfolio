@@ -1,0 +1,17 @@
+reporting_week,site_id,product_id,opening_vials,received_vials,returned_vials,administered_vials,waste_expired_vials,adjustment_vials,closing_vials,reconciliation
+2026-10-12,S01,THERAPY_F,8,10,0,2,0,0,16,Reconciled
+2026-10-12,S01,THERAPY_G,11,0,0,7,0,0,4,Reconciled
+2026-10-12,S02,THERAPY_F,6,0,0,0,0,0,6,Reconciled
+2026-10-12,S02,THERAPY_G,2,10,0,0,0,0,12,Reconciled
+2026-10-12,S03,THERAPY_F,12,0,0,1,0,0,11,Reconciled
+2026-10-12,S03,THERAPY_G,11,0,0,2,0,0,9,Reconciled
+2026-10-12,S04,THERAPY_F,3,10,0,1,0,0,12,Reconciled
+2026-10-12,S04,THERAPY_G,3,20,0,0,0,0,23,Reconciled
+2026-10-12,S05,THERAPY_F,5,0,0,0,0,0,5,Reconciled
+2026-10-12,S05,THERAPY_G,12,0,0,0,0,0,12,Reconciled
+2026-10-12,S06,THERAPY_F,17,0,0,7,0,0,10,Reconciled
+2026-10-12,S06,THERAPY_G,41,0,0,0,0,0,41,Reconciled
+2026-10-12,S07,THERAPY_F,7,0,0,3,0,0,4,Reconciled
+2026-10-12,S07,THERAPY_G,12,0,0,3,0,0,9,Reconciled
+2026-10-12,S08,THERAPY_F,14,0,0,3,0,0,11,Reconciled
+2026-10-12,S08,THERAPY_G,10,0,0,0,0,0,10,Reconciled

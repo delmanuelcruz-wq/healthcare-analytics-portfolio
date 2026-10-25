@@ -1,0 +1,10 @@
+{
+  "file_name": "PROGRAM_A_DISPENSE_20261012.csv",
+  "program": "PROGRAM_A",
+  "file_type": "DISPENSE",
+  "reporting_week": "2026-10-12",
+  "record_count": 10,
+  "header_rows": 1,
+  "sha256": "a37b154ae74c762baf33626d9626843e1ee2e41262cc37381ab443d4919386a6",
+  "destination": "mock://manufacturer-a/inbound"
+}

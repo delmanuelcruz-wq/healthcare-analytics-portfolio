@@ -1,0 +1,251 @@
+provider_key,source_identity_key,primary_specialty,fictional_practice,practice_zip5,created_date
+PRV0001,MOCKNPI-753600,PCP,Marshland Family Medicine (fictional),00112,2022-09-22
+PRV0002,MOCKNPI-749023,PCP,Marshland Family Medicine (fictional),00112,2025-05-28
+PRV0003,MOCKNPI-686274,GI,Oakmoss Digestive Health (fictional),00101,2021-11-30
+PRV0004,MOCKNPI-166803,NEU,Lowcountry Neurology Associates (fictional),00311,2023-07-22
+PRV0005,MOCKNPI-256988,DER,Bluestem Dermatology (fictional),00122,2025-12-21
+PRV0006,MOCKNPI-204423,DER,Bluestem Dermatology (fictional),00122,2024-02-01
+PRV0007,MOCKNPI-921148,DER,Bluestem Dermatology (fictional),00122,2022-09-03
+PRV0008,MOCKNPI-757960,DER,Bluestem Dermatology (fictional),00122,2025-08-19
+PRV0009,MOCKNPI-190529,PUL,Tidal Pulmonary Care (fictional),00331,2024-05-18
+PRV0010,MOCKNPI-628541,PUL,Tidal Pulmonary Care (fictional),00331,2025-12-29
+PRV0011,MOCKNPI-864661,PUL,Harbor Pulmonary Care (fictional),00312,2026-01-12
+PRV0012,MOCKNPI-547843,PUL,Harbor Pulmonary Care (fictional),00312,2026-09-05
+PRV0013,MOCKNPI-203404,NEP,Sandhill Kidney Care (fictional),00132,2022-08-16
+PRV0014,MOCKNPI-207603,NEP,Sandhill Kidney Care (fictional),00132,2025-12-30
+PRV0015,MOCKNPI-913763,NEP,Sandhill Kidney Care (fictional),00132,2022-09-25
+PRV0016,MOCKNPI-701621,NEP,Sandhill Kidney Care (fictional),00132,2024-01-20
+PRV0017,MOCKNPI-780899,IMM,Pinewood Allergy & Immunology (fictional),00231,2021-07-21
+PRV0018,MOCKNPI-373090,IMM,Pinewood Allergy & Immunology (fictional),00231,2023-08-01
+PRV0019,MOCKNPI-603723,IMM,Pinewood Allergy & Immunology (fictional),00231,2026-01-12
+PRV0020,MOCKNPI-708657,RHE,Bayline Rheumatology (fictional),00331,2024-06-19
+PRV0021,MOCKNPI-721754,RHE,Bayline Rheumatology (fictional),00331,2022-01-13
+PRV0022,MOCKNPI-465130,RHE,Bayline Rheumatology (fictional),00331,2022-06-10
+PRV0023,MOCKNPI-829163,RHE,Bayline Rheumatology (fictional),00331,2024-08-21
+PRV0024,MOCKNPI-284321,RHE,Lowcountry Rheumatology (fictional),00302,2026-02-06
+PRV0025,MOCKNPI-659376,RHE,Lowcountry Rheumatology (fictional),00302,2024-11-07
+PRV0026,MOCKNPI-479885,DER,Tidal Dermatology (fictional),00141,2023-10-19
+PRV0027,MOCKNPI-952376,DER,Tidal Dermatology (fictional),00141,2023-12-03
+PRV0028,MOCKNPI-115485,DER,Tidal Dermatology (fictional),00141,2026-03-23
+PRV0029,MOCKNPI-613916,DER,Tidal Dermatology (fictional),00141,2021-05-28
+PRV0030,MOCKNPI-160150,NEP,Seabreeze Kidney Care (fictional),00211,2026-04-10
+PRV0031,MOCKNPI-399575,NEP,Seabreeze Kidney Care (fictional),00211,2024-06-20
+PRV0032,MOCKNPI-240813,NEP,Seabreeze Kidney Care (fictional),00211,2021-10-18
+PRV0033,MOCKNPI-691780,NEU,Oakmoss Neurology Associates (fictional),00111,2025-04-20
+PRV0034,MOCKNPI-930763,NEU,Oakmoss Neurology Associates (fictional),00111,2026-09-16
+PRV0035,MOCKNPI-614445,NEU,Oakmoss Neurology Associates (fictional),00111,2026-08-20
+PRV0036,MOCKNPI-271894,NEU,Oakmoss Neurology Associates (fictional),00111,2024-08-27
+PRV0037,MOCKNPI-659930,RHE,Sandhill Rheumatology (fictional),00122,2024-10-18
+PRV0038,MOCKNPI-610893,RHE,Sandhill Rheumatology (fictional),00122,2021-12-14
+PRV0039,MOCKNPI-667530,NEU,Bayline Neurology Associates (fictional),00341,2023-07-29
+PRV0040,MOCKNPI-705849,RHE,Lowcountry Rheumatology of Saltmeadow (fictional),00102,2025-04-01
+PRV0041,MOCKNPI-777163,RHE,Bluestem Rheumatology (fictional),00341,2025-02-05
+PRV0042,MOCKNPI-179143,NEP,Tidal Kidney Care (fictional),00131,2021-08-23
+PRV0043,MOCKNPI-862289,NEP,Tidal Kidney Care (fictional),00131,2022-07-19
+PRV0044,MOCKNPI-369947,NEP,Tidal Kidney Care (fictional),00131,2022-02-16
+PRV0045,MOCKNPI-711109,NEP,Tidal Kidney Care (fictional),00131,2022-09-17
+PRV0046,MOCKNPI-766296,RHE,Riverbend Rheumatology (fictional),00211,2023-09-14
+PRV0047,MOCKNPI-691200,RHE,Riverbend Rheumatology (fictional),00211,2025-10-30
+PRV0048,MOCKNPI-616662,NEU,Sandhill Neurology Associates (fictional),00123,2023-11-28
+PRV0049,MOCKNPI-274807,IMM,Seabreeze Allergy & Immunology (fictional),00202,2022-07-29
+PRV0050,MOCKNPI-965498,DER,Bluestem Dermatology of Tallow (fictional),00112,2024-01-18
+PRV0051,MOCKNPI-779114,DER,Bluestem Dermatology of Tallow (fictional),00112,2024-10-24
+PRV0052,MOCKNPI-411995,DER,Bluestem Dermatology of Tallow (fictional),00112,2025-12-28
+PRV0053,MOCKNPI-808720,HEM,Sandhill Hematology Group (fictional),00302,2021-03-11
+PRV0054,MOCKNPI-692509,HEM,Sandhill Hematology Group (fictional),00302,2023-03-30
+PRV0055,MOCKNPI-688118,HEM,Sandhill Hematology Group (fictional),00302,2024-05-01
+PRV0056,MOCKNPI-935794,HEM,Sandhill Hematology Group (fictional),00302,2021-07-30
+PRV0057,MOCKNPI-174044,NEP,Sandhill Kidney Care of Palmetto (fictional),00331,2021-12-27
+PRV0058,MOCKNPI-101277,NEP,Sandhill Kidney Care of Palmetto (fictional),00331,2026-08-01
+PRV0059,MOCKNPI-307486,NEP,Sandhill Kidney Care of Palmetto (fictional),00331,2022-06-19
+PRV0060,MOCKNPI-809463,NEP,Sandhill Kidney Care of Palmetto (fictional),00331,2026-03-28
+PRV0061,MOCKNPI-643038,PUL,Seabreeze Pulmonary Care (fictional),00211,2024-12-01
+PRV0062,MOCKNPI-522345,PUL,Seabreeze Pulmonary Care (fictional),00211,2022-02-15
+PRV0063,MOCKNPI-207928,PUL,Seabreeze Pulmonary Care (fictional),00211,2023-07-15
+PRV0064,MOCKNPI-417825,PUL,Seabreeze Pulmonary Care (fictional),00211,2022-11-20
+PRV0065,MOCKNPI-388372,NEU,Bluestem Neurology Associates (fictional),00142,2021-04-06
+PRV0066,MOCKNPI-983341,NEU,Bluestem Neurology Associates (fictional),00142,2022-06-01
+PRV0067,MOCKNPI-887199,NEU,Oakmoss Neurology Associates of Indigo (fictional),00221,2025-01-13
+PRV0068,MOCKNPI-698732,NEU,Oakmoss Neurology Associates of Indigo (fictional),00221,2025-02-05
+PRV0069,MOCKNPI-227458,NEP,Seabreeze Kidney Care of Sablecrest (fictional),00211,2024-09-19
+PRV0070,MOCKNPI-770423,NEP,Seabreeze Kidney Care of Sablecrest (fictional),00211,2025-04-28
+PRV0071,MOCKNPI-637320,PUL,Oakmoss Pulmonary Care (fictional),00142,2025-04-18
+PRV0072,MOCKNPI-702824,PUL,Oakmoss Pulmonary Care (fictional),00142,2022-10-08
+PRV0073,MOCKNPI-397229,NEU,Magnolia Neurology Associates (fictional),00322,2025-07-13
+PRV0074,MOCKNPI-963027,NEU,Magnolia Neurology Associates (fictional),00322,2024-02-17
+PRV0075,MOCKNPI-823059,GI,Marshland Digestive Health (fictional),00331,2021-06-01
+PRV0076,MOCKNPI-636619,GI,Marshland Digestive Health (fictional),00331,2026-04-05
+PRV0077,MOCKNPI-816134,GI,Marshland Digestive Health (fictional),00331,2022-05-11
+PRV0078,MOCKNPI-228268,PUL,Harbor Pulmonary Care of Indigo (fictional),00222,2025-03-13
+PRV0079,MOCKNPI-448216,PUL,Harbor Pulmonary Care of Indigo (fictional),00222,2024-12-27
+PRV0080,MOCKNPI-753395,PUL,Harbor Pulmonary Care of Indigo (fictional),00222,2025-11-13
+PRV0081,MOCKNPI-621089,NEP,Marshland Kidney Care (fictional),00141,2025-09-18
+PRV0082,MOCKNPI-948546,NEP,Marshland Kidney Care (fictional),00141,2024-01-23
+PRV0083,MOCKNPI-273970,GI,Magnolia Digestive Health (fictional),00121,2023-05-25
+PRV0084,MOCKNPI-156147,GI,Magnolia Digestive Health (fictional),00121,2022-01-22
+PRV0085,MOCKNPI-102406,NEU,Bluestem Neurology Associates of Larkspur (fictional),00142,2022-01-09
+PRV0086,MOCKNPI-506668,RHE,Harbor Rheumatology (fictional),00122,2021-02-16
+PRV0087,MOCKNPI-441614,RHE,Harbor Rheumatology (fictional),00122,2026-09-13
+PRV0088,MOCKNPI-638162,NEU,Riverbend Neurology Associates (fictional),00111,2024-10-03
+PRV0089,MOCKNPI-310879,NEU,Riverbend Neurology Associates (fictional),00111,2021-09-21
+PRV0090,MOCKNPI-773219,RHE,Lowcountry Rheumatology of Indigo (fictional),00221,2023-06-26
+PRV0091,MOCKNPI-388941,RHE,Lowcountry Rheumatology of Indigo (fictional),00221,2025-02-24
+PRV0092,MOCKNPI-928486,RHE,Lowcountry Rheumatology of Indigo (fictional),00221,2023-03-12
+PRV0093,MOCKNPI-186977,GI,Sandhill Digestive Health (fictional),00302,2025-05-29
+PRV0094,MOCKNPI-708733,IMM,Marshland Allergy & Immunology (fictional),00211,2021-11-21
+PRV0095,MOCKNPI-729902,NEU,Pinewood Neurology Associates (fictional),00203,2023-01-23
+PRV0096,MOCKNPI-654075,NEU,Pinewood Neurology Associates (fictional),00203,2021-11-22
+PRV0097,MOCKNPI-834592,DER,Seabreeze Dermatology (fictional),00201,2025-06-16
+PRV0098,MOCKNPI-569452,DER,Seabreeze Dermatology (fictional),00201,2021-11-30
+PRV0099,MOCKNPI-555396,RHE,Marshland Rheumatology (fictional),00303,2022-09-15
+PRV0100,MOCKNPI-738655,PUL,Magnolia Pulmonary Care (fictional),00332,2022-11-18
+PRV0101,MOCKNPI-856465,PUL,Magnolia Pulmonary Care (fictional),00332,2021-12-30
+PRV0102,MOCKNPI-508295,PUL,Magnolia Pulmonary Care (fictional),00332,2023-10-03
+PRV0103,MOCKNPI-183487,PUL,Magnolia Pulmonary Care (fictional),00332,2025-05-25
+PRV0104,MOCKNPI-561191,GI,Riverbend Digestive Health (fictional),00142,2022-03-20
+PRV0105,MOCKNPI-377999,GI,Riverbend Digestive Health (fictional),00142,2023-02-09
+PRV0106,MOCKNPI-404662,GI,Riverbend Digestive Health (fictional),00142,2021-05-25
+PRV0107,MOCKNPI-609681,GI,Riverbend Digestive Health (fictional),00142,2024-07-29
+PRV0108,MOCKNPI-125913,PUL,Oakmoss Pulmonary Care of Larkspur (fictional),00141,2025-06-02
+PRV0109,MOCKNPI-328886,PUL,Oakmoss Pulmonary Care of Larkspur (fictional),00141,2022-01-26
+PRV0110,MOCKNPI-218266,RHE,Sandhill Rheumatology of Quarry (fictional),00321,2022-11-30
+PRV0111,MOCKNPI-277374,RHE,Sandhill Rheumatology of Quarry (fictional),00321,2026-01-12
+PRV0112,MOCKNPI-836521,RHE,Sandhill Rheumatology of Quarry (fictional),00321,2025-08-27
+PRV0113,MOCKNPI-312722,GI,Seabreeze Digestive Health (fictional),00302,2024-09-24
+PRV0114,MOCKNPI-451751,RHE,Riverbend Rheumatology of Gullwing (fictional),00231,2026-03-18
+PRV0115,MOCKNPI-646209,PCP,Marshland Family Medicine of Brinemoor (fictional),00301,2026-02-02
+PRV0116,MOCKNPI-407986,RHE,Riverbend Rheumatology of Sablecrest (fictional),00212,2025-10-29
+PRV0117,MOCKNPI-871634,GI,Bayline Digestive Health (fictional),00312,2025-09-27
+PRV0118,MOCKNPI-794949,GI,Bayline Digestive Health (fictional),00312,2025-05-12
+PRV0119,MOCKNPI-710707,IMM,Sandhill Allergy & Immunology (fictional),00111,2025-12-22
+PRV0120,MOCKNPI-652338,IMM,Sandhill Allergy & Immunology (fictional),00111,2024-10-31
+PRV0121,MOCKNPI-350003,IMM,Sandhill Allergy & Immunology (fictional),00111,2023-12-31
+PRV0122,MOCKNPI-540878,IMM,Sandhill Allergy & Immunology (fictional),00111,2025-05-09
+PRV0123,MOCKNPI-390832,NEU,Marshland Neurology Associates (fictional),00103,2025-07-17
+PRV0124,MOCKNPI-266861,DER,Pinewood Dermatology (fictional),00102,2022-11-23
+PRV0125,MOCKNPI-906739,DER,Pinewood Dermatology (fictional),00102,2026-03-06
+PRV0126,MOCKNPI-996616,DER,Pinewood Dermatology (fictional),00102,2026-08-19
+PRV0127,MOCKNPI-334711,DER,Pinewood Dermatology (fictional),00102,2021-10-25
+PRV0128,MOCKNPI-658976,GI,Seabreeze Digestive Health of Saltmeadow (fictional),00103,2025-06-21
+PRV0129,MOCKNPI-643197,GI,Seabreeze Digestive Health of Saltmeadow (fictional),00103,2026-05-10
+PRV0130,MOCKNPI-392756,GI,Pinewood Digestive Health (fictional),00103,2021-07-19
+PRV0131,MOCKNPI-880659,GI,Pinewood Digestive Health (fictional),00103,2022-09-12
+PRV0132,MOCKNPI-620572,GI,Pinewood Digestive Health (fictional),00103,2021-01-16
+PRV0133,MOCKNPI-147014,GI,Pinewood Digestive Health (fictional),00103,2022-11-23
+PRV0134,MOCKNPI-207831,NEU,Riverbend Neurology Associates of Cedar (fictional),00311,2022-06-15
+PRV0135,MOCKNPI-387802,NEU,Riverbend Neurology Associates of Cedar (fictional),00311,2021-07-18
+PRV0136,MOCKNPI-805379,NEU,Riverbend Neurology Associates of Cedar (fictional),00311,2024-01-20
+PRV0137,MOCKNPI-220254,NEU,Riverbend Neurology Associates of Cedar (fictional),00311,2022-10-04
+PRV0138,MOCKNPI-327110,NEU,Oakmoss Neurology Associates of Quarry (fictional),00322,2022-08-04
+PRV0139,MOCKNPI-844850,RHE,Marshland Rheumatology of Cedar (fictional),00312,2025-12-25
+PRV0140,MOCKNPI-736708,RHE,Marshland Rheumatology of Cedar (fictional),00312,2023-08-26
+PRV0141,MOCKNPI-275413,NEP,Oakmoss Kidney Care (fictional),00221,2023-12-10
+PRV0142,MOCKNPI-690461,NEP,Oakmoss Kidney Care (fictional),00221,2026-04-01
+PRV0143,MOCKNPI-846750,NEP,Oakmoss Kidney Care (fictional),00221,2023-03-05
+PRV0144,MOCKNPI-252281,NEP,Oakmoss Kidney Care (fictional),00221,2021-06-13
+PRV0145,MOCKNPI-978559,IMM,Bluestem Allergy & Immunology (fictional),00341,2023-12-13
+PRV0146,MOCKNPI-950166,GI,Oakmoss Digestive Health of Sablecrest (fictional),00211,2026-01-29
+PRV0147,MOCKNPI-573683,NEP,Magnolia Kidney Care (fictional),00111,2025-05-02
+PRV0148,MOCKNPI-985478,IMM,Bayline Allergy & Immunology (fictional),00221,2024-03-17
+PRV0149,MOCKNPI-532301,NEU,Oakmoss Neurology Associates of Saltmeadow (fictional),00102,2025-12-13
+PRV0150,MOCKNPI-930806,NEU,Oakmoss Neurology Associates of Saltmeadow (fictional),00102,2023-03-12
+PRV0151,MOCKNPI-747604,PCP,Bayline Family Medicine (fictional),00142,2023-02-11
+PRV0152,MOCKNPI-627508,PCP,Bayline Family Medicine (fictional),00142,2026-06-22
+PRV0153,MOCKNPI-971414,PCP,Bayline Family Medicine (fictional),00142,2024-07-19
+PRV0154,MOCKNPI-292204,PCP,Bayline Family Medicine (fictional),00142,2025-09-23
+PRV0155,MOCKNPI-927843,DER,Bluestem Dermatology of Heronmouth (fictional),00202,2022-11-29
+PRV0156,MOCKNPI-962790,NEU,Bayline Neurology Associates of Tallow (fictional),00111,2023-04-10
+PRV0157,MOCKNPI-419674,NEU,Lowcountry Neurology Associates of Gullwing (fictional),00232,2023-04-21
+PRV0158,MOCKNPI-378419,NEU,Lowcountry Neurology Associates of Gullwing (fictional),00232,2025-05-23
+PRV0159,MOCKNPI-786964,NEU,Lowcountry Neurology Associates of Gullwing (fictional),00232,2026-05-17
+PRV0160,MOCKNPI-149335,NEU,Lowcountry Neurology Associates of Gullwing (fictional),00232,2024-01-20
+PRV0161,MOCKNPI-654303,DER,Magnolia Dermatology (fictional),00102,2022-01-07
+PRV0162,MOCKNPI-697185,DER,Magnolia Dermatology (fictional),00102,2025-04-27
+PRV0163,MOCKNPI-974976,DER,Magnolia Dermatology (fictional),00102,2021-02-14
+PRV0164,MOCKNPI-934913,DER,Magnolia Dermatology (fictional),00102,2023-02-14
+PRV0165,MOCKNPI-869730,DER,Riverbend Dermatology (fictional),00231,2026-04-20
+PRV0166,MOCKNPI-141864,PCP,Pinewood Family Medicine (fictional),00121,2026-03-28
+PRV0167,MOCKNPI-759248,PCP,Pinewood Family Medicine (fictional),00121,2023-05-14
+PRV0168,MOCKNPI-184184,PCP,Pinewood Family Medicine (fictional),00121,2022-02-03
+PRV0169,MOCKNPI-723605,PCP,Pinewood Family Medicine (fictional),00121,2025-06-03
+PRV0170,MOCKNPI-205769,RHE,Riverbend Rheumatology of Cypressmoor (fictional),00123,2023-11-12
+PRV0171,MOCKNPI-630845,RHE,Riverbend Rheumatology of Cypressmoor (fictional),00123,2023-11-27
+PRV0172,MOCKNPI-855513,PUL,Harbor Pulmonary Care of Gullwing (fictional),00231,2024-11-23
+PRV0173,MOCKNPI-331214,PUL,Harbor Pulmonary Care of Gullwing (fictional),00231,2022-01-13
+PRV0174,MOCKNPI-583341,PUL,Harbor Pulmonary Care of Gullwing (fictional),00231,2025-01-03
+PRV0175,MOCKNPI-801908,NEU,Bluestem Neurology Associates of Saltmeadow (fictional),00101,2021-09-25
+PRV0176,MOCKNPI-885732,PUL,Seabreeze Pulmonary Care of Tallow (fictional),00111,2024-06-08
+PRV0177,MOCKNPI-820812,RHE,Marshland Rheumatology of Cypressmoor (fictional),00123,2021-12-01
+PRV0178,MOCKNPI-422457,RHE,Marshland Rheumatology of Cypressmoor (fictional),00123,2024-11-05
+PRV0179,MOCKNPI-817076,RHE,Marshland Rheumatology of Cypressmoor (fictional),00123,2025-01-24
+PRV0180,MOCKNPI-316786,RHE,Marshland Rheumatology of Cypressmoor (fictional),00123,2023-05-30
+PRV0181,MOCKNPI-164972,RHE,Oakmoss Rheumatology (fictional),00202,2025-11-27
+PRV0182,MOCKNPI-198594,RHE,Oakmoss Rheumatology (fictional),00202,2021-01-08
+PRV0183,MOCKNPI-627881,RHE,Oakmoss Rheumatology (fictional),00202,2022-04-13
+PRV0184,MOCKNPI-114369,PUL,Lowcountry Pulmonary Care (fictional),00203,2026-01-06
+PRV0185,MOCKNPI-741171,NEU,Harbor Neurology Associates (fictional),00141,2025-05-15
+PRV0186,MOCKNPI-737809,RHE,Sandhill Rheumatology of Heronmouth (fictional),00203,2022-05-03
+PRV0187,MOCKNPI-890401,NEU,Seabreeze Neurology Associates (fictional),00211,2024-12-02
+PRV0188,MOCKNPI-100066,NEU,Seabreeze Neurology Associates (fictional),00211,2025-09-15
+PRV0189,MOCKNPI-553595,GI,Pinewood Digestive Health of Saltmeadow (fictional),00102,2022-03-18
+PRV0190,MOCKNPI-498179,GI,Pinewood Digestive Health of Saltmeadow (fictional),00102,2021-01-02
+PRV0191,MOCKNPI-759530,GI,Riverbend Digestive Health of Brinemoor (fictional),00301,2022-04-02
+PRV0192,MOCKNPI-449551,GI,Bayline Digestive Health of Tallow (fictional),00112,2023-06-16
+PRV0193,MOCKNPI-878729,NEU,Seabreeze Neurology Associates of Gullwing (fictional),00231,2021-08-28
+PRV0194,MOCKNPI-958415,NEU,Seabreeze Neurology Associates of Gullwing (fictional),00231,2023-03-11
+PRV0195,MOCKNPI-333879,NEU,Seabreeze Neurology Associates of Gullwing (fictional),00231,2025-08-24
+PRV0196,MOCKNPI-145074,GI,Harbor Digestive Health (fictional),00112,2025-12-12
+PRV0197,MOCKNPI-824155,GI,Harbor Digestive Health (fictional),00112,2023-01-04
+PRV0198,MOCKNPI-611861,PUL,Riverbend Pulmonary Care (fictional),00212,2024-02-08
+PRV0199,MOCKNPI-362554,PUL,Riverbend Pulmonary Care (fictional),00212,2025-09-21
+PRV0200,MOCKNPI-684267,IMM,Marshland Allergy & Immunology of Saltmeadow (fictional),00102,2021-03-06
+PRV0201,MOCKNPI-199474,IMM,Marshland Allergy & Immunology of Saltmeadow (fictional),00102,2021-10-04
+PRV0202,MOCKNPI-431324,IMM,Marshland Allergy & Immunology of Saltmeadow (fictional),00102,2026-01-21
+PRV0203,MOCKNPI-303583,IMM,Marshland Allergy & Immunology of Saltmeadow (fictional),00102,2025-08-13
+PRV0204,MOCKNPI-215333,NEU,Marshland Neurology Associates of Cypressmoor (fictional),00121,2024-03-14
+PRV0205,MOCKNPI-188314,NEU,Marshland Neurology Associates of Cypressmoor (fictional),00121,2025-11-01
+PRV0206,MOCKNPI-226468,NEU,Marshland Neurology Associates of Cypressmoor (fictional),00121,2026-09-02
+PRV0207,MOCKNPI-971302,NEU,Marshland Neurology Associates of Cypressmoor (fictional),00121,2022-08-18
+PRV0208,MOCKNPI-747685,HEM,Lowcountry Hematology Group (fictional),00122,2026-03-18
+PRV0209,MOCKNPI-564148,HEM,Lowcountry Hematology Group (fictional),00122,2023-06-04
+PRV0210,MOCKNPI-702360,RHE,Lowcountry Rheumatology of Wren (fictional),00132,2022-02-26
+PRV0211,MOCKNPI-314344,RHE,Lowcountry Rheumatology of Wren (fictional),00132,2022-04-25
+PRV0212,MOCKNPI-160176,RHE,Lowcountry Rheumatology of Wren (fictional),00132,2023-10-10
+PRV0213,MOCKNPI-852742,RHE,Lowcountry Rheumatology of Wren (fictional),00132,2021-08-21
+PRV0214,MOCKNPI-936296,RHE,Bayline Rheumatology of Gullwing (fictional),00232,2023-09-29
+PRV0215,MOCKNPI-453584,PUL,Magnolia Pulmonary Care of Brinemoor (fictional),00302,2023-06-15
+PRV0216,MOCKNPI-771192,PUL,Magnolia Pulmonary Care of Brinemoor (fictional),00302,2025-05-23
+PRV0217,MOCKNPI-304338,PUL,Magnolia Pulmonary Care of Brinemoor (fictional),00302,2025-06-18
+PRV0218,MOCKNPI-706675,PUL,Magnolia Pulmonary Care of Brinemoor (fictional),00302,2023-09-08
+PRV0219,MOCKNPI-729853,IMM,Oakmoss Allergy & Immunology (fictional),00103,2026-08-23
+PRV0220,MOCKNPI-672175,IMM,Oakmoss Allergy & Immunology (fictional),00103,2023-09-23
+PRV0221,MOCKNPI-198796,NEP,Riverbend Kidney Care (fictional),00311,2022-02-01
+PRV0222,MOCKNPI-613562,NEP,Riverbend Kidney Care (fictional),00311,2021-09-13
+PRV0223,MOCKNPI-121206,NEP,Riverbend Kidney Care (fictional),00311,2026-04-25
+PRV0224,MOCKNPI-785224,NEP,Riverbend Kidney Care (fictional),00311,2023-12-31
+PRV0225,MOCKNPI-514629,NEU,Oakmoss Neurology Associates of Sablecrest (fictional),00212,2022-02-25
+PRV0226,MOCKNPI-908830,NEU,Oakmoss Neurology Associates of Sablecrest (fictional),00212,2022-04-09
+PRV0227,MOCKNPI-820301,PUL,Sandhill Pulmonary Care (fictional),00231,2025-06-12
+PRV0228,MOCKNPI-253388,PUL,Sandhill Pulmonary Care (fictional),00231,2026-04-23
+PRV0229,MOCKNPI-439475,PUL,Sandhill Pulmonary Care (fictional),00231,2025-08-18
+PRV0230,MOCKNPI-373595,PUL,Sandhill Pulmonary Care (fictional),00231,2021-08-15
+PRV0231,MOCKNPI-767410,PCP,Magnolia Family Medicine (fictional),00301,2021-12-24
+PRV0232,MOCKNPI-971586,PUL,Harbor Pulmonary Care of Cypressmoor (fictional),00123,2023-03-02
+PRV0233,MOCKNPI-967060,PUL,Harbor Pulmonary Care of Cypressmoor (fictional),00123,2026-10-01
+PRV0234,MOCKNPI-864965,PUL,Harbor Pulmonary Care of Cypressmoor (fictional),00123,2025-02-06
+PRV0235,MOCKNPI-636070,PUL,Harbor Pulmonary Care of Cypressmoor (fictional),00123,2026-09-02
+PRV0236,MOCKNPI-954880,RHE,Pinewood Rheumatology (fictional),00103,2026-05-30
+PRV0237,MOCKNPI-154653,GI,Magnolia Digestive Health of Cedar (fictional),00311,2025-04-13
+PRV0238,MOCKNPI-950939,PCP,Pinewood Family Medicine of Ospreyford (fictional),00342,2026-09-15
+PRV0239,MOCKNPI-627813,PCP,Pinewood Family Medicine of Ospreyford (fictional),00342,2025-06-17
+PRV0240,MOCKNPI-820731,PCP,Pinewood Family Medicine of Ospreyford (fictional),00342,2026-01-08
+PRV0241,MOCKNPI-158802,PCP,Pinewood Family Medicine of Ospreyford (fictional),00342,2025-12-08
+PRV0242,MOCKNPI-123849,RHE,Lowcountry Rheumatology of Brinemoor (fictional),00301,2025-07-16
+PRV0243,MOCKNPI-674957,RHE,Lowcountry Rheumatology of Brinemoor (fictional),00301,2026-05-14
+PRV0244,MOCKNPI-129081,RHE,Bayline Rheumatology of Quarry (fictional),00322,2025-01-18
+PRV0245,MOCKNPI-549778,NEU,Magnolia Neurology Associates of Saltmeadow (fictional),00101,2024-12-10
+PRV0246,MOCKNPI-396192,GI,Riverbend Digestive Health of Gullwing (fictional),00232,2026-07-24
+PRV0247,MOCKNPI-807197,GI,Riverbend Digestive Health of Gullwing (fictional),00232,2026-01-07
+PRV0248,MOCKNPI-373595,PUL,Sandhill Pulmonary Care (fictional),00231,2025-08-19
+PRV0249,MOCKNPI-643038,PUL,Seabreeze Pulmonary Care (fictional),00211,2025-12-23
+PRV0250,MOCKNPI-963027,NEU,Magnolia Neurology Associates (fictional),00322,2026-01-29

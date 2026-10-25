@@ -1,0 +1,13 @@
+check,status,observed,rule
+Every request lands in exactly one quarter,pass,"Q2 + Q3 requests = 850; requests in [Apr 1, Oct 1) = 850; 3 boundary-stamped requests included once",Half-open quarter windows
+Each served patient is attributed to exactly one payer,pass,"Sum across payers 1,291 = 1,291 distinct patients served (T12M)",Attribute to the payer at the most recent treated visit in the window
+Overlapping coverage intervals resolved deterministically,warn,5 patients have overlapping intervals; the most recently started interval wins and the rows go to data cleanup,One payer per event
+Treated visits with no coverage on file,warn,4 visits reported under 'No coverage on file' instead of being dropped,"Unattributable is a bucket, not a deletion"
+Raw plan aliases missing from the umbrella map,warn,"2 aliases unmapped ('Heronview Hlth PPO '; 'DRIFTWELL MKTPLACE'); proposed for analyst review, not auto-mapped","Map by review, never by guess"
+Distinct patients counted after alias grouping,pass,T12M patient-payer pairs overstated by 19; three-brand plan family 115 -> 110,Group plans to umbrella before COUNT(DISTINCT)
+Duplicate decision rows removed,pass,"8 duplicate final-decision rows in the full history, 5 of them in Q2-Q3 2026",COUNT(DISTINCT auth_key)
+Pending requests excluded from the approval-rate denominator,pass,2 Q3 requests still pending at Oct 24 are reported separately,Rate = approved / (approved + denied)
+Business-day lead time matches Excel NETWORKDAYS,pass,556/556 orders match an independent Python NETWORKDAYS (inclusive of both endpoints),"Weekdays only, both endpoints counted; the Excel tab recomputes it with NETWORKDAYS()"
+Impossible negative lead times excluded,warn,3 order(s) in the Q2-Q3 cohort had an order date after the first treatment,Exclude and route to source review
+"Medication mix ranked by treated visits, not line items",pass,"Q3: 1,372 given lines across therapies vs 1,273 treated visits","Therapy-visit pairs, distinct appointments"
+Prior-year comparison caveat,warn,"T12M to Sep 30, 2025 = 864 vs 1,291 now. The synthetic network starts in July 2024 with no legacy patients, so the prior window includes ramp-up and overstates growth",State the caveat next to the number

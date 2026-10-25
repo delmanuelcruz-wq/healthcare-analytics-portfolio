@@ -1,0 +1,9 @@
+site_key,site_name,state,staff_licenses,passed,total,director,Infusion center license current,Pharmacy permit current,Site documents on file,Primary medical director today,One primary director at a time,Director license current and documented,Staff licenses current,Staff documents complete
+S01,Saltmeadow Infusion Suite,GA,10,7,8,MD-041 (fictional),PASS,PASS,PASS,PASS,PASS,PASS,FAIL,PASS
+S02,Cypressmoor Infusion Suite,GA,6,7,8,MD-042 (fictional),PASS,PASS,PASS,PASS,PASS,PASS,PASS,FAIL
+S03,Larkspur Infusion Suite,GA,5,8,8,MD-043 (fictional),PASS,PASS,PASS,PASS,PASS,PASS,PASS,PASS
+S04,Heronmouth Infusion Suite,SC,5,7,8,MD-042 (fictional),PASS,PASS,PASS,PASS,PASS,PASS,PASS,FAIL
+S05,Sablecrest Infusion Suite,SC,6,5,8,None,PASS,PASS,PASS,FAIL,PASS,FAIL,FAIL,PASS
+S06,Gullwing Infusion Suite,SC,7,6,8,MD-043 (fictional),PASS,FAIL,PASS,PASS,PASS,PASS,PASS,FAIL
+S07,Brinemoor Infusion Suite,NC,1,8,8,MD-044 (fictional),PASS,PASS,PASS,PASS,PASS,PASS,PASS,PASS
+S08,Cedar Landing Infusion Suite,NC,4,6,8,MD-043 (fictional),PASS,PASS,FAIL,PASS,FAIL,PASS,PASS,PASS

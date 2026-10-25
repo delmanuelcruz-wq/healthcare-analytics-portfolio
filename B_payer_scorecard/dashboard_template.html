@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ten-Payer Scorecard</title>
+<meta name="description" content="Synthetic portfolio dashboard: a ten-payer quarterly scorecard with cohort-correct authorization rates and a definition revision log.">
+<style>/*__SHARED_CSS__*/
+.scorecard td:first-child, .scorecard th:first-child { position: sticky; left: 0; background: var(--surface); z-index: 1; }
+.scorecard th:first-child { background: var(--surface-2); z-index: 2; }
+.scorecard tr.total td { font-weight: 700; border-top: 2px solid var(--axis); }
+.scorecard tr.review td { color: var(--ink-2); font-style: italic; }
+table.log td { white-space: normal; min-width: 140px; vertical-align: top; }
+</style>
+<script src="__PLOTLY_CDN__"></script>
+</head>
+<body>
+<div class="synthetic-bar">SYNTHETIC DEMONSTRATION - fictional payers, organization and data. Not operational, medical or financial guidance.</div>
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Portfolio project B · Coralline Infusion Network (fictional)</p>
+    <h1>Ten-payer quarterly scorecard</h1>
+    <p>Referrals, prior-authorization outcomes, patients served, time to chair and therapy mix for ten fictional payer umbrellas,
+       Q2 vs Q3 2026 - rebuilt after a definition review, with every correction quantified.</p>
+    <div class="meta"><span>Data as of <b id="asof"></b></span><span>Quarters are half-open: [Jul 1, Oct 1)</span><span>Seed <span id="seed"></span></span></div>
+  </div>
+</header>
+<main class="wrap">
+  <div class="tiles" id="tiles"></div>
+
+  <h2 class="section">Scorecard</h2>
+  <p class="section-lede">Ten payer umbrellas plus the Other bucket. Plans are grouped to umbrellas before any distinct count.
+     Italic rows hold records that could not be attributed and are routed for review.</p>
+  <section class="card full"><div id="scorecard"></div>
+    <p class="sub" style="margin-top:8px">* Prior T12M includes the synthetic network's ramp-up (data begins July 2024), so growth is overstated. PEF-to-chair = business days, order created to first treated visit.</p>
+  </section>
+
+  <h2 class="section">Authorizations</h2>
+  <p class="section-lede">The first draft measured decisions dated in the quarter. The revision follows the requests submitted in the quarter
+     and reports pending requests separately.</p>
+  <div class="grid-2">
+    <section class="card">
+      <h3>Q3 approval rate: request cohort vs decision-date draft</h3>
+      <p class="sub">Approved / (approved + denied). Dots on the same row show how much the definition moves each payer.</p>
+      <div class="chart tall" id="c-approval"></div>
+      <details class="data"><summary>Show data table</summary><div id="d-approval"></div></details>
+    </section>
+    <section class="card">
+      <h3>How fast requests resolve, by request month</h3>
+      <p class="sub">Share of requests with a final decision within N days. Blank = not yet observable at the snapshot.</p>
+      <div class="chart tall" id="c-tri"></div>
+      <details class="data"><summary>Show data table</summary><div id="d-tri"></div></details>
+    </section>
+  </div>
+
+  <h2 class="section">Access and volume</h2>
+  <div class="grid-2">
+    <section class="card">
+      <h3>PEF-to-chair by payer, Q3 2026</h3>
+      <p class="sub">Business days from order creation to first treated visit (new-patient and new-therapy orders).</p>
+      <div class="chart tall" id="c-pef"></div>
+      <p class="takeaway" id="t-pef"></p>
+    </section>
+    <section class="card">
+      <h3>New referred patients by payer, Q2 vs Q3</h3>
+      <p class="sub">Distinct patients created in the quarter, payer in effect at intake.</p>
+      <div class="chart tall" id="c-new"></div>
+      <details class="data"><summary>Show data table</summary><div id="d-new"></div></details>
+    </section>
+    <section class="card full">
+      <h3>Top 10 therapies by treated visits, Q3 vs Q2</h3>
+      <p class="sub">Distinct treated appointments per therapy (mock labels). Not line items, not vials.</p>
+      <div class="chart" id="c-mix"></div>
+      <details class="data"><summary>Show data table</summary><div id="d-mix"></div></details>
+    </section>
+  </div>
+
+  <h2 class="section">Definition revision log</h2>
+  <p class="section-lede">What changed between the first draft and the reviewed scorecard, and what each change was worth.</p>
+  <section class="card full"><div id="log"></div></section>
+
+  <h2 class="section">Quality checks run on this build</h2>
+  <div class="qa-list" id="qa"></div>
+
+  <h2 class="section">What is real and what is simulated</h2>
+  <div class="scope">
+    <div class="def"><b>On-the-job exposure (described in general terms only)</b>
+      <ul><li>Assembled a substantial BI + spreadsheet draft of a ten-payer scorecard with distinct-patient measures and quarter filters.</li>
+          <li>Consolidated payer aliases and a combined plan family in a spreadsheet; learned plan-level distinct counts cannot be summed.</li>
+          <li>Received definition corrections in a manager review (patient created date for referrals; request cohort for authorizations).
+              The rebuild, umbrella definitions and final approval were still open.</li></ul></div>
+    <div class="def"><b>Independently built for this portfolio (synthetic)</b>
+      <ul><li>Every payer, number and chart here; the fictional payers do not correspond to real insurers.</li>
+          <li>The cohort-correct rebuild, revision log, maturity triangle, Excel workbook and QA suite.</li>
+          <li>Classified as a draft-style analytical reconstruction, not an approved company report.</li></ul></div>
+  </div>
+  <footer class="foot">All payers, plans, patients and amounts are fictional and synthetic (seed <span id="seed2"></span>).
+    SYNTHETIC DEMONSTRATION - not operational, medical or financial guidance. Workbook: payer_scorecard.xlsx.</footer>
+</main>
+<script>/*__DATA__*/</script>
+<script>/*__SHARED_JS__*/</script>
+<script>
+(function () {
+  const D = window.DATA, fmt = Dash.fmt;
+  ["asof"].forEach((id) => (document.getElementById(id).textContent = D.meta.as_of));
+  document.getElementById("seed").textContent = D.meta.seed;
+  document.getElementById("seed2").textContent = D.meta.seed;
+  Dash.tiles(document.getElementById("tiles"), D.tiles);
+  const P = (v) => (v === null || v === undefined ? "" : (v * 100).toFixed(1) + "%");
+  const N = (v) => (v === null || v === undefined ? "" : fmt.format(v));
+  const chg = (a, b) => (b ? (((a - b) / b) * 100).toFixed(0) + "%" : "");
+
+  // Scorecard table
+  const cols = [["Payer (fictional)", (r) => r.payer], ["New pts Q2", (r) => N(r.new_patients_q2)], ["New pts Q3", (r) => N(r.new_patients_q3)],
+    ["PA requests Q3", (r) => N(r.auth_requests_q3)], ["Approval Q3", (r) => P(r.approval_rate_q3)], ["Approval Q2", (r) => P(r.approval_rate_q2)],
+    ["Pending", (r) => N(r.pending_q3)], ["Served T12M", (r) => N(r.served_t12m)], ["Prior T12M*", (r) => N(r.served_prior_t12m)],
+    ["Served Q3", (r) => N(r.served_q3)], ["PEF median Q3", (r) => (r.pef_median_q3 ?? "")], ["PEF P90 Q3", (r) => (r.pef_p90_q3 ?? "")]];
+  const all = D.rows.concat([D.total]);
+  document.getElementById("scorecard").innerHTML = `<div class="table-scroll" style="max-height:none"><table class="data scorecard"><thead><tr>${
+    cols.map((c, i) => `<th class="${i ? "num" : ""}">${c[0]}</th>`).join("")}</tr></thead><tbody>${
+    all.map((r) => `<tr class="${r.umbrella_key === "ALL" ? "total" : (["UNMAPPED", "NO_COVERAGE"].includes(r.umbrella_key) ? "review" : "")}">${
+      cols.map((c, i) => `<td class="${i ? "num" : ""}">${c[1](r)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+
+  const top = D.top.slice().reverse();   // first payer on top in horizontal charts
+  const names = top.map((r) => r.payer);
+
+  // Approval dumbbell
+  Dash.register((c) => {
+    const lines = top.map((r) => ({ type: "scatter", mode: "lines", x: [r.approval_rate_q3_decision_method * 100, r.approval_rate_q3 * 100],
+      y: [r.payer, r.payer], line: { color: c.grid, width: 3 }, hoverinfo: "skip", showlegend: false }));
+    Plotly.react("c-approval", lines.concat([
+      { type: "scatter", mode: "markers", name: "Request cohort (revised)", y: names, x: top.map((r) => r.approval_rate_q3 * 100),
+        marker: { color: c.s1, size: 11, line: { color: c.surface, width: 2 } }, hovertemplate: "%{y}: %{x:.1f}%<extra>Request cohort</extra>" },
+      { type: "scatter", mode: "markers", name: "Decisions dated in Q3 (draft)", y: names, x: top.map((r) => r.approval_rate_q3_decision_method * 100),
+        marker: { color: c.s2, size: 11, line: { color: c.surface, width: 2 } }, hovertemplate: "%{y}: %{x:.1f}%<extra>Decision-date draft</extra>" }]),
+      Dash.layout({ hovermode: "closest", margin: { l: 200 }, xaxis: { ticksuffix: "%", showgrid: true, gridcolor: c.grid, showline: false },
+                    yaxis: { rangemode: "normal", showgrid: false }, legend: { y: 1.1 } }), Dash.config);
+  });
+  Dash.table(document.getElementById("d-approval"), [{ key: "payer", label: "Payer" }, { key: "auth_requests_q3", label: "Q3 requests", num: true },
+    { key: "approved_q3", label: "Approved", num: true }, { key: "denied_q3", label: "Denied", num: true }, { key: "pending_q3", label: "Pending", num: true },
+    { key: "approval_rate_q3", label: "Cohort rate", num: true, pct: true }, { key: "approval_rate_q3_decision_method", label: "Draft rate", num: true, pct: true }], D.top);
+
+  // Maturity triangle
+  Dash.register((c) => {
+    const months = D.triangle.map((r) => new Date(r.request_month + "-01T00:00:00").toLocaleString("en-US", { month: "short", year: "numeric" }));
+    const z = D.triangle.map((r) => D.ks.map((k) => (r["resolved_" + k + "d"] === null ? null : r["resolved_" + k + "d"] * 100)));
+    const text = z.map((row) => row.map((v) => (v === null ? "" : v.toFixed(0) + "%")));
+    Plotly.react("c-tri", [{ type: "heatmap", x: D.ks.map((k) => `${k} days`), y: months, z, text, texttemplate: "%{text}", xgap: 2, ygap: 2,
+      zmin: 0, zmax: 100, colorscale: [[0, c.seq[0]], [0.5, c.seq[3]], [1, c.seq[6]]], showscale: false,
+      textfont: { size: 12 }, hovertemplate: "Requested %{y}<br>Resolved within %{x}: %{z:.0f}%<extra></extra>" }],
+      Dash.layout({ hovermode: "closest", margin: { l: 80 }, xaxis: { side: "top", showline: false }, yaxis: { autorange: "reversed", rangemode: "normal" } }), Dash.config);
+  });
+  Dash.table(document.getElementById("d-tri"), [{ key: "request_month", label: "Requested" }, { key: "requests", label: "Requests", num: true }]
+    .concat(D.ks.map((k) => ({ key: "resolved_" + k + "d", label: `Within ${k}d`, num: true, pct: true })))
+    .concat([{ key: "resolved_as_of_snapshot", label: "By snapshot", num: true, pct: true }]), D.triangle);
+
+  // PEF box plots
+  Dash.register((c) => {
+    const order = D.top.map((r) => r.payer).filter((p) => D.box[p]);
+    Plotly.react("c-pef", order.slice().reverse().map((p) => ({ type: "box", x: D.box[p], name: p, orientation: "h", boxpoints: false,
+      marker: { color: c.s1 }, line: { color: c.s1, width: 1.5 }, fillcolor: "rgba(0,0,0,0)", hoverinfo: "x" })),
+      Dash.layout({ showlegend: false, hovermode: "closest", margin: { l: 200 }, xaxis: { title: { text: "Business days" }, showgrid: true, gridcolor: c.grid } }), Dash.config);
+  });
+  document.getElementById("t-pef").textContent =
+    `Network median ${D.total.pef_median_q3} business days, P90 ${D.total.pef_p90_q3}, across ${D.total.pef_orders_q3} Q3 starts. Payers with slower authorizations sit to the right.`;
+
+  // New patients Q2 vs Q3
+  Dash.register((c) => {
+    Plotly.react("c-new", [
+      { type: "bar", orientation: "h", name: "Q2 2026", y: names, x: top.map((r) => r.new_patients_q2), marker: { color: c.s2, cornerradius: 3 } },
+      { type: "bar", orientation: "h", name: "Q3 2026", y: names, x: top.map((r) => r.new_patients_q3), marker: { color: c.s1, cornerradius: 3 } }],
+      Dash.layout({ barmode: "group", bargap: 0.3, bargroupgap: 0.08, hovermode: "y unified", margin: { l: 200 },
+                    xaxis: { showgrid: true, gridcolor: c.grid, showline: false }, yaxis: { rangemode: "normal" }, legend: { y: 1.1, traceorder: "normal" } }), Dash.config);
+  });
+  Dash.table(document.getElementById("d-new"), [{ key: "payer", label: "Payer" }, { key: "new_patients_q2", label: "Q2", num: true },
+    { key: "new_patients_q3", label: "Q3", num: true }], D.top);
+
+  // Therapy mix
+  Dash.register((c) => {
+    const m = D.mix.slice().reverse();
+    const lab = m.map((r) => r.therapy_key.replace("THERAPY_", "Therapy "));
+    Plotly.react("c-mix", [
+      { type: "bar", orientation: "h", name: "Q2 2026", y: lab, x: m.map((r) => r.q2), marker: { color: c.s2, cornerradius: 3 } },
+      { type: "bar", orientation: "h", name: "Q3 2026", y: lab, x: m.map((r) => r.treated_visits), marker: { color: c.s1, cornerradius: 3 } }],
+      Dash.layout({ barmode: "group", bargap: 0.3, hovermode: "y unified", margin: { l: 90 }, xaxis: { showgrid: true, gridcolor: c.grid, showline: false },
+                    yaxis: { rangemode: "normal" }, legend: { y: 1.12, traceorder: "normal" } }), Dash.config);
+  });
+  Dash.table(document.getElementById("d-mix"), [{ key: "therapy_key", label: "Therapy" }, { key: "therapy_label", label: "Mock label" },
+    { key: "treated_visits", label: "Q3 visits", num: true }, { key: "q2", label: "Q2 visits", num: true }, { key: "patients", label: "Q3 patients", num: true },
+    { key: "line_items", label: "Q3 line items", num: true }], D.mix);
+
+  // Revision log
+  document.getElementById("log").innerHTML = `<div class="table-scroll" style="max-height:none"><table class="data log"><thead><tr>
+    <th>Rev</th><th>Area</th><th>Original draft</th><th>Revised definition</th><th>Before</th><th>After</th><th>Impact</th></tr></thead><tbody>${
+    D.log.map((r) => `<tr><td>${r.revision}</td><td><b>${r.area}</b></td><td>${r.original_draft}</td><td>${r.revised_definition}</td>
+      <td>${r.before}</td><td>${r.after}</td><td>${r.impact}</td></tr>`).join("")}</tbody></table></div>`;
+
+  // QA
+  const icon = { pass: "Pass", warn: "Warn", fail: "Fail" };
+  document.getElementById("qa").innerHTML = D.qa.map((q) =>
+    `<div class="qa-item"><span class="badge ${q.status}"><span class="dot"></span>${icon[q.status]}</span>
+      <div><b>${q.check}</b><div class="obs">${q.observed}</div><div class="obs">Rule: ${q.rule}</div></div></div>`).join("");
+})();
+</script>
+</body>
+</html>

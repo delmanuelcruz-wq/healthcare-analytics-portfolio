@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ten-Payer Scorecard</title>
+<meta name="description" content="Synthetic portfolio dashboard: a ten-payer quarterly scorecard with cohort-correct authorization rates and a definition revision log.">
+<style>/* Shared dashboard styles - inlined into every project dashboard at build time. */
+:root {
+  color-scheme: light;
+  --page: #f9f9f7;
+  --surface: #fcfcfb;
+  --surface-2: #f3f2ee;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --muted: #6f6d68;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --border: rgba(11, 11, 11, 0.10);
+  --brand: #12344a;
+  --brand-ink: #ffffff;
+  --accent: #0f7c80;
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+  --series-gray: #a8a69f;
+  --seq-1: #cde2fb; --seq-2: #9ec5f4; --seq-3: #6da7ec; --seq-4: #3987e5; --seq-5: #256abf; --seq-6: #184f95; --seq-7: #0d366b;
+  --ord-1: #86b6ef; --ord-2: #5598e7; --ord-3: #2a78d6; --ord-4: #1c5cab; --ord-5: #104281;
+  --good: #0ca30c; --warning: #fab219; --serious: #ec835a; --critical: #d03b3b;
+  --good-ink: #006300;
+  --synthetic-bg: #fff4d6; --synthetic-ink: #5c4300;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --surface-2: #232321;
+    --ink: #f0efec; --ink-2: #c3c2b7; --muted: #9a988f; --grid: #2c2c2a; --axis: #383835;
+    --border: rgba(255, 255, 255, 0.10); --brand: #0f2a3b; --accent: #3fb0b3;
+    --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500; --series-gray: #6a6862;
+    --seq-1: #13304f; --seq-2: #184f95; --seq-3: #1c5cab; --seq-4: #256abf; --seq-5: #3987e5; --seq-6: #6da7ec; --seq-7: #b7d3f6;
+    --ord-1: #184f95; --ord-2: #1c5cab; --ord-3: #2a78d6; --ord-4: #5598e7; --ord-5: #86b6ef;
+    --good-ink: #0ca30c; --synthetic-bg: #3a2f10; --synthetic-ink: #ffd982;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #1a1a19; --surface-2: #232321;
+  --ink: #f0efec; --ink-2: #c3c2b7; --muted: #9a988f; --grid: #2c2c2a; --axis: #383835;
+  --border: rgba(255, 255, 255, 0.10); --brand: #0f2a3b; --accent: #3fb0b3;
+  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500; --series-gray: #6a6862;
+  --seq-1: #13304f; --seq-2: #184f95; --seq-3: #1c5cab; --seq-4: #256abf; --seq-5: #3987e5; --seq-6: #6da7ec; --seq-7: #b7d3f6;
+  --ord-1: #184f95; --ord-2: #1c5cab; --ord-3: #2a78d6; --ord-4: #5598e7; --ord-5: #86b6ef;
+  --good-ink: #0ca30c; --synthetic-bg: #3a2f10; --synthetic-ink: #ffd982;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--page); color: var(--ink);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.synthetic-bar {
+  background: var(--synthetic-bg); color: var(--synthetic-ink); text-align: center;
+  font-size: 13px; font-weight: 600; padding: 7px 16px; letter-spacing: .01em;
+}
+header.top { background: var(--brand); color: var(--brand-ink); }
+header.top .wrap { padding-top: 26px; padding-bottom: 24px; }
+header.top .eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; opacity: .75; margin: 0 0 6px; }
+header.top h1 { font-size: 28px; line-height: 1.2; margin: 0 0 8px; font-weight: 650; }
+header.top p { margin: 0; max-width: 860px; opacity: .88; }
+header.top .meta { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; opacity: .85; }
+.wrap { max-width: 1280px; margin: 0 auto; padding-left: 24px; padding-right: 24px; }
+main.wrap { padding-top: 24px; padding-bottom: 48px; }
+h2.section { font-size: 18px; margin: 34px 0 4px; font-weight: 650; }
+p.section-lede { margin: 0 0 14px; color: var(--ink-2); max-width: 900px; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr)); gap: 12px; }
+.tile { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px 12px; }
+.tile .label { font-size: 13px; color: var(--ink-2); margin: 0 0 4px; }
+.tile .value { font-size: 30px; font-weight: 600; line-height: 1.15; margin: 0; }
+.tile .delta { font-size: 12.5px; color: var(--muted); margin: 6px 0 0; }
+.tile .delta .up { color: var(--good-ink); font-weight: 600; }
+.tile .delta .down { color: var(--critical); font-weight: 600; }
+.tile .note { font-size: 12px; color: var(--muted); margin: 4px 0 0; }
+
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px 12px; min-width: 0; }
+.card.full { grid-column: 1 / -1; }
+.card h3 { font-size: 15.5px; margin: 0 0 2px; font-weight: 650; }
+.card .sub { font-size: 13px; color: var(--ink-2); margin: 0 0 8px; }
+.card .chart { width: 100%; height: 320px; }
+.card .chart.tall { height: 420px; }
+.chart-scroll { overflow-x: auto; }
+.chart-scroll > .chart { min-width: 720px; }
+.funnel { display: grid; gap: 12px; padding: 6px 0 4px; }
+.funnel-label { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--ink-2); margin-bottom: 4px; }
+.funnel-val { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.funnel-track { background: var(--surface-2); border-radius: 4px; height: 18px; }
+.funnel-bar { height: 18px; border-radius: 0 4px 4px 0; min-width: 2px; }
+.card .takeaway { font-size: 13px; color: var(--ink); background: var(--surface-2); border-radius: 8px; padding: 8px 10px; margin: 8px 0 4px; }
+details.data { margin-top: 6px; font-size: 13px; }
+details.data summary { cursor: pointer; color: var(--accent); font-weight: 600; padding: 4px 0; }
+.table-scroll { overflow-x: auto; max-height: 340px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; margin-top: 6px; }
+table.data { border-collapse: collapse; width: 100%; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+table.data th, table.data td { padding: 6px 10px; border-bottom: 1px solid var(--grid); text-align: left; white-space: nowrap; }
+table.data th { position: sticky; top: 0; background: var(--surface-2); color: var(--ink-2); font-weight: 600; }
+table.data td.num, table.data th.num { text-align: right; }
+
+.defs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 12px; }
+.def { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; font-size: 13.5px; }
+.def b { display: block; margin-bottom: 2px; }
+.def .check { color: var(--ink-2); font-size: 12.5px; margin-top: 4px; }
+
+.qa-list { display: grid; gap: 8px; }
+.qa-item { display: grid; grid-template-columns: 110px 1fr; gap: 12px; align-items: start; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 13.5px; }
+.badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 3px 10px 3px 8px; width: fit-content; }
+.badge .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.badge.pass { background: color-mix(in srgb, var(--good) 14%, transparent); color: var(--good-ink); }
+.badge.pass .dot { background: var(--good); }
+.badge.warn { background: color-mix(in srgb, var(--warning) 20%, transparent); color: var(--ink); }
+.badge.warn .dot { background: var(--warning); }
+.badge.fail { background: color-mix(in srgb, var(--critical) 14%, transparent); color: var(--critical); }
+.badge.fail .dot { background: var(--critical); }
+.qa-item .obs { color: var(--ink-2); font-size: 12.5px; margin-top: 2px; }
+
+.scope { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 12px; }
+.scope .def ul { margin: 6px 0 0; padding-left: 18px; }
+footer.foot { color: var(--muted); font-size: 12.5px; border-top: 1px solid var(--border); margin-top: 40px; padding-top: 16px; }
+
+@media (max-width: 860px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .wrap { padding-left: 16px; padding-right: 16px; }
+  header.top h1 { font-size: 23px; }
+  .qa-item { grid-template-columns: 1fr; gap: 6px; }
+  .card .chart { height: 280px; }
+}
+@media print { .synthetic-bar { -webkit-print-color-adjust: exact; print-color-adjust: exact; } details.data { display: none; } }
+
+.scorecard td:first-child, .scorecard th:first-child { position: sticky; left: 0; background: var(--surface); z-index: 1; }
+.scorecard th:first-child { background: var(--surface-2); z-index: 2; }
+.scorecard tr.total td { font-weight: 700; border-top: 2px solid var(--axis); }
+.scorecard tr.review td { color: var(--ink-2); font-style: italic; }
+table.log td { white-space: normal; min-width: 140px; vertical-align: top; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
+</head>
+<body>
+<div class="synthetic-bar">SYNTHETIC DEMONSTRATION - fictional payers, organization and data. Not operational, medical or financial guidance.</div>
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Portfolio project B · Coralline Infusion Network (fictional)</p>
+    <h1>Ten-payer quarterly scorecard</h1>
+    <p>Referrals, prior-authorization outcomes, patients served, time to chair and therapy mix for ten fictional payer umbrellas,
+       Q2 vs Q3 2026 - rebuilt after a definition review, with every correction quantified.</p>
+    <div class="meta"><span>Data as of <b id="asof"></b></span><span>Quarters are half-open: [Jul 1, Oct 1)</span><span>Seed <span id="seed"></span></span></div>
+  </div>
+</header>
+<main class="wrap">
+  <div class="tiles" id="tiles"></div>
+
+  <h2 class="section">Scorecard</h2>
+  <p class="section-lede">Ten payer umbrellas plus the Other bucket. Plans are grouped to umbrellas before any distinct count.
+     Italic rows hold records that could not be attributed and are routed for review.</p>
+  <section class="card full"><div id="scorecard"></div>
+    <p class="sub" style="margin-top:8px">* Prior T12M includes the synthetic network's ramp-up (data begins July 2024), so growth is overstated. PEF-to-chair = business days, order created to first treated visit.</p>
+  </section>
+
+  <h2 class="section">Authorizations</h2>
+  <p class="section-lede">The first draft measured decisions dated in the quarter. The revision follows the requests submitted in the quarter
+     and reports pending requests separately.</p>
+  <div class="grid-2">
+    <section class="card">
+      <h3>Q3 approval rate: request cohort vs decision-date draft</h3>
+      <p class="sub">Approved / (approved + denied). Dots on the same row show how much the definition moves each payer.</p>
+      <div class="chart tall" id="c-approval"></div>
+      <details class="data"><summary>Show data table</summary><div id="d-approval"></div></details>
+    </section>
+    <section class="card">
+      <h3>How fast requests resolve, by request month</h3>
+      <p class="sub">Share of requests with a final decision within N days. Blank = not yet observable at the snapshot.</p>
+      <div class="chart tall" id="c-tri"></div>
+      <details class="data"><summary>Show data table</summary><div id="d-tri"></div></details>
+    </section>
+  </div>
+
+  <h2 class="section">Access and volume</h2>
+  <div class="grid-2">
+    <section class="card">
+      <h3>PEF-to-chair by payer, Q3 2026</h3>
+      <p class="sub">Business days from order creation to first treated visit (new-patient and new-therapy orders).</p>
+      <div class="chart tall" id="c-pef"></div>
+      <p class="takeaway" id="t-pef"></p>
+    </section>
+    <section class="card">
+      <h3>New referred patients by payer, Q2 vs Q3</h3>
+      <p class="sub">Distinct patients created in the quarter, payer in effect at intake.</p>
+      <div class="chart tall" id="c-new"></div>
+      <details class="data"><summary>Show data table</summary><div id="d-new"></div></details>
+    </section>
+    <section class="card full">
+      <h3>Top 10 therapies by treated visits, Q3 vs Q2</h3>
+      <p class="sub">Distinct treated appointments per therapy (mock labels). Not line items, not vials.</p>
+      <div class="chart" id="c-mix"></div>
+      <details class="data"><summary>Show data table</summary><div id="d-mix"></div></details>
+    </section>
+  </div>
+
+  <h2 class="section">Definition revision log</h2>
+  <p class="section-lede">What changed between the first draft and the reviewed scorecard, and what each change was worth.</p>
+  <section class="card full"><div id="log"></div></section>
+
+  <h2 class="section">Quality checks run on this build</h2>
+  <div class="qa-list" id="qa"></div>
+
+  <h2 class="section">What is real and what is simulated</h2>
+  <div class="scope">
+    <div class="def"><b>On-the-job exposure (described in general terms only)</b>
+      <ul><li>Assembled a substantial BI + spreadsheet draft of a ten-payer scorecard with distinct-patient measures and quarter filters.</li>
+          <li>Consolidated payer aliases and a combined plan family in a spreadsheet; learned plan-level distinct counts cannot be summed.</li>
+          <li>Received definition corrections in a manager review (patient created date for referrals; request cohort for authorizations).
+              The rebuild, umbrella definitions and final approval were still open.</li></ul></div>
+    <div class="def"><b>Independently built for this portfolio (synthetic)</b>
+      <ul><li>Every payer, number and chart here; the fictional payers do not correspond to real insurers.</li>
+          <li>The cohort-correct rebuild, revision log, maturity triangle, Excel workbook and QA suite.</li>
+          <li>Classified as a draft-style analytical reconstruction, not an approved company report.</li></ul></div>
+  </div>
+  <footer class="foot">All payers, plans, patients and amounts are fictional and synthetic (seed <span id="seed2"></span>).
+    SYNTHETIC DEMONSTRATION - not operational, medical or financial guidance. Workbook: payer_scorecard.xlsx.</footer>
+</main>
+<script>window.DATA = {"meta": {"as_of": "October 24, 2026", "seed": "20261024"}, "tiles": [{"label": "New referred patients, Q3", "value": "316", "delta": -4.819277108433735, "deltaLabel": "vs Q2", "upIsGood": true, "note": "Distinct patients, payer at intake"}, {"label": "PA approval rate, Q3 requests", "value": "87.9%", "note": "Q2 84.2%; decision-date draft said 88.3%"}, {"label": "Q3 requests still pending", "value": "2", "note": "As of Oct 24; excluded from the rate"}, {"label": "Patients served, T12M", "value": "1,291", "note": "Oct 2025-Sep 2026, distinct patients"}, {"label": "Median PEF-to-chair, Q3", "value": "21 days", "note": "Business days, NETWORKDAYS-inclusive; Q2 21"}, {"label": "Records routed for payer review", "value": "10", "note": "Unmapped aliases + visits with no coverage"}], "rows": [{"umbrella_key": "PU01", "payer": "Heronview Health", "is_top10": true, "new_patients_q2": 61, "new_patients_q3": 61, "auth_requests_q3": 75, "approved_q3": 70, "denied_q3": 5, "pending_q3": 0, "approval_rate_q2": 0.9014084507042254, "approval_rate_q3": 0.9333333333333333, "approval_rate_q3_decision_method": 0.9166666666666666, "served_t12m": 208, "served_prior_t12m": 149, "served_q2": 86, "served_q3": 109, "pef_orders_q3": 44, "pef_median_q3": 20.5, "pef_mean_q3": 19.5, "pef_p90_q3": 26, "pef_median_q2": 19.0}, {"umbrella_key": "PU02", "payer": "Saltgrass Mutual", "is_top10": true, "new_patients_q2": 38, "new_patients_q3": 28, "auth_requests_q3": 34, "approved_q3": 32, "denied_q3": 2, "pending_q3": 0, "approval_rate_q2": 0.803921568627451, "approval_rate_q3": 0.9411764705882353, "approval_rate_q3_decision_method": 0.9428571428571428, "served_t12m": 147, "served_prior_t12m": 105, "served_q2": 64, "served_q3": 58, "pef_orders_q3": 26, "pef_median_q3": 18.5, "pef_mean_q3": 20.0, "pef_p90_q3": 27, "pef_median_q2": 22.5}, {"umbrella_key": "PU03", "payer": "Kestrel Shield Medicare Advantage", "is_top10": true, "new_patients_q2": 30, "new_patients_q3": 37, "auth_requests_q3": 52, "approved_q3": 43, "denied_q3": 9, "pending_q3": 0, "approval_rate_q2": 0.9130434782608695, "approval_rate_q3": 0.8269230769230769, "approval_rate_q3_decision_method": 0.8518518518518519, "served_t12m": 148, "served_prior_t12m": 92, "served_q2": 69, "served_q3": 54, "pef_orders_q3": 23, "pef_median_q3": 24, "pef_mean_q3": 23, "pef_p90_q3": 30, "pef_median_q2": 22}, {"umbrella_key": "PU04", "payer": "Brightfen Advantage", "is_top10": true, "new_patients_q2": 28, "new_patients_q3": 29, "auth_requests_q3": 40, "approved_q3": 30, "denied_q3": 9, "pending_q3": 1, "approval_rate_q2": 0.851063829787234, "approval_rate_q3": 0.7692307692307693, "approval_rate_q3_decision_method": 0.8085106382978723, "served_t12m": 125, "served_prior_t12m": 67, "served_q2": 52, "served_q3": 64, "pef_orders_q3": 29, "pef_median_q3": 25, "pef_mean_q3": 26.6, "pef_p90_q3": 36, "pef_median_q2": 23.0}, {"umbrella_key": "PU05", "payer": "Sandmere Medicaid Plan", "is_top10": true, "new_patients_q2": 29, "new_patients_q3": 21, "auth_requests_q3": 40, "approved_q3": 32, "denied_q3": 7, "pending_q3": 1, "approval_rate_q2": 0.75, "approval_rate_q3": 0.8205128205128205, "approval_rate_q3_decision_method": 0.7878787878787878, "served_t12m": 95, "served_prior_t12m": 56, "served_q2": 48, "served_q3": 40, "pef_orders_q3": 21, "pef_median_q3": 24, "pef_mean_q3": 27, "pef_p90_q3": 41, "pef_median_q2": 23.0}, {"umbrella_key": "PU06", "payer": "Cobaltine Commercial", "is_top10": true, "new_patients_q2": 23, "new_patients_q3": 19, "auth_requests_q3": 28, "approved_q3": 28, "denied_q3": 0, "pending_q3": 0, "approval_rate_q2": 0.9375, "approval_rate_q3": 1.0, "approval_rate_q3_decision_method": 1.0, "served_t12m": 95, "served_prior_t12m": 74, "served_q2": 43, "served_q3": 43, "pef_orders_q3": 16, "pef_median_q3": 18.0, "pef_mean_q3": 18.8, "pef_p90_q3": 24, "pef_median_q2": 16.5}, {"umbrella_key": "PU07", "payer": "Ospreyline Senior", "is_top10": true, "new_patients_q2": 29, "new_patients_q3": 31, "auth_requests_q3": 45, "approved_q3": 38, "denied_q3": 7, "pending_q3": 0, "approval_rate_q2": 0.717948717948718, "approval_rate_q3": 0.8444444444444444, "approval_rate_q3_decision_method": 0.8372093023255814, "served_t12m": 106, "served_prior_t12m": 61, "served_q2": 47, "served_q3": 48, "pef_orders_q3": 29, "pef_median_q3": 22, "pef_mean_q3": 23, "pef_p90_q3": 32, "pef_median_q2": 22}, {"umbrella_key": "PU08", "payer": "Driftwell Health Alliance", "is_top10": true, "new_patients_q2": 19, "new_patients_q3": 24, "auth_requests_q3": 29, "approved_q3": 25, "denied_q3": 4, "pending_q3": 0, "approval_rate_q2": 0.8181818181818182, "approval_rate_q3": 0.8620689655172413, "approval_rate_q3_decision_method": 0.9333333333333333, "served_t12m": 101, "served_prior_t12m": 71, "served_q2": 44, "served_q3": 36, "pef_orders_q3": 19, "pef_median_q3": 21, "pef_mean_q3": 21.4, "pef_p90_q3": 28, "pef_median_q2": 28}, {"umbrella_key": "PU09", "payer": "Fernhollow Care", "is_top10": true, "new_patients_q2": 16, "new_patients_q3": 10, "auth_requests_q3": 20, "approved_q3": 17, "denied_q3": 3, "pending_q3": 0, "approval_rate_q2": 0.7692307692307693, "approval_rate_q3": 0.85, "approval_rate_q3_decision_method": 0.84, "served_t12m": 48, "served_prior_t12m": 42, "served_q2": 18, "served_q3": 20, "pef_orders_q3": 11, "pef_median_q3": 30, "pef_mean_q3": 30.7, "pef_p90_q3": 45, "pef_median_q2": 23}, {"umbrella_key": "PU10", "payer": "Quillmont Federal Medicare", "is_top10": true, "new_patients_q2": 20, "new_patients_q3": 18, "auth_requests_q3": 7, "approved_q3": 7, "denied_q3": 0, "pending_q3": 0, "approval_rate_q2": 0.8888888888888888, "approval_rate_q3": 1.0, "approval_rate_q3_decision_method": 1.0, "served_t12m": 70, "served_prior_t12m": 52, "served_q2": 33, "served_q3": 28, "pef_orders_q3": 15, "pef_median_q3": 12, "pef_mean_q3": 14.7, "pef_p90_q3": 23, "pef_median_q2": 16}, {"umbrella_key": "PU99", "payer": "Other / small plans", "is_top10": false, "new_patients_q2": 39, "new_patients_q3": 38, "auth_requests_q3": 38, "approved_q3": 35, "denied_q3": 3, "pending_q3": 0, "approval_rate_q2": 0.875, "approval_rate_q3": 0.9210526315789473, "approval_rate_q3_decision_method": 0.9166666666666666, "served_t12m": 144, "served_prior_t12m": 93, "served_q2": 74, "served_q3": 71, "pef_orders_q3": 30, "pef_median_q3": 18.0, "pef_mean_q3": 19.4, "pef_p90_q3": 28, "pef_median_q2": 19}, {"umbrella_key": "UNMAPPED", "payer": "Unmapped alias (pending review)", "is_top10": false, "new_patients_q2": 0, "new_patients_q3": 0, "auth_requests_q3": 0, "approved_q3": 0, "denied_q3": 0, "pending_q3": 0, "approval_rate_q2": null, "approval_rate_q3": null, "approval_rate_q3_decision_method": null, "served_t12m": 3, "served_prior_t12m": 2, "served_q2": 0, "served_q3": 2, "pef_orders_q3": 0, "pef_median_q3": null, "pef_mean_q3": null, "pef_p90_q3": null, "pef_median_q2": null}, {"umbrella_key": "NO_COVERAGE", "payer": "No coverage on file at event", "is_top10": false, "new_patients_q2": 0, "new_patients_q3": 0, "auth_requests_q3": 0, "approved_q3": 0, "denied_q3": 0, "pending_q3": 0, "approval_rate_q2": null, "approval_rate_q3": null, "approval_rate_q3_decision_method": null, "served_t12m": 1, "served_prior_t12m": 0, "served_q2": 0, "served_q3": 1, "pef_orders_q3": 0, "pef_median_q3": null, "pef_mean_q3": null, "pef_p90_q3": null, "pef_median_q2": null}], "total": {"umbrella_key": "ALL", "payer": "All payers", "is_top10": false, "new_patients_q2": 332, "new_patients_q3": 316, "auth_requests_q3": 408, "approved_q3": 357, "denied_q3": 49, "pending_q3": 2, "approval_rate_q2": 0.8416289592760181, "approval_rate_q3": 0.8793103448275862, "approval_rate_q3_decision_method": 0.882640586797066, "served_t12m": 1291, "served_prior_t12m": 864, "served_q2": 578, "served_q3": 574, "pef_orders_q3": 263, "pef_median_q3": 21, "pef_mean_q3": 21.9, "pef_p90_q3": 32, "pef_median_q2": 21.0}, "top": [{"umbrella_key": "PU01", "payer": "Heronview Health", "is_top10": true, "new_patients_q2": 61, "new_patients_q3": 61, "auth_requests_q3": 75, "approved_q3": 70, "denied_q3": 5, "pending_q3": 0, "approval_rate_q2": 0.9014084507042254, "approval_rate_q3": 0.9333333333333333, "approval_rate_q3_decision_method": 0.9166666666666666, "served_t12m": 208, "served_prior_t12m": 149, "served_q2": 86, "served_q3": 109, "pef_orders_q3": 44, "pef_median_q3": 20.5, "pef_mean_q3": 19.5, "pef_p90_q3": 26, "pef_median_q2": 19.0}, {"umbrella_key": "PU02", "payer": "Saltgrass Mutual", "is_top10": true, "new_patients_q2": 38, "new_patients_q3": 28, "auth_requests_q3": 34, "approved_q3": 32, "denied_q3": 2, "pending_q3": 0, "approval_rate_q2": 0.803921568627451, "approval_rate_q3": 0.9411764705882353, "approval_rate_q3_decision_method": 0.9428571428571428, "served_t12m": 147, "served_prior_t12m": 105, "served_q2": 64, "served_q3": 58, "pef_orders_q3": 26, "pef_median_q3": 18.5, "pef_mean_q3": 20.0, "pef_p90_q3": 27, "pef_median_q2": 22.5}, {"umbrella_key": "PU03", "payer": "Kestrel Shield Medicare Advantage", "is_top10": true, "new_patients_q2": 30, "new_patients_q3": 37, "auth_requests_q3": 52, "approved_q3": 43, "denied_q3": 9, "pending_q3": 0, "approval_rate_q2": 0.9130434782608695, "approval_rate_q3": 0.8269230769230769, "approval_rate_q3_decision_method": 0.8518518518518519, "served_t12m": 148, "served_prior_t12m": 92, "served_q2": 69, "served_q3": 54, "pef_orders_q3": 23, "pef_median_q3": 24, "pef_mean_q3": 23, "pef_p90_q3": 30, "pef_median_q2": 22}, {"umbrella_key": "PU04", "payer": "Brightfen Advantage", "is_top10": true, "new_patients_q2": 28, "new_patients_q3": 29, "auth_requests_q3": 40, "approved_q3": 30, "denied_q3": 9, "pending_q3": 1, "approval_rate_q2": 0.851063829787234, "approval_rate_q3": 0.7692307692307693, "approval_rate_q3_decision_method": 0.8085106382978723, "served_t12m": 125, "served_prior_t12m": 67, "served_q2": 52, "served_q3": 64, "pef_orders_q3": 29, "pef_median_q3": 25, "pef_mean_q3": 26.6, "pef_p90_q3": 36, "pef_median_q2": 23.0}, {"umbrella_key": "PU05", "payer": "Sandmere Medicaid Plan", "is_top10": true, "new_patients_q2": 29, "new_patients_q3": 21, "auth_requests_q3": 40, "approved_q3": 32, "denied_q3": 7, "pending_q3": 1, "approval_rate_q2": 0.75, "approval_rate_q3": 0.8205128205128205, "approval_rate_q3_decision_method": 0.7878787878787878, "served_t12m": 95, "served_prior_t12m": 56, "served_q2": 48, "served_q3": 40, "pef_orders_q3": 21, "pef_median_q3": 24, "pef_mean_q3": 27, "pef_p90_q3": 41, "pef_median_q2": 23.0}, {"umbrella_key": "PU06", "payer": "Cobaltine Commercial", "is_top10": true, "new_patients_q2": 23, "new_patients_q3": 19, "auth_requests_q3": 28, "approved_q3": 28, "denied_q3": 0, "pending_q3": 0, "approval_rate_q2": 0.9375, "approval_rate_q3": 1.0, "approval_rate_q3_decision_method": 1.0, "served_t12m": 95, "served_prior_t12m": 74, "served_q2": 43, "served_q3": 43, "pef_orders_q3": 16, "pef_median_q3": 18.0, "pef_mean_q3": 18.8, "pef_p90_q3": 24, "pef_median_q2": 16.5}, {"umbrella_key": "PU07", "payer": "Ospreyline Senior", "is_top10": true, "new_patients_q2": 29, "new_patients_q3": 31, "auth_requests_q3": 45, "approved_q3": 38, "denied_q3": 7, "pending_q3": 0, "approval_rate_q2": 0.717948717948718, "approval_rate_q3": 0.8444444444444444, "approval_rate_q3_decision_method": 0.8372093023255814, "served_t12m": 106, "served_prior_t12m": 61, "served_q2": 47, "served_q3": 48, "pef_orders_q3": 29, "pef_median_q3": 22, "pef_mean_q3": 23, "pef_p90_q3": 32, "pef_median_q2": 22}, {"umbrella_key": "PU08", "payer": "Driftwell Health Alliance", "is_top10": true, "new_patients_q2": 19, "new_patients_q3": 24, "auth_requests_q3": 29, "approved_q3": 25, "denied_q3": 4, "pending_q3": 0, "approval_rate_q2": 0.8181818181818182, "approval_rate_q3": 0.8620689655172413, "approval_rate_q3_decision_method": 0.9333333333333333, "served_t12m": 101, "served_prior_t12m": 71, "served_q2": 44, "served_q3": 36, "pef_orders_q3": 19, "pef_median_q3": 21, "pef_mean_q3": 21.4, "pef_p90_q3": 28, "pef_median_q2": 28}, {"umbrella_key": "PU09", "payer": "Fernhollow Care", "is_top10": true, "new_patients_q2": 16, "new_patients_q3": 10, "auth_requests_q3": 20, "approved_q3": 17, "denied_q3": 3, "pending_q3": 0, "approval_rate_q2": 0.7692307692307693, "approval_rate_q3": 0.85, "approval_rate_q3_decision_method": 0.84, "served_t12m": 48, "served_prior_t12m": 42, "served_q2": 18, "served_q3": 20, "pef_orders_q3": 11, "pef_median_q3": 30, "pef_mean_q3": 30.7, "pef_p90_q3": 45, "pef_median_q2": 23}, {"umbrella_key": "PU10", "payer": "Quillmont Federal Medicare", "is_top10": true, "new_patients_q2": 20, "new_patients_q3": 18, "auth_requests_q3": 7, "approved_q3": 7, "denied_q3": 0, "pending_q3": 0, "approval_rate_q2": 0.8888888888888888, "approval_rate_q3": 1.0, "approval_rate_q3_decision_method": 1.0, "served_t12m": 70, "served_prior_t12m": 52, "served_q2": 33, "served_q3": 28, "pef_orders_q3": 15, "pef_median_q3": 12, "pef_mean_q3": 14.7, "pef_p90_q3": 23, "pef_median_q2": 16}], "box": {"Brightfen Advantage": [61, 62, 47, 24, 15, 14, 30, 16, 20, 32, 33, 16, 31, 27, 29, 20, 16, 15, 34, 26, 29, 25, 20, 18, 36, 23, 27, 18, 8], "Sandmere Medicaid Plan": [51, 22, 24, 17, 30, 41, 31, 19, 17, 35, 36, 20, 24, 22, 20, 24, 41, 20, 25, 25, 23], "Ospreyline Senior": [32, 21, 43, 23, 22, 16, 20, 14, 16, 13, 22, 29, 33, 18, 18, 24, 18, 21, 19, 22, 30, 30, 36, 22, 29, 25, 17, 17, 17], "Kestrel Shield Medicare Advantage": [34, 29, 21, 19, 28, 19, 29, 29, 30, 17, 30, 25, 15, 17, 13, 35, 28, 24, 19, 24, 21, 13, 10], "Driftwell Health Alliance": [38, 20, 24, 20, 17, 28, 28, 16, 21, 18, 21, 13, 16, 21, 20, 25, 21, 26, 14], "Saltgrass Mutual": [40, 27, 17, 18, 15, 17, 34, 18, 20, 24, 17, 18, 8, 19, 24, 19, 15, 29, 12, 16, 20, 13, 20, 25, 21, 13], "Cobaltine Commercial": [24, 20, 16, 16, 17, 17, 16, 24, 21, 25, 17, 19, 16, 11, 22, 19], "Fernhollow Care": [34, 53, 28, 21, 30, 22, 45, 33, 35, 17, 20], "Heronview Health": [20, 14, 23, 25, 13, 28, 25, 29, 24, 25, 17, 22, 22, 11, 22, 15, 12, 21, 26, 26, 21, 27, 7, 13, 15, 22, 24, 14, 18, 15, 23, 21, 19, 18, 10, 17, 30, 22, 19, 19, 23, 19, 13, 9], "Quillmont Federal Medicare": [16, 12, 12, 20, 23, 11, 10, 17, 23, 10, 22, 10, 15, 9, 10]}, "mix": [{"quarter": "Q3 2026", "therapy_key": "THERAPY_F", "therapy_label": "Anti-IL injection (mock)", "treated_visits": 190, "patients": 79, "line_items": 191, "vials": 201, "q2": 151}, {"quarter": "Q3 2026", "therapy_key": "THERAPY_B", "therapy_label": "Anti-inflammatory biologic infusion (mock)", "treated_visits": 183, "patients": 103, "line_items": 195, "vials": 606, "q2": 184}, {"quarter": "Q3 2026", "therapy_key": "THERAPY_I", "therapy_label": "Complement-inhibitor infusion (mock)", "treated_visits": 161, "patients": 43, "line_items": 174, "vials": 553, "q2": 229}, {"quarter": "Q3 2026", "therapy_key": "THERAPY_G", "therapy_label": "Anti-IgE injection (mock)", "treated_visits": 156, "patients": 70, "line_items": 164, "vials": 337, "q2": 180}, {"quarter": "Q3 2026", "therapy_key": "THERAPY_E", "therapy_label": "IV iron replacement (mock)", "treated_visits": 151, "patients": 53, "line_items": 158, "vials": 224, "q2": 112}, {"quarter": "Q3 2026", "therapy_key": "THERAPY_A", "therapy_label": "Immune globulin infusion (mock)", "treated_visits": 136, "patients": 61, "line_items": 142, "vials": 643, "q2": 93}, {"quarter": "Q3 2026", "therapy_key": "THERAPY_D", "therapy_label": "Integrin-blocker infusion (mock)", "treated_visits": 127, "patients": 54, "line_items": 128, "vials": 130, "q2": 119}, {"quarter": "Q3 2026", "therapy_key": "THERAPY_J", "therapy_label": "IL-6 blocker infusion (mock)", "treated_visits": 84, "patients": 39, "line_items": 90, "vials": 164, "q2": 83}, {"quarter": "Q3 2026", "therapy_key": "THERAPY_K", "therapy_label": "Pre-medication bundle (mock)", "treated_visits": 43, "patients": 42, "line_items": 43, "vials": 43, "q2": 52}, {"quarter": "Q3 2026", "therapy_key": "THERAPY_H", "therapy_label": "Bone-health injection (mock)", "treated_visits": 43, "patients": 43, "line_items": 43, "vials": 43, "q2": 46}], "triangle": [{"request_month": "2026-01", "requests": 131, "resolved_7d": 0.3053435114503817, "resolved_14d": 0.7251908396946565, "resolved_30d": 0.9770992366412213, "resolved_45d": 1.0, "resolved_60d": 1.0, "resolved_as_of_snapshot": 1.0}, {"request_month": "2026-02", "requests": 116, "resolved_7d": 0.3275862068965517, "resolved_14d": 0.75, "resolved_30d": 0.9655172413793104, "resolved_45d": 1.0, "resolved_60d": 1.0, "resolved_as_of_snapshot": 1.0}, {"request_month": "2026-03", "requests": 140, "resolved_7d": 0.3357142857142857, "resolved_14d": 0.75, "resolved_30d": 0.9785714285714285, "resolved_45d": 1.0, "resolved_60d": 1.0, "resolved_as_of_snapshot": 1.0}, {"request_month": "2026-04", "requests": 153, "resolved_7d": 0.37254901960784315, "resolved_14d": 0.7516339869281046, "resolved_30d": 0.9869281045751634, "resolved_45d": 1.0, "resolved_60d": 1.0, "resolved_as_of_snapshot": 1.0}, {"request_month": "2026-05", "requests": 138, "resolved_7d": 0.36231884057971014, "resolved_14d": 0.7463768115942029, "resolved_30d": 0.9855072463768116, "resolved_45d": 1.0, "resolved_60d": 1.0, "resolved_as_of_snapshot": 1.0}, {"request_month": "2026-06", "requests": 151, "resolved_7d": 0.2913907284768212, "resolved_14d": 0.7615894039735099, "resolved_30d": 0.9735099337748344, "resolved_45d": 1.0, "resolved_60d": 1.0, "resolved_as_of_snapshot": 1.0}, {"request_month": "2026-07", "requests": 152, "resolved_7d": 0.3157894736842105, "resolved_14d": 0.7697368421052632, "resolved_30d": 0.993421052631579, "resolved_45d": 1.0, "resolved_60d": 1.0, "resolved_as_of_snapshot": 1.0}, {"request_month": "2026-08", "requests": 122, "resolved_7d": 0.319672131147541, "resolved_14d": 0.7131147540983607, "resolved_30d": 0.9672131147540983, "resolved_45d": 0.9918032786885246, "resolved_60d": null, "resolved_as_of_snapshot": 1.0}, {"request_month": "2026-09", "requests": 134, "resolved_7d": 0.3582089552238806, "resolved_14d": 0.753731343283582, "resolved_30d": null, "resolved_45d": null, "resolved_60d": null, "resolved_as_of_snapshot": 0.9850746268656716}], "ks": [7, 14, 30, 45, 60], "log": [{"revision": "R1", "area": "New referrals", "original_draft": "Order Series Created Date (distinct order series)", "revised_definition": "Patient Created Date (distinct patients)", "before": "469", "after": "316", "impact": "Q3 new business overstated by 153 (48%)", "why": "Order series include renewals and therapy changes for existing patients"}, {"revision": "R2", "area": "Authorization rate", "original_draft": "Approved / decided, using decisions dated in the quarter", "revised_definition": "Approved / (approved + denied) for requests SUBMITTED in the quarter; pending shown separately; as-of date stated", "before": "88.3%", "after": "87.9%", "impact": "Q3 decisions included 46 requests submitted in earlier quarters", "why": "A cohort must follow the requests it is measuring"}, {"revision": "R3", "area": "Decision de-duplication", "original_draft": "COUNT(*) of final-decision rows", "revised_definition": "COUNT(DISTINCT auth_key) - one final decision per request", "before": "3,070 rows", "after": "3,062 requests", "impact": "8 duplicate final-decision rows in the full history, 5 of them in Q2-Q3 2026", "why": "Repeated decision entries must not count twice"}, {"revision": "R4", "area": "Plan aliases", "original_draft": "Sum of plan-level distinct patients", "revised_definition": "Group aliases to the umbrella first, then count distinct", "before": "1,443", "after": "1,424", "impact": "T12M patient-payer pairs overstated by 19; three-brand plan family 115 -> 110", "why": "A patient who moves between brands of one payer is one patient"}, {"revision": "R5", "area": "Payer attribution", "original_draft": "Patient's CURRENT insurance", "revised_definition": "Insurance in effect on the event date", "before": "current plan", "after": "plan at event", "impact": "76 of 316 Q3 new patients would have been assigned to a different payer", "why": "Insurance changes; history must keep the payer that applied at the time"}, {"revision": "R6", "area": "Quarter boundaries", "original_draft": "BETWEEN '2026-04-01' AND '2026-06-30' on timestamps", "revised_definition": "Half-open [quarter start, next quarter start)", "before": "436 Q2 requests", "after": "442 Q2 requests", "impact": "6 requests on Jun 30 were silently dropped; 1 request stamped exactly at midnight would be double-counted by inclusive end dates", "why": "Timestamps after midnight on the last day fall outside a date-only BETWEEN"}, {"revision": "R7", "area": "PEF-to-chair averaging", "original_draft": "Average of payer averages", "revised_definition": "Order-weighted mean, median and P90; negative lags excluded", "before": "22.2 business days", "after": "21.9 business days", "impact": "3 impossible negative lag(s) excluded across Q2-Q3; small payers no longer move the network figure", "why": "Averages of averages give a 9-order payer the same weight as a 70-order payer"}, {"revision": "R8", "area": "Unattributable records", "original_draft": "Dropped by the inner join to payer", "revised_definition": "Kept visible as 'Unmapped alias' and 'No coverage on file'", "before": "silently excluded", "after": "reported", "impact": "6 coverage intervals use unmapped aliases; 4 treated visits had no coverage on file", "why": "What cannot be attributed should be visible and routed for review, not lost"}], "qa": [{"check": "Every request lands in exactly one quarter", "status": "pass", "observed": "Q2 + Q3 requests = 850; requests in [Apr 1, Oct 1) = 850; 3 boundary-stamped requests included once", "rule": "Half-open quarter windows"}, {"check": "Each served patient is attributed to exactly one payer", "status": "pass", "observed": "Sum across payers 1,291 = 1,291 distinct patients served (T12M)", "rule": "Attribute to the payer at the most recent treated visit in the window"}, {"check": "Overlapping coverage intervals resolved deterministically", "status": "warn", "observed": "5 patients have overlapping intervals; the most recently started interval wins and the rows go to data cleanup", "rule": "One payer per event"}, {"check": "Treated visits with no coverage on file", "status": "warn", "observed": "4 visits reported under 'No coverage on file' instead of being dropped", "rule": "Unattributable is a bucket, not a deletion"}, {"check": "Raw plan aliases missing from the umbrella map", "status": "warn", "observed": "2 aliases unmapped ('Heronview Hlth PPO '; 'DRIFTWELL MKTPLACE'); proposed for analyst review, not auto-mapped", "rule": "Map by review, never by guess"}, {"check": "Distinct patients counted after alias grouping", "status": "pass", "observed": "T12M patient-payer pairs overstated by 19; three-brand plan family 115 -> 110", "rule": "Group plans to umbrella before COUNT(DISTINCT)"}, {"check": "Duplicate decision rows removed", "status": "pass", "observed": "8 duplicate final-decision rows in the full history, 5 of them in Q2-Q3 2026", "rule": "COUNT(DISTINCT auth_key)"}, {"check": "Pending requests excluded from the approval-rate denominator", "status": "pass", "observed": "2 Q3 requests still pending at Oct 24 are reported separately", "rule": "Rate = approved / (approved + denied)"}, {"check": "Business-day lead time matches Excel NETWORKDAYS", "status": "pass", "observed": "556/556 orders match an independent Python NETWORKDAYS (inclusive of both endpoints)", "rule": "Weekdays only, both endpoints counted; the Excel tab recomputes it with NETWORKDAYS()"}, {"check": "Impossible negative lead times excluded", "status": "warn", "observed": "3 order(s) in the Q2-Q3 cohort had an order date after the first treatment", "rule": "Exclude and route to source review"}, {"check": "Medication mix ranked by treated visits, not line items", "status": "pass", "observed": "Q3: 1,372 given lines across therapies vs 1,273 treated visits", "rule": "Therapy-visit pairs, distinct appointments"}, {"check": "Prior-year comparison caveat", "status": "warn", "observed": "T12M to Sep 30, 2025 = 864 vs 1,291 now. The synthetic network starts in July 2024 with no legacy patients, so the prior window includes ramp-up and overstates growth", "rule": "State the caveat next to the number"}]};</script>
+<script>/* Shared dashboard helpers - inlined into every project dashboard at build time.
+   Charts read colors from CSS variables, so light/dark themes stay in one place. */
+(function () {
+  // ?theme=light|dark forces a theme (used for README screenshots); otherwise follow the OS.
+  const forced = new URLSearchParams(location.search).get("theme");
+  if (forced === "light" || forced === "dark") document.documentElement.setAttribute("data-theme", forced);
+  const charts = [];
+  const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const fmt = new Intl.NumberFormat("en-US");
+
+  function colors() {
+    return {
+      ink: css("--ink"), ink2: css("--ink-2"), muted: css("--muted"), grid: css("--grid"), axis: css("--axis"),
+      surface: css("--surface"), s1: css("--series-1"), s2: css("--series-2"), s3: css("--series-3"),
+      gray: css("--series-gray"), good: css("--good"), warning: css("--warning"), critical: css("--critical"),
+      seq: [1, 2, 3, 4, 5, 6, 7].map((i) => css(`--seq-${i}`)),
+      ord: [1, 2, 3, 4, 5].map((i) => css(`--ord-${i}`)),
+    };
+  }
+
+  function layout(extra) {
+    const c = colors();
+    const axis = { gridcolor: c.grid, linecolor: c.axis, zeroline: false, tickfont: { color: c.muted, size: 11 },
+                   title: { font: { color: c.ink2, size: 12 } }, automargin: true };
+    const base = {
+      paper_bgcolor: "rgba(0,0,0,0)", plot_bgcolor: "rgba(0,0,0,0)",
+      font: { family: 'system-ui, -apple-system, "Segoe UI", sans-serif', color: c.ink, size: 12 },
+      margin: { l: 48, r: 18, t: 10, b: 40 }, hovermode: "x unified",
+      hoverlabel: { bgcolor: c.surface, bordercolor: c.axis, font: { color: c.ink } },
+      legend: { orientation: "h", x: 0, y: 1.12, font: { color: c.ink2, size: 12 } },
+      xaxis: Object.assign({}, axis, { showgrid: false, showline: true }),
+      yaxis: Object.assign({}, axis, { showline: false, rangemode: "tozero" }),
+      bargap: 0.35,
+    };
+    return deepMerge(base, extra || {});
+  }
+
+  function deepMerge(a, b) {
+    const out = Array.isArray(a) ? a.slice() : Object.assign({}, a);
+    for (const k of Object.keys(b)) {
+      if (b[k] && typeof b[k] === "object" && !Array.isArray(b[k]) && a[k] && typeof a[k] === "object") out[k] = deepMerge(a[k], b[k]);
+      else out[k] = b[k];
+    }
+    return out;
+  }
+
+  const config = { displayModeBar: false, responsive: true };
+
+  function register(fn) { charts.push(fn); }
+  function renderAll() { const c = colors(); charts.forEach((fn) => fn(c)); }
+
+  function table(el, columns, rows) {
+    const head = columns.map((c) => `<th class="${c.num ? "num" : ""}">${c.label}</th>`).join("");
+    const body = rows.map((r) => "<tr>" + columns.map((c) => {
+      let v = r[c.key];
+      if (c.num && typeof v === "number") v = c.pct ? (v * 100).toFixed(1) + "%" : (Number.isInteger(v) ? fmt.format(v) : v.toFixed(c.dp ?? 1));
+      return `<td class="${c.num ? "num" : ""}">${v ?? ""}</td>`;
+    }).join("") + "</tr>").join("");
+    el.innerHTML = `<div class="table-scroll"><table class="data"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+  }
+
+  function tiles(el, items) {
+    el.innerHTML = items.map((t) => {
+      let delta = "";
+      if (t.delta !== undefined && t.delta !== null) {
+        const up = t.delta >= 0;
+        const good = t.upIsGood === undefined ? null : (up === t.upIsGood);
+        const cls = good === null ? "" : (good ? "up" : "down");
+        const sign = up ? "+" : "−";
+        delta = `<p class="delta"><span class="${cls}">${sign}${Math.abs(t.delta).toFixed(1)}%</span> ${t.deltaLabel || ""}</p>`;
+      }
+      return `<div class="tile"><p class="label">${t.label}</p><p class="value">${t.value}</p>${delta}${t.note ? `<p class="note">${t.note}</p>` : ""}</div>`;
+    }).join("");
+  }
+
+  window.Dash = { register, renderAll, layout, config, table, tiles, colors, fmt };
+  document.addEventListener("DOMContentLoaded", renderAll);
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", renderAll);
+  new MutationObserver(renderAll).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+})();
+</script>
+<script>
+(function () {
+  const D = window.DATA, fmt = Dash.fmt;
+  ["asof"].forEach((id) => (document.getElementById(id).textContent = D.meta.as_of));
+  document.getElementById("seed").textContent = D.meta.seed;
+  document.getElementById("seed2").textContent = D.meta.seed;
+  Dash.tiles(document.getElementById("tiles"), D.tiles);
+  const P = (v) => (v === null || v === undefined ? "" : (v * 100).toFixed(1) + "%");
+  const N = (v) => (v === null || v === undefined ? "" : fmt.format(v));
+  const chg = (a, b) => (b ? (((a - b) / b) * 100).toFixed(0) + "%" : "");
+
+  // Scorecard table
+  const cols = [["Payer (fictional)", (r) => r.payer], ["New pts Q2", (r) => N(r.new_patients_q2)], ["New pts Q3", (r) => N(r.new_patients_q3)],
+    ["PA requests Q3", (r) => N(r.auth_requests_q3)], ["Approval Q3", (r) => P(r.approval_rate_q3)], ["Approval Q2", (r) => P(r.approval_rate_q2)],
+    ["Pending", (r) => N(r.pending_q3)], ["Served T12M", (r) => N(r.served_t12m)], ["Prior T12M*", (r) => N(r.served_prior_t12m)],
+    ["Served Q3", (r) => N(r.served_q3)], ["PEF median Q3", (r) => (r.pef_median_q3 ?? "")], ["PEF P90 Q3", (r) => (r.pef_p90_q3 ?? "")]];
+  const all = D.rows.concat([D.total]);
+  document.getElementById("scorecard").innerHTML = `<div class="table-scroll" style="max-height:none"><table class="data scorecard"><thead><tr>${
+    cols.map((c, i) => `<th class="${i ? "num" : ""}">${c[0]}</th>`).join("")}</tr></thead><tbody>${
+    all.map((r) => `<tr class="${r.umbrella_key === "ALL" ? "total" : (["UNMAPPED", "NO_COVERAGE"].includes(r.umbrella_key) ? "review" : "")}">${
+      cols.map((c, i) => `<td class="${i ? "num" : ""}">${c[1](r)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+
+  const top = D.top.slice().reverse();   // first payer on top in horizontal charts
+  const names = top.map((r) => r.payer);
+
+  // Approval dumbbell
+  Dash.register((c) => {
+    const lines = top.map((r) => ({ type: "scatter", mode: "lines", x: [r.approval_rate_q3_decision_method * 100, r.approval_rate_q3 * 100],
+      y: [r.payer, r.payer], line: { color: c.grid, width: 3 }, hoverinfo: "skip", showlegend: false }));
+    Plotly.react("c-approval", lines.concat([
+      { type: "scatter", mode: "markers", name: "Request cohort (revised)", y: names, x: top.map((r) => r.approval_rate_q3 * 100),
+        marker: { color: c.s1, size: 11, line: { color: c.surface, width: 2 } }, hovertemplate: "%{y}: %{x:.1f}%<extra>Request cohort</extra>" },
+      { type: "scatter", mode: "markers", name: "Decisions dated in Q3 (draft)", y: names, x: top.map((r) => r.approval_rate_q3_decision_method * 100),
+        marker: { color: c.s2, size: 11, line: { color: c.surface, width: 2 } }, hovertemplate: "%{y}: %{x:.1f}%<extra>Decision-date draft</extra>" }]),
+      Dash.layout({ hovermode: "closest", margin: { l: 200 }, xaxis: { ticksuffix: "%", showgrid: true, gridcolor: c.grid, showline: false },
+                    yaxis: { rangemode: "normal", showgrid: false }, legend: { y: 1.1 } }), Dash.config);
+  });
+  Dash.table(document.getElementById("d-approval"), [{ key: "payer", label: "Payer" }, { key: "auth_requests_q3", label: "Q3 requests", num: true },
+    { key: "approved_q3", label: "Approved", num: true }, { key: "denied_q3", label: "Denied", num: true }, { key: "pending_q3", label: "Pending", num: true },
+    { key: "approval_rate_q3", label: "Cohort rate", num: true, pct: true }, { key: "approval_rate_q3_decision_method", label: "Draft rate", num: true, pct: true }], D.top);
+
+  // Maturity triangle
+  Dash.register((c) => {
+    const months = D.triangle.map((r) => new Date(r.request_month + "-01T00:00:00").toLocaleString("en-US", { month: "short", year: "numeric" }));
+    const z = D.triangle.map((r) => D.ks.map((k) => (r["resolved_" + k + "d"] === null ? null : r["resolved_" + k + "d"] * 100)));
+    const text = z.map((row) => row.map((v) => (v === null ? "" : v.toFixed(0) + "%")));
+    Plotly.react("c-tri", [{ type: "heatmap", x: D.ks.map((k) => `${k} days`), y: months, z, text, texttemplate: "%{text}", xgap: 2, ygap: 2,
+      zmin: 0, zmax: 100, colorscale: [[0, c.seq[0]], [0.5, c.seq[3]], [1, c.seq[6]]], showscale: false,
+      textfont: { size: 12 }, hovertemplate: "Requested %{y}<br>Resolved within %{x}: %{z:.0f}%<extra></extra>" }],
+      Dash.layout({ hovermode: "closest", margin: { l: 80 }, xaxis: { side: "top", showline: false }, yaxis: { autorange: "reversed", rangemode: "normal" } }), Dash.config);
+  });
+  Dash.table(document.getElementById("d-tri"), [{ key: "request_month", label: "Requested" }, { key: "requests", label: "Requests", num: true }]
+    .concat(D.ks.map((k) => ({ key: "resolved_" + k + "d", label: `Within ${k}d`, num: true, pct: true })))
+    .concat([{ key: "resolved_as_of_snapshot", label: "By snapshot", num: true, pct: true }]), D.triangle);
+
+  // PEF box plots
+  Dash.register((c) => {
+    const order = D.top.map((r) => r.payer).filter((p) => D.box[p]);
+    Plotly.react("c-pef", order.slice().reverse().map((p) => ({ type: "box", x: D.box[p], name: p, orientation: "h", boxpoints: false,
+      marker: { color: c.s1 }, line: { color: c.s1, width: 1.5 }, fillcolor: "rgba(0,0,0,0)", hoverinfo: "x" })),
+      Dash.layout({ showlegend: false, hovermode: "closest", margin: { l: 200 }, xaxis: { title: { text: "Business days" }, showgrid: true, gridcolor: c.grid } }), Dash.config);
+  });
+  document.getElementById("t-pef").textContent =
+    `Network median ${D.total.pef_median_q3} business days, P90 ${D.total.pef_p90_q3}, across ${D.total.pef_orders_q3} Q3 starts. Payers with slower authorizations sit to the right.`;
+
+  // New patients Q2 vs Q3
+  Dash.register((c) => {
+    Plotly.react("c-new", [
+      { type: "bar", orientation: "h", name: "Q2 2026", y: names, x: top.map((r) => r.new_patients_q2), marker: { color: c.s2, cornerradius: 3 } },
+      { type: "bar", orientation: "h", name: "Q3 2026", y: names, x: top.map((r) => r.new_patients_q3), marker: { color: c.s1, cornerradius: 3 } }],
+      Dash.layout({ barmode: "group", bargap: 0.3, bargroupgap: 0.08, hovermode: "y unified", margin: { l: 200 },
+                    xaxis: { showgrid: true, gridcolor: c.grid, showline: false }, yaxis: { rangemode: "normal" }, legend: { y: 1.1, traceorder: "normal" } }), Dash.config);
+  });
+  Dash.table(document.getElementById("d-new"), [{ key: "payer", label: "Payer" }, { key: "new_patients_q2", label: "Q2", num: true },
+    { key: "new_patients_q3", label: "Q3", num: true }], D.top);
+
+  // Therapy mix
+  Dash.register((c) => {
+    const m = D.mix.slice().reverse();
+    const lab = m.map((r) => r.therapy_key.replace("THERAPY_", "Therapy "));
+    Plotly.react("c-mix", [
+      { type: "bar", orientation: "h", name: "Q2 2026", y: lab, x: m.map((r) => r.q2), marker: { color: c.s2, cornerradius: 3 } },
+      { type: "bar", orientation: "h", name: "Q3 2026", y: lab, x: m.map((r) => r.treated_visits), marker: { color: c.s1, cornerradius: 3 } }],
+      Dash.layout({ barmode: "group", bargap: 0.3, hovermode: "y unified", margin: { l: 90 }, xaxis: { showgrid: true, gridcolor: c.grid, showline: false },
+                    yaxis: { rangemode: "normal" }, legend: { y: 1.12, traceorder: "normal" } }), Dash.config);
+  });
+  Dash.table(document.getElementById("d-mix"), [{ key: "therapy_key", label: "Therapy" }, { key: "therapy_label", label: "Mock label" },
+    { key: "treated_visits", label: "Q3 visits", num: true }, { key: "q2", label: "Q2 visits", num: true }, { key: "patients", label: "Q3 patients", num: true },
+    { key: "line_items", label: "Q3 line items", num: true }], D.mix);
+
+  // Revision log
+  document.getElementById("log").innerHTML = `<div class="table-scroll" style="max-height:none"><table class="data log"><thead><tr>
+    <th>Rev</th><th>Area</th><th>Original draft</th><th>Revised definition</th><th>Before</th><th>After</th><th>Impact</th></tr></thead><tbody>${
+    D.log.map((r) => `<tr><td>${r.revision}</td><td><b>${r.area}</b></td><td>${r.original_draft}</td><td>${r.revised_definition}</td>
+      <td>${r.before}</td><td>${r.after}</td><td>${r.impact}</td></tr>`).join("")}</tbody></table></div>`;
+
+  // QA
+  const icon = { pass: "Pass", warn: "Warn", fail: "Fail" };
+  document.getElementById("qa").innerHTML = D.qa.map((q) =>
+    `<div class="qa-item"><span class="badge ${q.status}"><span class="dot"></span>${icon[q.status]}</span>
+      <div><b>${q.check}</b><div class="obs">${q.observed}</div><div class="obs">Rule: ${q.rule}</div></div></div>`).join("");
+})();
+</script>
+</body>
+</html>

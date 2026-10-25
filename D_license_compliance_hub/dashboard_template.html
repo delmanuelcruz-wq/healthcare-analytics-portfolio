@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>License Compliance Hub</title>
+<meta name="description" content="Synthetic portfolio dashboard: a multi-state license compliance hub with renewal buckets, document audit and medical-director coverage.">
+<style>/*__SHARED_CSS__*/
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.tabs button, .chips button { font: inherit; font-size: 13px; border: 1px solid var(--border); background: var(--surface); color: var(--ink);
+  border-radius: 999px; padding: 6px 12px; cursor: pointer; }
+.tabs button[aria-selected="true"] { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 8px; }
+.chips button[aria-pressed="true"] { background: var(--surface-2); font-weight: 700; border-color: var(--axis); }
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 2px 9px 2px 7px; white-space: nowrap; }
+.pill .dot { width: 8px; height: 8px; border-radius: 50%; }
+.pill.critical { background: color-mix(in srgb, var(--critical) 14%, transparent); color: var(--critical); }
+.pill.critical .dot { background: var(--critical); }
+.pill.serious { background: color-mix(in srgb, var(--serious) 18%, transparent); color: var(--ink); }
+.pill.serious .dot { background: var(--serious); }
+.pill.warning { background: color-mix(in srgb, var(--warning) 22%, transparent); color: var(--ink); }
+.pill.warning .dot { background: var(--warning); }
+.pill.good { background: color-mix(in srgb, var(--good) 14%, transparent); color: var(--good-ink); }
+.pill.good .dot { background: var(--good); }
+.mx th { white-space: normal; min-width: 92px; vertical-align: bottom; font-size: 12px; }
+.mx td:first-child { min-width: 200px; }
+.mx td.ok, .mx td.no { text-align: center; font-weight: 700; }
+.mx td.ok { color: var(--good-ink); }
+.mx td.no { color: var(--critical); background: color-mix(in srgb, var(--critical) 12%, transparent); }
+table.wrap td { white-space: normal; min-width: 90px; vertical-align: top; }
+</style>
+<script src="__PLOTLY_CDN__"></script>
+</head>
+<body>
+<div class="synthetic-bar">SYNTHETIC DEMONSTRATION - fictional staff labels, sites and MOCK- license IDs. Not a legal or compliance determination.</div>
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Portfolio project D · Coralline Infusion Network (fictional)</p>
+    <h1>Licenses hub: staff, medical directors and locations</h1>
+    <p>One place to see which licenses are current, which are due, which documents are missing, and whether every site
+       has its required licenses and an active primary medical director.</p>
+    <div class="meta"><span>Status as of <b id="asof"></b></span><span>Three states, eight sites</span><span>Seed <span id="seed"></span></span></div>
+  </div>
+</header>
+<main class="wrap">
+  <div class="tiles" id="tiles"></div>
+
+  <h2 class="section">Renewal outlook</h2>
+  <div class="grid-2">
+    <section class="card">
+      <h3>Licenses by renewal bucket</h3>
+      <p class="sub">Unique licenses (duplicates removed); status computed from the expiry date, not the typed status.</p>
+      <div class="chart" id="c-buckets"></div>
+      <details class="data"><summary>Show data table</summary><div id="d-buckets"></div></details>
+    </section>
+    <section class="card">
+      <h3>Expiry timeline</h3>
+      <p class="sub">Each dot is a license. The shaded band is the next 90 days.</p>
+      <div class="chart" id="c-timeline"></div>
+    </section>
+  </div>
+
+  <h2 class="section">Site compliance</h2>
+  <p class="section-lede">Eight checks per site. A failed check names who owns the fix in the exceptions list below.</p>
+  <section class="card full"><div id="matrix"></div></section>
+  <section class="card full" style="margin-top:16px">
+    <h3>Medical director coverage by site</h3>
+    <p class="sub">Effective-dated primary relationships. Overlaps and gaps are compliance findings. The dashed line marks today.</p>
+    <div class="chart-scroll"><div class="chart" id="c-gantt"></div></div>
+  </section>
+
+  <h2 class="section">Licenses hub</h2>
+  <p class="section-lede">List views by area, styled like a document-library register. Filter to what needs action.</p>
+  <section class="card full">
+    <div class="tabs" role="tablist" id="tabs"></div>
+    <div class="chips" id="chips"></div>
+    <div id="list"></div>
+  </section>
+
+  <h2 class="section">Exceptions and reminder plan</h2>
+  <div class="grid-2">
+    <section class="card"><h3>Exceptions</h3><p class="sub">Every finding with an owner and severity.</p><div id="exceptions"></div></section>
+    <section class="card"><h3>Reminder plan (not sent)</h3><p class="sub">90/60/30-day reminder dates for licenses expiring within 180 days. Automation is not deployed.</p><div id="reminders"></div></section>
+  </div>
+
+  <h2 class="section">Quality checks run on this build</h2>
+  <div class="qa-list" id="qa"></div>
+
+  <h2 class="section">What is real and what is simulated</h2>
+  <div class="scope">
+    <div class="def"><b>On-the-job exposure (described in general terms only)</b>
+      <ul><li>Hands-on work structuring a document-library licenses hub with separate nursing, medical director and location areas.</li>
+          <li>Organized a nursing license register from source documents: file naming, duplicates, state categories, expiration flags, document links.</li>
+          <li>Reviewed medical director and location license categories. Reminder automation, final permissions and approval were not shown to be production-ready.</li></ul></div>
+    <div class="def"><b>Independently built for this portfolio (synthetic)</b>
+      <ul><li>Fictional staff labels, sites and MOCK- IDs; no names, real license numbers, scans or addresses.</li>
+          <li>The renewal logic, document audit, coverage checks, compliance matrix, Excel tracker and this hub.</li>
+          <li>The reminder schedule is a plan, not a deployed automation.</li></ul></div>
+  </div>
+  <footer class="foot">All people and licenses are fictional (seed <span id="seed2"></span>). Tracker: license_compliance_tracker.xlsx.
+    SYNTHETIC DEMONSTRATION - not a legal, regulatory or compliance determination.</footer>
+</main>
+<script>/*__DATA__*/</script>
+<script>/*__SHARED_JS__*/</script>
+<script>
+(function () {
+  const D = window.DATA;
+  document.getElementById("asof").textContent = D.meta.as_of;
+  document.getElementById("seed").textContent = D.meta.seed;
+  document.getElementById("seed2").textContent = D.meta.seed;
+  Dash.tiles(document.getElementById("tiles"), D.tiles);
+  const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  const pill = (b) => `<span class="pill ${D.bucket_status[b]}"><span class="dot"></span>${b}</span>`;
+  const statusColor = (c, b) => ({ critical: c.critical, serious: css("--serious"), warning: c.warning, good: c.good })[D.bucket_status[b]];
+  const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+  // Buckets
+  Dash.register((c) => {
+    const rows = D.bucket_counts;
+    Plotly.react("c-buckets", [{ type: "bar", x: rows.map((r) => r.bucket), y: rows.map((r) => r.staff + r.site),
+      marker: { color: rows.map((r) => statusColor(c, r.bucket)), cornerradius: 4 }, text: rows.map((r) => r.staff + r.site),
+      textposition: "outside", textfont: { color: c.ink2 }, cliponaxis: false,
+      customdata: rows.map((r) => [r.staff, r.site]), hovertemplate: "%{x}<br>%{customdata[0]} staff · %{customdata[1]} site<extra></extra>" }],
+      Dash.layout({ showlegend: false, hovermode: "closest", bargap: 0.45, xaxis: { type: "category" } }), Dash.config);
+  });
+  Dash.table(document.getElementById("d-buckets"), [{ key: "bucket", label: "Bucket" }, { key: "staff", label: "Staff", num: true },
+    { key: "site", label: "Site", num: true }], D.bucket_counts);
+
+  // Timeline strip
+  Dash.register((c) => {
+    const unique = D.staff.filter((r) => r.first_record_key === r.license_record_key);
+    const pts = unique.map((r) => ({ x: r.expiry_date, y: r.credential_class, b: r.renewal_bucket, t: `${r.staff_label} · ${r.state_code}` }))
+      .concat(D.sites.map((r) => ({ x: r.expiry_date, y: r.license_type.startsWith("Pharmacy") ? "Site: pharmacy" : "Site: infusion",
+        b: r.renewal_bucket, t: r.site_name.replace(" (fictional)", "") })));
+    const end = new Date(D.meta.as_of_iso + "T00:00:00"); end.setDate(end.getDate() + 90);
+    Plotly.react("c-timeline", D.buckets.map((b) => {
+      const p = pts.filter((q) => q.b === b);
+      return { type: "scatter", mode: "markers", name: b, x: p.map((q) => q.x), y: p.map((q) => q.y), text: p.map((q) => q.t),
+        marker: { size: 10, color: statusColor(c, b), line: { color: c.surface, width: 2 } }, hovertemplate: "%{text}<br>Expires %{x|%b %d, %Y}<extra>" + b + "</extra>" };
+    }), Dash.layout({ hovermode: "closest", legend: { y: 1.18 }, margin: { l: 110 }, xaxis: { type: "date", showgrid: true, gridcolor: c.grid },
+      yaxis: { type: "category", rangemode: "normal", categoryorder: "array", categoryarray: ["Site: pharmacy", "Site: infusion", "MD", "PharmD", "APRN", "LPN", "RN"] },
+      shapes: [{ type: "rect", xref: "x", yref: "paper", x0: D.meta.as_of_iso, x1: end.toISOString().slice(0, 10), y0: 0, y1: 1,
+                 fillcolor: c.warning, opacity: 0.12, line: { width: 0 } }] }), Dash.config);
+  });
+
+  // Matrix
+  const ok = (v) => (v === "PASS" ? `<td class="ok" title="Pass">✓</td>` : `<td class="no" title="Fail">✕ Fail</td>`);
+  document.getElementById("matrix").innerHTML = `<div class="table-scroll" style="max-height:none"><table class="data mx wrap"><thead><tr>
+    <th>Site</th><th>Director today</th>${D.checks.map((c) => `<th>${c}</th>`).join("")}<th class="num">Score</th></tr></thead><tbody>${
+    D.matrix.map((m) => `<tr><td><b>${m.site_key}</b> ${esc(m.site_name)} (${m.state})</td><td>${esc(m.director)}</td>${D.checks.map((c) => ok(m[c])).join("")}
+      <td class="num">${m.passed}/${m.total}</td></tr>`).join("")}</tbody></table></div>`;
+
+  // Gantt
+  Dash.register((c) => {
+    const directors = [...new Set(D.md.map((a) => a.director_label))].sort();
+    const palette = [c.s1, c.s2, c.s3, css("--series-4")];
+    const textOn = (hex) => {                        // ink or white, whichever reads better on the fill
+      const n = parseInt(hex.replace("#", ""), 16), r = n >> 16, g = (n >> 8) & 255, b = n & 255;
+      return (0.299 * r + 0.587 * g + 0.114 * b) > 140 ? "#0b0b0b" : "#ffffff";
+    };
+    const today = D.meta.as_of_iso;
+    Plotly.react("c-gantt", directors.map((dname, i) => {
+      const rows = D.md.filter((a) => a.director_label === dname);
+      return { type: "bar", orientation: "h", name: dname, y: rows.map((a) => a.site_key),
+        base: rows.map((a) => a.relationship_start), x: rows.map((a) => (new Date((a.relationship_end || "2026-12-31") + "T00:00:00") - new Date(a.relationship_start + "T00:00:00"))),
+        marker: { color: palette[i % palette.length], cornerradius: 3 }, text: rows.map(() => dname.replace(" (fictional)", "")), textposition: "inside",
+        insidetextanchor: "start", textfont: { color: textOn(palette[i % palette.length]), size: 11 }, offsetgroup: dname, width: 0.55,
+        customdata: rows.map((a) => [a.relationship_start, a.relationship_end || "open"]),
+        hovertemplate: "%{y}: %{customdata[0]} to %{customdata[1]}<extra>" + dname + "</extra>" };
+    }), Dash.layout({ barmode: "overlay", hovermode: "closest", legend: { y: 1.14 }, margin: { l: 50 },
+      xaxis: { type: "date", range: ["2024-06-01", "2026-12-31"], showgrid: true, gridcolor: c.grid },
+      yaxis: { type: "category", rangemode: "normal", categoryorder: "array",
+               categoryarray: [...new Set(D.md.map((a) => a.site_key))].sort().reverse() },
+      shapes: [{ type: "line", xref: "x", yref: "paper", x0: today, x1: today, y0: 0, y1: 1, line: { color: c.ink2, width: 1.5, dash: "dot" } }] }), Dash.config);
+  });
+
+  // Hub list views
+  const areas = ["Nursing & clinical licenses", "Medical director licenses", "Location licenses"];
+  const filters = [["all", "All"], ["action", "Needs action"], ["expired", "Expired"], ["due", "Due in 90 days"], ["docs", "Document gaps"]];
+  let area = areas[0], filt = "all";
+  function rowsFor() {
+    const base = area === "Location licenses" ? D.sites.map((r) => Object.assign({ holder: r.site_name.replace(" (fictional)", ""), cls: r.license_type,
+      key: r.site_license_key, docs: r.document_flag ? "On file" : "Missing", dup: false }, r))
+      : D.staff.filter((r) => r.area === area).map((r) => Object.assign({ holder: `${r.staff_label} · ${r.role}`, cls: r.credential_class,
+      key: r.license_record_key, docs: r.document_flag === 0 ? "Missing" : (r.documents_on_file ? "On file" : "Flagged, not in index"),
+      dup: r.first_record_key !== r.license_record_key }, r));
+    return base.filter((r) => filt === "all" || (filt === "action" && r.issue_text) || (filt === "expired" && r.days_to_expiry < 0)
+      || (filt === "due" && r.days_to_expiry >= 0 && r.days_to_expiry <= 90) || (filt === "docs" && r.docs !== "On file"));
+  }
+  function render() {
+    document.getElementById("tabs").innerHTML = areas.map((a) => `<button role="tab" aria-selected="${a === area}" data-a="${a}">${a}</button>`).join("");
+    document.getElementById("chips").innerHTML = filters.map(([k, l]) => `<button aria-pressed="${k === filt}" data-f="${k}">${l}</button>`).join("");
+    const rows = rowsFor();
+    document.getElementById("list").innerHTML = `<div class="table-scroll" style="max-height:460px"><table class="data wrap"><thead><tr><th>Record</th>
+      <th>Holder</th><th>License</th><th>State</th><th>ID (mock)</th><th>Expires</th><th class="num">Days</th><th>Bucket</th><th>Document</th><th>Findings</th></tr></thead><tbody>${
+      rows.map((r) => `<tr><td>${r.key}</td><td>${esc(r.holder)}</td><td>${esc(r.cls)}</td><td>${r.state_code}</td><td>${r.fictional_license_key}</td>
+        <td>${r.expiry_date}</td><td class="num">${r.days_to_expiry}</td><td>${pill(r.renewal_bucket)}</td><td>${r.docs}</td><td>${esc(r.issue_text)}</td></tr>`).join("")
+      || `<tr><td colspan="10">Nothing matches this filter.</td></tr>`}</tbody></table></div>`;
+    document.querySelectorAll("#tabs button").forEach((b) => (b.onclick = () => { area = b.dataset.a; render(); }));
+    document.querySelectorAll("#chips button").forEach((b) => (b.onclick = () => { filt = b.dataset.f; render(); }));
+  }
+  render();
+
+  const sev = { High: "fail", Medium: "warn" };
+  document.getElementById("exceptions").innerHTML = `<div class="table-scroll"><table class="data wrap"><thead><tr><th>Severity</th><th>Area</th><th>Record</th><th>Finding</th><th>Owner</th></tr></thead><tbody>${
+    D.exceptions.map((e) => `<tr><td><span class="badge ${sev[e.severity]}"><span class="dot"></span>${e.severity}</span></td><td>${e.area}</td><td>${e.record}</td>
+      <td>${esc(e.finding)}</td><td>${e.owner}</td></tr>`).join("")}</tbody></table></div>`;
+  Dash.table(document.getElementById("reminders"), [{ key: "reminder_date", label: "Date" }, { key: "reminder", label: "Reminder" },
+    { key: "holder", label: "Holder" }, { key: "license", label: "License" }, { key: "expiry_date", label: "Expires" }, { key: "plan_status", label: "Plan status" }], D.reminders);
+
+  const icon = { pass: "Pass", warn: "Warn", fail: "Fail" };
+  document.getElementById("qa").innerHTML = D.qa.map((q) =>
+    `<div class="qa-item"><span class="badge ${q.status}"><span class="dot"></span>${icon[q.status]}</span>
+      <div><b>${q.check}</b><div class="obs">${esc(q.observed)}</div><div class="obs">Rule: ${esc(q.rule)}</div></div></div>`).join("");
+})();
+</script>
+</body>
+</html>

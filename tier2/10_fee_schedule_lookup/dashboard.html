@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fee Schedule Lookup</title>
+<meta name="description" content="Synthetic portfolio page: fee-schedule lookup and exception tracker for a batch of mock billing codes.">
+<style>/* Shared dashboard styles - inlined into every project dashboard at build time. */
+:root {
+  color-scheme: light;
+  --page: #f9f9f7;
+  --surface: #fcfcfb;
+  --surface-2: #f3f2ee;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --muted: #6f6d68;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --border: rgba(11, 11, 11, 0.10);
+  --brand: #12344a;
+  --brand-ink: #ffffff;
+  --accent: #0f7c80;
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+  --series-gray: #a8a69f;
+  --seq-1: #cde2fb; --seq-2: #9ec5f4; --seq-3: #6da7ec; --seq-4: #3987e5; --seq-5: #256abf; --seq-6: #184f95; --seq-7: #0d366b;
+  --ord-1: #86b6ef; --ord-2: #5598e7; --ord-3: #2a78d6; --ord-4: #1c5cab; --ord-5: #104281;
+  --good: #0ca30c; --warning: #fab219; --serious: #ec835a; --critical: #d03b3b;
+  --good-ink: #006300;
+  --synthetic-bg: #fff4d6; --synthetic-ink: #5c4300;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --surface-2: #232321;
+    --ink: #f0efec; --ink-2: #c3c2b7; --muted: #9a988f; --grid: #2c2c2a; --axis: #383835;
+    --border: rgba(255, 255, 255, 0.10); --brand: #0f2a3b; --accent: #3fb0b3;
+    --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500; --series-gray: #6a6862;
+    --seq-1: #13304f; --seq-2: #184f95; --seq-3: #1c5cab; --seq-4: #256abf; --seq-5: #3987e5; --seq-6: #6da7ec; --seq-7: #b7d3f6;
+    --ord-1: #184f95; --ord-2: #1c5cab; --ord-3: #2a78d6; --ord-4: #5598e7; --ord-5: #86b6ef;
+    --good-ink: #0ca30c; --synthetic-bg: #3a2f10; --synthetic-ink: #ffd982;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #1a1a19; --surface-2: #232321;
+  --ink: #f0efec; --ink-2: #c3c2b7; --muted: #9a988f; --grid: #2c2c2a; --axis: #383835;
+  --border: rgba(255, 255, 255, 0.10); --brand: #0f2a3b; --accent: #3fb0b3;
+  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500; --series-gray: #6a6862;
+  --seq-1: #13304f; --seq-2: #184f95; --seq-3: #1c5cab; --seq-4: #256abf; --seq-5: #3987e5; --seq-6: #6da7ec; --seq-7: #b7d3f6;
+  --ord-1: #184f95; --ord-2: #1c5cab; --ord-3: #2a78d6; --ord-4: #5598e7; --ord-5: #86b6ef;
+  --good-ink: #0ca30c; --synthetic-bg: #3a2f10; --synthetic-ink: #ffd982;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--page); color: var(--ink);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.synthetic-bar {
+  background: var(--synthetic-bg); color: var(--synthetic-ink); text-align: center;
+  font-size: 13px; font-weight: 600; padding: 7px 16px; letter-spacing: .01em;
+}
+header.top { background: var(--brand); color: var(--brand-ink); }
+header.top .wrap { padding-top: 26px; padding-bottom: 24px; }
+header.top .eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; opacity: .75; margin: 0 0 6px; }
+header.top h1 { font-size: 28px; line-height: 1.2; margin: 0 0 8px; font-weight: 650; }
+header.top p { margin: 0; max-width: 860px; opacity: .88; }
+header.top .meta { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; opacity: .85; }
+.wrap { max-width: 1280px; margin: 0 auto; padding-left: 24px; padding-right: 24px; }
+main.wrap { padding-top: 24px; padding-bottom: 48px; }
+h2.section { font-size: 18px; margin: 34px 0 4px; font-weight: 650; }
+p.section-lede { margin: 0 0 14px; color: var(--ink-2); max-width: 900px; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr)); gap: 12px; }
+.tile { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px 12px; }
+.tile .label { font-size: 13px; color: var(--ink-2); margin: 0 0 4px; }
+.tile .value { font-size: 30px; font-weight: 600; line-height: 1.15; margin: 0; }
+.tile .delta { font-size: 12.5px; color: var(--muted); margin: 6px 0 0; }
+.tile .delta .up { color: var(--good-ink); font-weight: 600; }
+.tile .delta .down { color: var(--critical); font-weight: 600; }
+.tile .note { font-size: 12px; color: var(--muted); margin: 4px 0 0; }
+
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px 12px; min-width: 0; }
+.card.full { grid-column: 1 / -1; }
+.card h3 { font-size: 15.5px; margin: 0 0 2px; font-weight: 650; }
+.card .sub { font-size: 13px; color: var(--ink-2); margin: 0 0 8px; }
+.card .chart { width: 100%; height: 320px; }
+.card .chart.tall { height: 420px; }
+.chart-scroll { overflow-x: auto; }
+.chart-scroll > .chart { min-width: 720px; }
+.funnel { display: grid; gap: 12px; padding: 6px 0 4px; }
+.funnel-label { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--ink-2); margin-bottom: 4px; }
+.funnel-val { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.funnel-track { background: var(--surface-2); border-radius: 4px; height: 18px; }
+.funnel-bar { height: 18px; border-radius: 0 4px 4px 0; min-width: 2px; }
+.card .takeaway { font-size: 13px; color: var(--ink); background: var(--surface-2); border-radius: 8px; padding: 8px 10px; margin: 8px 0 4px; }
+details.data { margin-top: 6px; font-size: 13px; }
+details.data summary { cursor: pointer; color: var(--accent); font-weight: 600; padding: 4px 0; }
+.table-scroll { overflow-x: auto; max-height: 340px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; margin-top: 6px; }
+table.data { border-collapse: collapse; width: 100%; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+table.data th, table.data td { padding: 6px 10px; border-bottom: 1px solid var(--grid); text-align: left; white-space: nowrap; }
+table.data th { position: sticky; top: 0; background: var(--surface-2); color: var(--ink-2); font-weight: 600; }
+table.data td.num, table.data th.num { text-align: right; }
+
+.defs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 12px; }
+.def { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; font-size: 13.5px; }
+.def b { display: block; margin-bottom: 2px; }
+.def .check { color: var(--ink-2); font-size: 12.5px; margin-top: 4px; }
+
+.qa-list { display: grid; gap: 8px; }
+.qa-item { display: grid; grid-template-columns: 110px 1fr; gap: 12px; align-items: start; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 13.5px; }
+.badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 3px 10px 3px 8px; width: fit-content; }
+.badge .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.badge.pass { background: color-mix(in srgb, var(--good) 14%, transparent); color: var(--good-ink); }
+.badge.pass .dot { background: var(--good); }
+.badge.warn { background: color-mix(in srgb, var(--warning) 20%, transparent); color: var(--ink); }
+.badge.warn .dot { background: var(--warning); }
+.badge.fail { background: color-mix(in srgb, var(--critical) 14%, transparent); color: var(--critical); }
+.badge.fail .dot { background: var(--critical); }
+.qa-item .obs { color: var(--ink-2); font-size: 12.5px; margin-top: 2px; }
+
+.scope { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 12px; }
+.scope .def ul { margin: 6px 0 0; padding-left: 18px; }
+footer.foot { color: var(--muted); font-size: 12.5px; border-top: 1px solid var(--border); margin-top: 40px; padding-top: 16px; }
+
+@media (max-width: 860px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .wrap { padding-left: 16px; padding-right: 16px; }
+  header.top h1 { font-size: 23px; }
+  .qa-item { grid-template-columns: 1fr; gap: 6px; }
+  .card .chart { height: 280px; }
+}
+@media print { .synthetic-bar { -webkit-print-color-adjust: exact; print-color-adjust: exact; } details.data { display: none; } }
+
+.rule { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 10px; margin-top: 4px; }
+.rule .step { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 13px; }
+.rule .step b { display: block; font-size: 13.5px; margin-bottom: 2px; }
+.rule .step .n { color: var(--muted); font-size: 12px; }
+.table-scroll { max-height: 520px; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
+</head>
+<body>
+<div class="synthetic-bar">SYNTHETIC DEMONSTRATION - mock codes and invented amounts. Not reimbursement, billing, operational or financial guidance.</div>
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Tier 2 · Workstream 10 · Coralline Infusion Network (fictional)</p>
+    <h1>Fee-schedule lookup and exception tracker</h1>
+    <p>A batch of mock billing codes priced against a mock fee schedule. Every request gets exactly one answer, and a $0.00 rate
+       is reported as zero-pay - never confused with a code that has no rate at all. Every amount here is <b>SYNTHETIC</b>.</p>
+    <div class="meta"><span>Batch BATCH-2026-10</span><span>Data as of <b id="asof"></b></span><span>Seed <span id="seed"></span></span></div>
+  </div>
+</header>
+<main class="wrap">
+  <div class="tiles" id="tiles"></div>
+
+  <h2 class="section">The matching rule</h2>
+  <p class="section-lede">A match needs the same code, the same claim type and a service date inside the rate's effective dates (inclusive).
+     Buckets are assigned in this order, so each request lands in exactly one.</p>
+  <div class="rule">
+    <div class="step"><span class="n">1</span><b>Duplicate request</b>Same code, claim type and date as an earlier request. The original keeps its bucket.</div>
+    <div class="step"><span class="n">2</span><b>Matched / Zero-pay</b>All three keys match. $0.00 is a real (non-covered, mock) rate.</div>
+    <div class="step"><span class="n">3</span><b>No match</b>The code is not on the schedule at all.</div>
+    <div class="step"><span class="n">4</span><b>Wrong claim type</b>The code exists, but only under another claim type.</div>
+    <div class="step"><span class="n">5</span><b>Out of date range</b>Code and claim type exist, but no rate was in force on the service date.</div>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px">
+    <section class="card full">
+      <h3>Requests by bucket</h3>
+      <p class="sub">61 requests, one bucket each.</p>
+      <div class="chart" id="c-buckets" style="height:250px"></div>
+    </section>
+    <section class="card full">
+      <h3>What a code-only lookup gets wrong</h3>
+      <p class="sub">A VLOOKUP on the code alone, reading blank-or-zero as "not found". Amounts are SYNTHETIC.</p>
+      <div id="tbl-errors"></div>
+    </section>
+    <section class="card full">
+      <h3>Lookup tracker</h3>
+      <p class="sub">Every request with its bucket, matched rate row and next action. Fictional fee column = SYNTHETIC amounts.</p>
+      <div id="tbl-tracker"></div>
+    </section>
+  </div>
+
+  <h2 class="section">Quality checks run on this build</h2>
+  <p class="section-lede">WARN means a real exception was found and routed - it is the tracker doing its job.</p>
+  <div class="qa-list" id="qa"></div>
+
+  <h2 class="section">What is real and what is simulated</h2>
+  <div class="scope">
+    <div class="def"><b>On-the-job exposure (self-reported, general terms only)</b>
+      <ul><li>Completed a fee-schedule lookup for a batch of medication billing codes and tracked exceptions.</li>
+          <li>The final state of that tracker was not available for review.</li></ul></div>
+    <div class="def"><b>Independently built for this portfolio (synthetic)</b>
+      <ul><li>Mock codes (XJ/XQ prefixes are not valid billing formats), the schedule and every amount.</li>
+          <li>The matching rules, SQL, Python cross-check, Excel tracker, tests and this page.</li></ul></div>
+  </div>
+  <footer class="foot">Coralline Infusion Network is fictional. All data is synthetic, generated from seed <span id="seed2"></span>.
+    Amounts are invented and are not reimbursement rates. SYNTHETIC DEMONSTRATION - not operational, medical or financial guidance.</footer>
+</main>
+<script>window.DATA = {"meta": {"as_of": "October 24, 2026", "seed": "20261024"}, "tiles": [{"label": "Requests in the batch", "value": "61", "note": "54 distinct mock codes"}, {"label": "Priced", "value": "39", "note": "33 matched + 6 zero-pay"}, {"label": "Exceptions to work", "value": "21", "note": "No match, wrong claim type, out of date range"}, {"label": "Duplicates removed", "value": "1", "note": "Same code, claim type and date"}, {"label": "Shortcut errors", "value": "26", "note": "Requests a code-only lookup would get wrong"}], "summary": [{"bucket": "Matched", "requests": 33, "share": 0.541}, {"bucket": "Zero-pay ($0.00)", "requests": 6, "share": 0.0984}, {"bucket": "No match", "requests": 8, "share": 0.1311}, {"bucket": "Wrong claim type", "requests": 9, "share": 0.1475}, {"bucket": "Out of date range", "requests": 4, "share": 0.0656}, {"bucket": "Duplicate request", "requests": 1, "share": 0.0164}], "tracker": [{"request_key": "LR001", "batch_key": "BATCH-2026-10", "mock_code": "XJ131", "claim_type_requested": "Professional", "service_date": "2025-03-15", "bucket": "Matched", "matched_fee_row": "FS042", "fictional_fee_amount_synthetic": 1849.09, "effective_from": "2025-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $1,849.09"}, {"request_key": "LR002", "batch_key": "BATCH-2026-10", "mock_code": "XJ120", "claim_type_requested": "Professional", "service_date": "2025-11-05", "bucket": "Matched", "matched_fee_row": "FS026", "fictional_fee_amount_synthetic": 83.85, "effective_from": "2025-01-01", "effective_to": "2025-12-31", "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $83.85"}, {"request_key": "LR003", "batch_key": "BATCH-2026-10", "mock_code": "XJ109", "claim_type_requested": "Professional", "service_date": "2025-10-11", "bucket": "Matched", "matched_fee_row": "FS011", "fictional_fee_amount_synthetic": 3630.12, "effective_from": "2025-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $3,630.12"}, {"request_key": "LR004", "batch_key": "BATCH-2026-10", "mock_code": "XJ156", "claim_type_requested": "Professional", "service_date": "2026-05-26", "bucket": "Matched", "matched_fee_row": "FS072", "fictional_fee_amount_synthetic": 1974.39, "effective_from": "2025-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $1,974.39"}, {"request_key": "LR005", "batch_key": "BATCH-2026-10", "mock_code": "XJ110", "claim_type_requested": "Professional", "service_date": "2025-08-29", "bucket": "Matched", "matched_fee_row": "FS012", "fictional_fee_amount_synthetic": 1480.55, "effective_from": "2025-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $1,480.55"}, {"request_key": "LR006", "batch_key": "BATCH-2026-10", "mock_code": "XQ210", "claim_type_requested": "Professional", "service_date": "2025-08-17", "bucket": "Out of date range", "matched_fee_row": null, "fictional_fee_amount_synthetic": null, "effective_from": null, "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2026-04-01", "duplicate_of": null, "match_rows": 0, "action": "No rate in force on 2025-08-17 (schedule starts 2026-04-01) - check the date or prior schedule", "fee_display": ""}, {"request_key": "LR007", "batch_key": "BATCH-2026-10", "mock_code": "XJ119", "claim_type_requested": "Professional", "service_date": "2025-04-09", "bucket": "Matched", "matched_fee_row": "FS025", "fictional_fee_amount_synthetic": 1197.11, "effective_from": "2025-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $1,197.11"}, {"request_key": "LR008", "batch_key": "BATCH-2026-10", "mock_code": "XJ129", "claim_type_requested": "Professional", "service_date": "2026-06-18", "bucket": "Matched", "matched_fee_row": "FS040", "fictional_fee_amount_synthetic": 272.64, "effective_from": "2026-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $272.64"}, {"request_key": "LR009", "batch_key": "BATCH-2026-10", "mock_code": "XJ114", "claim_type_requested": "Professional", "service_date": "2025-11-08", "bucket": "Zero-pay ($0.00)", "matched_fee_row": "FS018", "fictional_fee_amount_synthetic": 0.0, "effective_from": "2025-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate is $0.00 (non-covered, mock) - a real answer, confirm before billing", "fee_display": "SYN $0.00"}, {"request_key": "LR010", "batch_key": "BATCH-2026-10", "mock_code": "XQ207", "claim_type_requested": "Professional", "service_date": "2025-06-22", "bucket": "Matched", "matched_fee_row": "FS087", "fictional_fee_amount_synthetic": 3025.12, "effective_from": "2025-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $3,025.12"}, {"request_key": "LR011", "batch_key": "BATCH-2026-10", "mock_code": "XJ140", "claim_type_requested": "Professional", "service_date": "2026-04-09", "bucket": "Wrong claim type", "matched_fee_row": null, "fictional_fee_amount_synthetic": null, "effective_from": null, "effective_to": null, "claim_types_on_schedule": "Facility", "earliest_effective_from": "2026-04-01", "duplicate_of": null, "match_rows": 0, "action": "Code exists only as Facility - confirm the claim type", "fee_display": ""}, {"request_key": "LR012", "batch_key": "BATCH-2026-10", "mock_code": "XJ159", "claim_type_requested": "Professional", "service_date": "2026-05-01", "bucket": "Matched", "matched_fee_row": "FS077", "fictional_fee_amount_synthetic": 682.81, "effective_from": "2026-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $682.81"}, {"request_key": "LR013", "batch_key": "BATCH-2026-10", "mock_code": "XJ134", "claim_type_requested": "Professional", "service_date": "2026-06-17", "bucket": "Matched", "matched_fee_row": "FS047", "fictional_fee_amount_synthetic": 3261.92, "effective_from": "2026-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $3,261.92"}, {"request_key": "LR014", "batch_key": "BATCH-2026-10", "mock_code": "XJ149", "claim_type_requested": "Professional", "service_date": "2026-05-01", "bucket": "Wrong claim type", "matched_fee_row": null, "fictional_fee_amount_synthetic": null, "effective_from": null, "effective_to": null, "claim_types_on_schedule": "Facility", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 0, "action": "Code exists only as Facility - confirm the claim type", "fee_display": ""}, {"request_key": "LR015", "batch_key": "BATCH-2026-10", "mock_code": "XQ204", "claim_type_requested": "Professional", "service_date": "2026-08-27", "bucket": "Matched", "matched_fee_row": "FS084", "fictional_fee_amount_synthetic": 3257.26, "effective_from": "2025-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $3,257.26"}, {"request_key": "LR016", "batch_key": "BATCH-2026-10", "mock_code": "XQ208", "claim_type_requested": "Professional", "service_date": "2025-01-20", "bucket": "Matched", "matched_fee_row": "FS088", "fictional_fee_amount_synthetic": 1613.45, "effective_from": "2025-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $1,613.45"}, {"request_key": "LR017", "batch_key": "BATCH-2026-10", "mock_code": "XJ106", "claim_type_requested": "Professional", "service_date": "2025-10-06", "bucket": "Matched", "matched_fee_row": "FS007", "fictional_fee_amount_synthetic": 2812.72, "effective_from": "2025-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $2,812.72"}, {"request_key": "LR018", "batch_key": "BATCH-2026-10", "mock_code": "XJ168", "claim_type_requested": "Professional", "service_date": "2026-06-26", "bucket": "No match", "matched_fee_row": null, "fictional_fee_amount_synthetic": null, "effective_from": null, "effective_to": null, "claim_types_on_schedule": null, "earliest_effective_from": null, "duplicate_of": null, "match_rows": 0, "action": "Code is not on the schedule - research the code or ask the payer", "fee_display": ""}, {"request_key": "LR019", "batch_key": "BATCH-2026-10", "mock_code": "XJ130", "claim_type_requested": "Professional", "service_date": "2026-01-07", "bucket": "Wrong claim type", "matched_fee_row": null, "fictional_fee_amount_synthetic": null, "effective_from": null, "effective_to": null, "claim_types_on_schedule": "Facility", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 0, "action": "Code exists only as Facility - confirm the claim type", "fee_display": ""}, {"request_key": "LR020", "batch_key": "BATCH-2026-10", "mock_code": "XJ148", "claim_type_requested": "Professional", "service_date": "2026-10-23", "bucket": "Matched", "matched_fee_row": "FS064", "fictional_fee_amount_synthetic": 207.69, "effective_from": "2025-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $207.69"}, {"request_key": "LR021", "batch_key": "BATCH-2026-10", "mock_code": "XJ140", "claim_type_requested": "Professional", "service_date": "2026-10-03", "bucket": "Wrong claim type", "matched_fee_row": null, "fictional_fee_amount_synthetic": null, "effective_from": null, "effective_to": null, "claim_types_on_schedule": "Facility", "earliest_effective_from": "2026-04-01", "duplicate_of": null, "match_rows": 0, "action": "Code exists only as Facility - confirm the claim type", "fee_display": ""}, {"request_key": "LR022", "batch_key": "BATCH-2026-10", "mock_code": "XJ147", "claim_type_requested": "Professional", "service_date": "2025-04-06", "bucket": "Matched", "matched_fee_row": "FS062", "fictional_fee_amount_synthetic": 2665.96, "effective_from": "2025-01-01", "effective_to": "2025-12-31", "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $2,665.96"}, {"request_key": "LR023", "batch_key": "BATCH-2026-10", "mock_code": "XJ115", "claim_type_requested": "Professional", "service_date": "2026-02-28", "bucket": "Matched", "matched_fee_row": "FS020", "fictional_fee_amount_synthetic": 2811.77, "effective_from": "2026-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $2,811.77"}, {"request_key": "LR024", "batch_key": "BATCH-2026-10", "mock_code": "XJ163", "claim_type_requested": "Professional", "service_date": "2026-06-02", "bucket": "No match", "matched_fee_row": null, "fictional_fee_amount_synthetic": null, "effective_from": null, "effective_to": null, "claim_types_on_schedule": null, "earliest_effective_from": null, "duplicate_of": null, "match_rows": 0, "action": "Code is not on the schedule - research the code or ask the payer", "fee_display": ""}, {"request_key": "LR025", "batch_key": "BATCH-2026-10", "mock_code": "XJ101", "claim_type_requested": "Professional", "service_date": "2026-01-26", "bucket": "Matched", "matched_fee_row": "FS001", "fictional_fee_amount_synthetic": 3924.52, "effective_from": "2025-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $3,924.52"}, {"request_key": "LR026", "batch_key": "BATCH-2026-10", "mock_code": "XJ158", "claim_type_requested": "Professional", "service_date": "2025-04-18", "bucket": "Matched", "matched_fee_row": "FS074", "fictional_fee_amount_synthetic": 1100.74, "effective_from": "2025-01-01", "effective_to": "2025-12-31", "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $1,100.74"}, {"request_key": "LR027", "batch_key": "BATCH-2026-10", "mock_code": "XJ121", "claim_type_requested": "Professional", "service_date": "2026-09-05", "bucket": "Matched", "matched_fee_row": "FS029", "fictional_fee_amount_synthetic": 3551.13, "effective_from": "2026-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $3,551.13"}, {"request_key": "LR028", "batch_key": "BATCH-2026-10", "mock_code": "XJ126", "claim_type_requested": "Professional", "service_date": "2025-12-20", "bucket": "Matched", "matched_fee_row": "FS035", "fictional_fee_amount_synthetic": 2483.4, "effective_from": "2025-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $2,483.40"}, {"request_key": "LR029", "batch_key": "BATCH-2026-10", "mock_code": "XJ143", "claim_type_requested": "Professional", "service_date": "2025-09-07", "bucket": "Matched", "matched_fee_row": "FS058", "fictional_fee_amount_synthetic": 2112.34, "effective_from": "2025-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $2,112.34"}, {"request_key": "LR030", "batch_key": "BATCH-2026-10", "mock_code": "XJ161", "claim_type_requested": "Professional", "service_date": "2025-01-08", "bucket": "No match", "matched_fee_row": null, "fictional_fee_amount_synthetic": null, "effective_from": null, "effective_to": null, "claim_types_on_schedule": null, "earliest_effective_from": null, "duplicate_of": null, "match_rows": 0, "action": "Code is not on the schedule - research the code or ask the payer", "fee_display": ""}, {"request_key": "LR031", "batch_key": "BATCH-2026-10", "mock_code": "XJ144", "claim_type_requested": "Professional", "service_date": "2025-02-16", "bucket": "Matched", "matched_fee_row": "FS059", "fictional_fee_amount_synthetic": 1328.85, "effective_from": "2025-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $1,328.85"}, {"request_key": "LR032", "batch_key": "BATCH-2026-10", "mock_code": "XJ164", "claim_type_requested": "Professional", "service_date": "2026-01-31", "bucket": "No match", "matched_fee_row": null, "fictional_fee_amount_synthetic": null, "effective_from": null, "effective_to": null, "claim_types_on_schedule": null, "earliest_effective_from": null, "duplicate_of": null, "match_rows": 0, "action": "Code is not on the schedule - research the code or ask the payer", "fee_display": ""}, {"request_key": "LR033", "batch_key": "BATCH-2026-10", "mock_code": "XJ167", "claim_type_requested": "Professional", "service_date": "2026-01-27", "bucket": "No match", "matched_fee_row": null, "fictional_fee_amount_synthetic": null, "effective_from": null, "effective_to": null, "claim_types_on_schedule": null, "earliest_effective_from": null, "duplicate_of": null, "match_rows": 0, "action": "Code is not on the schedule - research the code or ask the payer", "fee_display": ""}, {"request_key": "LR034", "batch_key": "BATCH-2026-10", "mock_code": "XJ139", "claim_type_requested": "Professional", "service_date": "2026-07-28", "bucket": "Zero-pay ($0.00)", "matched_fee_row": "FS054", "fictional_fee_amount_synthetic": 0.0, "effective_from": "2026-04-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2026-04-01", "duplicate_of": null, "match_rows": 1, "action": "Rate is $0.00 (non-covered, mock) - a real answer, confirm before billing", "fee_display": "SYN $0.00"}, {"request_key": "LR035", "batch_key": "BATCH-2026-10", "mock_code": "XJ118", "claim_type_requested": "Professional", "service_date": "2026-08-28", "bucket": "Wrong claim type", "matched_fee_row": null, "fictional_fee_amount_synthetic": null, "effective_from": null, "effective_to": null, "claim_types_on_schedule": "Facility", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 0, "action": "Code exists only as Facility - confirm the claim type", "fee_display": ""}, {"request_key": "LR036", "batch_key": "BATCH-2026-10", "mock_code": "XQ209", "claim_type_requested": "Professional", "service_date": "2026-01-28", "bucket": "Zero-pay ($0.00)", "matched_fee_row": "FS089", "fictional_fee_amount_synthetic": 0.0, "effective_from": "2025-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate is $0.00 (non-covered, mock) - a real answer, confirm before billing", "fee_display": "SYN $0.00"}, {"request_key": "LR037", "batch_key": "BATCH-2026-10", "mock_code": "XJ152", "claim_type_requested": "Professional", "service_date": "2026-06-09", "bucket": "Wrong claim type", "matched_fee_row": null, "fictional_fee_amount_synthetic": null, "effective_from": null, "effective_to": null, "claim_types_on_schedule": "Facility", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 0, "action": "Code exists only as Facility - confirm the claim type", "fee_display": ""}, {"request_key": "LR038", "batch_key": "BATCH-2026-10", "mock_code": "XJ125", "claim_type_requested": "Professional", "service_date": "2026-01-23", "bucket": "Matched", "matched_fee_row": "FS034", "fictional_fee_amount_synthetic": 303.5, "effective_from": "2025-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $303.50"}, {"request_key": "LR039", "batch_key": "BATCH-2026-10", "mock_code": "XQ203", "claim_type_requested": "Professional", "service_date": "2026-04-23", "bucket": "Matched", "matched_fee_row": "FS083", "fictional_fee_amount_synthetic": 558.35, "effective_from": "2026-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $558.35"}, {"request_key": "LR040", "batch_key": "BATCH-2026-10", "mock_code": "XJ113", "claim_type_requested": "Professional", "service_date": "2025-03-14", "bucket": "Matched", "matched_fee_row": "FS016", "fictional_fee_amount_synthetic": 4307.57, "effective_from": "2025-01-01", "effective_to": "2025-12-31", "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $4,307.57"}, {"request_key": "LR041", "batch_key": "BATCH-2026-10", "mock_code": "XJ153", "claim_type_requested": "Professional", "service_date": "2025-04-09", "bucket": "Matched", "matched_fee_row": "FS069", "fictional_fee_amount_synthetic": 1394.07, "effective_from": "2025-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $1,394.07"}, {"request_key": "LR042", "batch_key": "BATCH-2026-10", "mock_code": "XJ154", "claim_type_requested": "Professional", "service_date": "2025-09-09", "bucket": "Zero-pay ($0.00)", "matched_fee_row": "FS070", "fictional_fee_amount_synthetic": 0.0, "effective_from": "2025-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate is $0.00 (non-covered, mock) - a real answer, confirm before billing", "fee_display": "SYN $0.00"}, {"request_key": "LR043", "batch_key": "BATCH-2026-10", "mock_code": "XJ132", "claim_type_requested": "Professional", "service_date": "2025-04-09", "bucket": "Matched", "matched_fee_row": "FS043", "fictional_fee_amount_synthetic": 1912.71, "effective_from": "2025-01-01", "effective_to": "2025-12-31", "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $1,912.71"}, {"request_key": "LR044", "batch_key": "BATCH-2026-10", "mock_code": "XJ162", "claim_type_requested": "Professional", "service_date": "2025-01-20", "bucket": "No match", "matched_fee_row": null, "fictional_fee_amount_synthetic": null, "effective_from": null, "effective_to": null, "claim_types_on_schedule": null, "earliest_effective_from": null, "duplicate_of": null, "match_rows": 0, "action": "Code is not on the schedule - research the code or ask the payer", "fee_display": ""}, {"request_key": "LR045", "batch_key": "BATCH-2026-10", "mock_code": "XJ152", "claim_type_requested": "Professional", "service_date": "2025-09-13", "bucket": "Wrong claim type", "matched_fee_row": null, "fictional_fee_amount_synthetic": null, "effective_from": null, "effective_to": null, "claim_types_on_schedule": "Facility", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 0, "action": "Code exists only as Facility - confirm the claim type", "fee_display": ""}, {"request_key": "LR046", "batch_key": "BATCH-2026-10", "mock_code": "XJ146", "claim_type_requested": "Professional", "service_date": "2026-05-06", "bucket": "Matched", "matched_fee_row": "FS061", "fictional_fee_amount_synthetic": 1124.56, "effective_from": "2025-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $1,124.56"}, {"request_key": "LR047", "batch_key": "BATCH-2026-10", "mock_code": "XJ165", "claim_type_requested": "Professional", "service_date": "2026-07-13", "bucket": "No match", "matched_fee_row": null, "fictional_fee_amount_synthetic": null, "effective_from": null, "effective_to": null, "claim_types_on_schedule": null, "earliest_effective_from": null, "duplicate_of": null, "match_rows": 0, "action": "Code is not on the schedule - research the code or ask the payer", "fee_display": ""}, {"request_key": "LR048", "batch_key": "BATCH-2026-10", "mock_code": "XJ166", "claim_type_requested": "Professional", "service_date": "2025-11-21", "bucket": "No match", "matched_fee_row": null, "fictional_fee_amount_synthetic": null, "effective_from": null, "effective_to": null, "claim_types_on_schedule": null, "earliest_effective_from": null, "duplicate_of": null, "match_rows": 0, "action": "Code is not on the schedule - research the code or ask the payer", "fee_display": ""}, {"request_key": "LR049", "batch_key": "BATCH-2026-10", "mock_code": "XQ206", "claim_type_requested": "Professional", "service_date": "2026-05-19", "bucket": "Matched", "matched_fee_row": "FS086", "fictional_fee_amount_synthetic": 3217.4, "effective_from": "2025-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $3,217.40"}, {"request_key": "LR050", "batch_key": "BATCH-2026-10", "mock_code": "XJ133", "claim_type_requested": "Professional", "service_date": "2026-04-10", "bucket": "Matched", "matched_fee_row": "FS045", "fictional_fee_amount_synthetic": 4298.53, "effective_from": "2025-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $4,298.53"}, {"request_key": "LR051", "batch_key": "BATCH-2026-10", "mock_code": "XJ128", "claim_type_requested": "Professional", "service_date": "2025-09-13", "bucket": "Matched", "matched_fee_row": "FS037", "fictional_fee_amount_synthetic": 1506.61, "effective_from": "2025-01-01", "effective_to": "2025-12-31", "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $1,506.61"}, {"request_key": "LR052", "batch_key": "BATCH-2026-10", "mock_code": "XJ122", "claim_type_requested": "Professional", "service_date": "2026-03-31", "bucket": "Out of date range", "matched_fee_row": null, "fictional_fee_amount_synthetic": null, "effective_from": null, "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2026-04-01", "duplicate_of": null, "match_rows": 0, "action": "No rate in force on 2026-03-31 (schedule starts 2026-04-01) - check the date or prior schedule", "fee_display": ""}, {"request_key": "LR053", "batch_key": "BATCH-2026-10", "mock_code": "XJ138", "claim_type_requested": "Professional", "service_date": "2025-11-22", "bucket": "Matched", "matched_fee_row": "FS052", "fictional_fee_amount_synthetic": 54.73, "effective_from": "2025-01-01", "effective_to": "2025-12-31", "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $54.73"}, {"request_key": "LR054", "batch_key": "BATCH-2026-10", "mock_code": "XJ136", "claim_type_requested": "Professional", "service_date": "2025-01-23", "bucket": "Zero-pay ($0.00)", "matched_fee_row": "FS050", "fictional_fee_amount_synthetic": 0.0, "effective_from": "2025-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate is $0.00 (non-covered, mock) - a real answer, confirm before billing", "fee_display": "SYN $0.00"}, {"request_key": "LR055", "batch_key": "BATCH-2026-10", "mock_code": "XJ130", "claim_type_requested": "Professional", "service_date": "2026-08-23", "bucket": "Wrong claim type", "matched_fee_row": null, "fictional_fee_amount_synthetic": null, "effective_from": null, "effective_to": null, "claim_types_on_schedule": "Facility", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 0, "action": "Code exists only as Facility - confirm the claim type", "fee_display": ""}, {"request_key": "LR056", "batch_key": "BATCH-2026-10", "mock_code": "XJ114", "claim_type_requested": "Professional", "service_date": "2025-09-12", "bucket": "Zero-pay ($0.00)", "matched_fee_row": "FS018", "fictional_fee_amount_synthetic": 0.0, "effective_from": "2025-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate is $0.00 (non-covered, mock) - a real answer, confirm before billing", "fee_display": "SYN $0.00"}, {"request_key": "LR057", "batch_key": "BATCH-2026-10", "mock_code": "XJ112", "claim_type_requested": "Professional", "service_date": "2025-12-01", "bucket": "Matched", "matched_fee_row": "FS015", "fictional_fee_amount_synthetic": 2864.1, "effective_from": "2025-01-01", "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 1, "action": "Rate found for code, claim type and date", "fee_display": "SYN $2,864.10"}, {"request_key": "LR058", "batch_key": "BATCH-2026-10", "mock_code": "XJ110", "claim_type_requested": "Professional", "service_date": "2024-11-15", "bucket": "Out of date range", "matched_fee_row": null, "fictional_fee_amount_synthetic": null, "effective_from": null, "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 0, "action": "No rate in force on 2024-11-15 (schedule starts 2025-01-01) - check the date or prior schedule", "fee_display": ""}, {"request_key": "LR059", "batch_key": "BATCH-2026-10", "mock_code": "XJ118", "claim_type_requested": "Professional", "service_date": "2024-11-15", "bucket": "Wrong claim type", "matched_fee_row": null, "fictional_fee_amount_synthetic": null, "effective_from": null, "effective_to": null, "claim_types_on_schedule": "Facility", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 0, "action": "Code exists only as Facility - confirm the claim type", "fee_display": ""}, {"request_key": "LR060", "batch_key": "BATCH-2026-10", "mock_code": "XJ142", "claim_type_requested": "Professional", "service_date": "2024-11-15", "bucket": "Out of date range", "matched_fee_row": null, "fictional_fee_amount_synthetic": null, "effective_from": null, "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": null, "match_rows": 0, "action": "No rate in force on 2024-11-15 (schedule starts 2025-01-01) - check the date or prior schedule", "fee_display": ""}, {"request_key": "LR061", "batch_key": "BATCH-2026-10", "mock_code": "XJ110", "claim_type_requested": "Professional", "service_date": "2025-08-29", "bucket": "Duplicate request", "matched_fee_row": null, "fictional_fee_amount_synthetic": null, "effective_from": null, "effective_to": null, "claim_types_on_schedule": "Professional", "earliest_effective_from": "2025-01-01", "duplicate_of": "LR005", "match_rows": 1, "action": "Duplicate of LR005 - removed from the count", "fee_display": ""}], "errors": [{"request_key": "LR006", "mock_code": "XQ210", "service_date": "2025-08-17", "correct_bucket": "Out of date range", "correct_amount_synthetic": null, "naive_result": "Priced", "naive_fee_row": "FS090", "naive_amount_synthetic": 628.09, "error": "Priced outside the effective dates", "correct_display": "", "naive_display": "SYN $628.09"}, {"request_key": "LR008", "mock_code": "XJ129", "service_date": "2026-06-18", "correct_bucket": "Matched", "correct_amount_synthetic": 272.64, "naive_result": "Priced", "naive_fee_row": "FS039", "naive_amount_synthetic": 258.8, "error": "Priced from the wrong rate period", "correct_display": "SYN $272.64", "naive_display": "SYN $258.80"}, {"request_key": "LR009", "mock_code": "XJ114", "service_date": "2025-11-08", "correct_bucket": "Zero-pay ($0.00)", "correct_amount_synthetic": 0.0, "naive_result": "Not found", "naive_fee_row": "FS018", "naive_amount_synthetic": 0.0, "error": "Zero-pay read as not found", "correct_display": "SYN $0.00", "naive_display": "SYN $0.00"}, {"request_key": "LR011", "mock_code": "XJ140", "service_date": "2026-04-09", "correct_bucket": "Wrong claim type", "correct_amount_synthetic": null, "naive_result": "Priced", "naive_fee_row": "FS055", "naive_amount_synthetic": 22.97, "error": "Priced under the wrong claim type", "correct_display": "", "naive_display": "SYN $22.97"}, {"request_key": "LR012", "mock_code": "XJ159", "service_date": "2026-05-01", "correct_bucket": "Matched", "correct_amount_synthetic": 682.81, "naive_result": "Priced", "naive_fee_row": "FS076", "naive_amount_synthetic": 665.28, "error": "Priced from the wrong rate period", "correct_display": "SYN $682.81", "naive_display": "SYN $665.28"}, {"request_key": "LR013", "mock_code": "XJ134", "service_date": "2026-06-17", "correct_bucket": "Matched", "correct_amount_synthetic": 3261.92, "naive_result": "Priced", "naive_fee_row": "FS046", "naive_amount_synthetic": 3372.48, "error": "Priced from the wrong rate period", "correct_display": "SYN $3,261.92", "naive_display": "SYN $3,372.48"}, {"request_key": "LR014", "mock_code": "XJ149", "service_date": "2026-05-01", "correct_bucket": "Wrong claim type", "correct_amount_synthetic": null, "naive_result": "Priced", "naive_fee_row": "FS065", "naive_amount_synthetic": 3356.19, "error": "Priced under the wrong claim type", "correct_display": "", "naive_display": "SYN $3,356.19"}, {"request_key": "LR019", "mock_code": "XJ130", "service_date": "2026-01-07", "correct_bucket": "Wrong claim type", "correct_amount_synthetic": null, "naive_result": "Priced", "naive_fee_row": "FS041", "naive_amount_synthetic": 2078.98, "error": "Priced under the wrong claim type", "correct_display": "", "naive_display": "SYN $2,078.98"}, {"request_key": "LR021", "mock_code": "XJ140", "service_date": "2026-10-03", "correct_bucket": "Wrong claim type", "correct_amount_synthetic": null, "naive_result": "Priced", "naive_fee_row": "FS055", "naive_amount_synthetic": 22.97, "error": "Priced under the wrong claim type", "correct_display": "", "naive_display": "SYN $22.97"}, {"request_key": "LR023", "mock_code": "XJ115", "service_date": "2026-02-28", "correct_bucket": "Matched", "correct_amount_synthetic": 2811.77, "naive_result": "Priced", "naive_fee_row": "FS019", "naive_amount_synthetic": 2774.51, "error": "Priced from the wrong rate period", "correct_display": "SYN $2,811.77", "naive_display": "SYN $2,774.51"}, {"request_key": "LR027", "mock_code": "XJ121", "service_date": "2026-09-05", "correct_bucket": "Matched", "correct_amount_synthetic": 3551.13, "naive_result": "Priced", "naive_fee_row": "FS028", "naive_amount_synthetic": 3698.34, "error": "Priced from the wrong rate period", "correct_display": "SYN $3,551.13", "naive_display": "SYN $3,698.34"}, {"request_key": "LR034", "mock_code": "XJ139", "service_date": "2026-07-28", "correct_bucket": "Zero-pay ($0.00)", "correct_amount_synthetic": 0.0, "naive_result": "Not found", "naive_fee_row": "FS054", "naive_amount_synthetic": 0.0, "error": "Zero-pay read as not found", "correct_display": "SYN $0.00", "naive_display": "SYN $0.00"}, {"request_key": "LR035", "mock_code": "XJ118", "service_date": "2026-08-28", "correct_bucket": "Wrong claim type", "correct_amount_synthetic": null, "naive_result": "Priced", "naive_fee_row": "FS024", "naive_amount_synthetic": 3379.21, "error": "Priced under the wrong claim type", "correct_display": "", "naive_display": "SYN $3,379.21"}, {"request_key": "LR036", "mock_code": "XQ209", "service_date": "2026-01-28", "correct_bucket": "Zero-pay ($0.00)", "correct_amount_synthetic": 0.0, "naive_result": "Not found", "naive_fee_row": "FS089", "naive_amount_synthetic": 0.0, "error": "Zero-pay read as not found", "correct_display": "SYN $0.00", "naive_display": "SYN $0.00"}, {"request_key": "LR037", "mock_code": "XJ152", "service_date": "2026-06-09", "correct_bucket": "Wrong claim type", "correct_amount_synthetic": null, "naive_result": "Priced", "naive_fee_row": "FS068", "naive_amount_synthetic": 4130.37, "error": "Priced under the wrong claim type", "correct_display": "", "naive_display": "SYN $4,130.37"}, {"request_key": "LR039", "mock_code": "XQ203", "service_date": "2026-04-23", "correct_bucket": "Matched", "correct_amount_synthetic": 558.35, "naive_result": "Priced", "naive_fee_row": "FS082", "naive_amount_synthetic": 521.0, "error": "Priced from the wrong rate period", "correct_display": "SYN $558.35", "naive_display": "SYN $521.00"}, {"request_key": "LR042", "mock_code": "XJ154", "service_date": "2025-09-09", "correct_bucket": "Zero-pay ($0.00)", "correct_amount_synthetic": 0.0, "naive_result": "Not found", "naive_fee_row": "FS070", "naive_amount_synthetic": 0.0, "error": "Zero-pay read as not found", "correct_display": "SYN $0.00", "naive_display": "SYN $0.00"}, {"request_key": "LR045", "mock_code": "XJ152", "service_date": "2025-09-13", "correct_bucket": "Wrong claim type", "correct_amount_synthetic": null, "naive_result": "Priced", "naive_fee_row": "FS068", "naive_amount_synthetic": 4130.37, "error": "Priced under the wrong claim type", "correct_display": "", "naive_display": "SYN $4,130.37"}, {"request_key": "LR052", "mock_code": "XJ122", "service_date": "2026-03-31", "correct_bucket": "Out of date range", "correct_amount_synthetic": null, "naive_result": "Priced", "naive_fee_row": "FS030", "naive_amount_synthetic": 3739.19, "error": "Priced outside the effective dates", "correct_display": "", "naive_display": "SYN $3,739.19"}, {"request_key": "LR054", "mock_code": "XJ136", "service_date": "2025-01-23", "correct_bucket": "Zero-pay ($0.00)", "correct_amount_synthetic": 0.0, "naive_result": "Not found", "naive_fee_row": "FS050", "naive_amount_synthetic": 0.0, "error": "Zero-pay read as not found", "correct_display": "SYN $0.00", "naive_display": "SYN $0.00"}, {"request_key": "LR055", "mock_code": "XJ130", "service_date": "2026-08-23", "correct_bucket": "Wrong claim type", "correct_amount_synthetic": null, "naive_result": "Priced", "naive_fee_row": "FS041", "naive_amount_synthetic": 2078.98, "error": "Priced under the wrong claim type", "correct_display": "", "naive_display": "SYN $2,078.98"}, {"request_key": "LR056", "mock_code": "XJ114", "service_date": "2025-09-12", "correct_bucket": "Zero-pay ($0.00)", "correct_amount_synthetic": 0.0, "naive_result": "Not found", "naive_fee_row": "FS018", "naive_amount_synthetic": 0.0, "error": "Zero-pay read as not found", "correct_display": "SYN $0.00", "naive_display": "SYN $0.00"}, {"request_key": "LR058", "mock_code": "XJ110", "service_date": "2024-11-15", "correct_bucket": "Out of date range", "correct_amount_synthetic": null, "naive_result": "Priced", "naive_fee_row": "FS012", "naive_amount_synthetic": 1480.55, "error": "Priced outside the effective dates", "correct_display": "", "naive_display": "SYN $1,480.55"}, {"request_key": "LR059", "mock_code": "XJ118", "service_date": "2024-11-15", "correct_bucket": "Wrong claim type", "correct_amount_synthetic": null, "naive_result": "Priced", "naive_fee_row": "FS024", "naive_amount_synthetic": 3379.21, "error": "Priced under the wrong claim type", "correct_display": "", "naive_display": "SYN $3,379.21"}, {"request_key": "LR060", "mock_code": "XJ142", "service_date": "2024-11-15", "correct_bucket": "Out of date range", "correct_amount_synthetic": null, "naive_result": "Priced", "naive_fee_row": "FS057", "naive_amount_synthetic": 361.51, "error": "Priced outside the effective dates", "correct_display": "", "naive_display": "SYN $361.51"}, {"request_key": "LR061", "mock_code": "XJ110", "service_date": "2025-08-29", "correct_bucket": "Duplicate request", "correct_amount_synthetic": null, "naive_result": "Priced", "naive_fee_row": "FS012", "naive_amount_synthetic": 1480.55, "error": "Duplicate priced twice", "correct_display": "", "naive_display": "SYN $1,480.55"}], "qa": [{"check": "Every request lands in exactly one bucket", "status": "pass", "observed": "Matched: 33 \u00b7 Zero-pay ($0.00): 6 \u00b7 No match: 8 \u00b7 Wrong claim type: 9 \u00b7 Out of date range: 4 \u00b7 Duplicate request: 1 = 61 of 61 requests", "rule": "Ordered rules: duplicate, match, no match, wrong claim type, out of range"}, {"check": "A match needs code + claim type + effective date, and hits one row", "status": "pass", "observed": "0 overlapping schedule intervals; 0 requests matching more than one row", "rule": "service_date BETWEEN effective_from AND COALESCE(effective_to, open)"}, {"check": "$0.00 kept as zero-pay, never as 'no match'", "status": "pass", "observed": "6 requests priced at $0.00 (codes XJ114, XJ136, XJ139, XJ154, XQ209); the blank-or-zero shortcut files 6 of them as not found", "rule": "A zero rate is an answer; a missing row is not"}, {"check": "Wrong claim type separated from no match", "status": "warn", "observed": "9 Professional requests for codes on the Facility schedule only; the code-only shortcut prices 9 of them anyway", "rule": "Claim type is part of the key"}, {"check": "Out-of-date-range requests flagged (inclusive boundaries)", "status": "warn", "observed": "4 requests have no rate in force on the service date, including LR052 one day before its rate starts", "rule": "Effective dates are inclusive on both ends"}, {"check": "Duplicate requests removed once, original kept", "status": "pass", "observed": "LR061 duplicates LR005", "rule": "Same code + claim type + service date"}, {"check": "Rate changes priced from the interval covering the service date", "status": "pass", "observed": "20 codes changed rate on Jan 1, 2026; the code-only shortcut would use the 2025 rate for 6 matched request(s) dated 2026", "rule": "Pick the interval by service date, not the first row"}, {"check": "Codes missing from the schedule reported as no match", "status": "warn", "observed": "8 requests for 8 catalog codes with no schedule row", "rule": "Route to code research, never guess a rate"}, {"check": "Every amount labelled synthetic", "status": "pass", "observed": "Amount columns end in _synthetic; workbook amount cells use the 'SYN $' number format; the dashboard prints 'SYN $'", "rule": "No amount can be mistaken for a real reimbursement rate"}, {"check": "Independent Python classifier agrees with SQL", "status": "pass", "observed": "61/61 requests in the same bucket", "rule": "Same rules, different implementation"}]};</script>
+<script>/* Shared dashboard helpers - inlined into every project dashboard at build time.
+   Charts read colors from CSS variables, so light/dark themes stay in one place. */
+(function () {
+  // ?theme=light|dark forces a theme (used for README screenshots); otherwise follow the OS.
+  const forced = new URLSearchParams(location.search).get("theme");
+  if (forced === "light" || forced === "dark") document.documentElement.setAttribute("data-theme", forced);
+  const charts = [];
+  const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const fmt = new Intl.NumberFormat("en-US");
+
+  function colors() {
+    return {
+      ink: css("--ink"), ink2: css("--ink-2"), muted: css("--muted"), grid: css("--grid"), axis: css("--axis"),
+      surface: css("--surface"), s1: css("--series-1"), s2: css("--series-2"), s3: css("--series-3"),
+      gray: css("--series-gray"), good: css("--good"), warning: css("--warning"), critical: css("--critical"),
+      seq: [1, 2, 3, 4, 5, 6, 7].map((i) => css(`--seq-${i}`)),
+      ord: [1, 2, 3, 4, 5].map((i) => css(`--ord-${i}`)),
+    };
+  }
+
+  function layout(extra) {
+    const c = colors();
+    const axis = { gridcolor: c.grid, linecolor: c.axis, zeroline: false, tickfont: { color: c.muted, size: 11 },
+                   title: { font: { color: c.ink2, size: 12 } }, automargin: true };
+    const base = {
+      paper_bgcolor: "rgba(0,0,0,0)", plot_bgcolor: "rgba(0,0,0,0)",
+      font: { family: 'system-ui, -apple-system, "Segoe UI", sans-serif', color: c.ink, size: 12 },
+      margin: { l: 48, r: 18, t: 10, b: 40 }, hovermode: "x unified",
+      hoverlabel: { bgcolor: c.surface, bordercolor: c.axis, font: { color: c.ink } },
+      legend: { orientation: "h", x: 0, y: 1.12, font: { color: c.ink2, size: 12 } },
+      xaxis: Object.assign({}, axis, { showgrid: false, showline: true }),
+      yaxis: Object.assign({}, axis, { showline: false, rangemode: "tozero" }),
+      bargap: 0.35,
+    };
+    return deepMerge(base, extra || {});
+  }
+
+  function deepMerge(a, b) {
+    const out = Array.isArray(a) ? a.slice() : Object.assign({}, a);
+    for (const k of Object.keys(b)) {
+      if (b[k] && typeof b[k] === "object" && !Array.isArray(b[k]) && a[k] && typeof a[k] === "object") out[k] = deepMerge(a[k], b[k]);
+      else out[k] = b[k];
+    }
+    return out;
+  }
+
+  const config = { displayModeBar: false, responsive: true };
+
+  function register(fn) { charts.push(fn); }
+  function renderAll() { const c = colors(); charts.forEach((fn) => fn(c)); }
+
+  function table(el, columns, rows) {
+    const head = columns.map((c) => `<th class="${c.num ? "num" : ""}">${c.label}</th>`).join("");
+    const body = rows.map((r) => "<tr>" + columns.map((c) => {
+      let v = r[c.key];
+      if (c.num && typeof v === "number") v = c.pct ? (v * 100).toFixed(1) + "%" : (Number.isInteger(v) ? fmt.format(v) : v.toFixed(c.dp ?? 1));
+      return `<td class="${c.num ? "num" : ""}">${v ?? ""}</td>`;
+    }).join("") + "</tr>").join("");
+    el.innerHTML = `<div class="table-scroll"><table class="data"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+  }
+
+  function tiles(el, items) {
+    el.innerHTML = items.map((t) => {
+      let delta = "";
+      if (t.delta !== undefined && t.delta !== null) {
+        const up = t.delta >= 0;
+        const good = t.upIsGood === undefined ? null : (up === t.upIsGood);
+        const cls = good === null ? "" : (good ? "up" : "down");
+        const sign = up ? "+" : "−";
+        delta = `<p class="delta"><span class="${cls}">${sign}${Math.abs(t.delta).toFixed(1)}%</span> ${t.deltaLabel || ""}</p>`;
+      }
+      return `<div class="tile"><p class="label">${t.label}</p><p class="value">${t.value}</p>${delta}${t.note ? `<p class="note">${t.note}</p>` : ""}</div>`;
+    }).join("");
+  }
+
+  window.Dash = { register, renderAll, layout, config, table, tiles, colors, fmt };
+  document.addEventListener("DOMContentLoaded", renderAll);
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", renderAll);
+  new MutationObserver(renderAll).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+})();
+</script>
+<script>
+(function () {
+  const D = window.DATA;
+  document.getElementById("asof").textContent = D.meta.as_of;
+  document.getElementById("seed").textContent = D.meta.seed;
+  document.getElementById("seed2").textContent = D.meta.seed;
+  Dash.tiles(document.getElementById("tiles"), D.tiles);
+
+  Dash.register((c) => {
+    const color = { "Matched": c.good, "Zero-pay ($0.00)": c.s1, "No match": c.critical, "Wrong claim type": c.s2,
+                    "Out of date range": c.warning, "Duplicate request": c.gray };
+    const rows = D.summary.slice().reverse();
+    Plotly.react("c-buckets", [{
+      type: "bar", orientation: "h", y: rows.map((r) => r.bucket), x: rows.map((r) => r.requests),
+      marker: { color: rows.map((r) => color[r.bucket]) }, text: rows.map((r) => r.requests), textposition: "outside",
+      textfont: { color: c.ink2 }, cliponaxis: false, hovertemplate: "%{y}: %{x}<extra></extra>" }],
+      Dash.layout({ showlegend: false, hovermode: "closest", margin: { l: 140, r: 30 }, xaxis: { showgrid: true, showline: false },
+                    yaxis: { showgrid: false } }), Dash.config);
+  });
+  Dash.table(document.getElementById("tbl-errors"), [
+    { key: "request_key", label: "Request" }, { key: "mock_code", label: "Code" }, { key: "service_date", label: "Service date" },
+    { key: "correct_bucket", label: "Correct answer" }, { key: "correct_display", label: "Correct fee (synthetic)", num: true },
+    { key: "naive_display", label: "Code-only fee (synthetic)", num: true }, { key: "error", label: "What went wrong" }], D.errors);
+  Dash.table(document.getElementById("tbl-tracker"), [
+    { key: "request_key", label: "Request" }, { key: "mock_code", label: "Code" }, { key: "claim_type_requested", label: "Claim type" },
+    { key: "service_date", label: "Service date" }, { key: "bucket", label: "Bucket" }, { key: "matched_fee_row", label: "Fee row" },
+    { key: "fee_display", label: "Fictional fee (SYNTHETIC)", num: true }, { key: "action", label: "Action / note" }], D.tracker);
+
+  const icon = { pass: "Pass", warn: "Warn", fail: "Fail" };
+  document.getElementById("qa").innerHTML = D.qa.map((x) =>
+    `<div class="qa-item"><span class="badge ${x.status}"><span class="dot"></span>${icon[x.status]}</span>
+      <div><b>${x.check}</b><div class="obs">${x.observed}</div><div class="obs">Rule: ${x.rule}</div></div></div>`).join("");
+})();
+</script>
+</body>
+</html>

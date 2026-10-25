@@ -1,0 +1,29 @@
+plan_key,raw_plan_name,umbrella_key,patients_served_plan
+PLN001,Heronview Health PPO,PU01,126
+PLN002,Heronview Health HMO,PU01,84
+PLN003,HERONVIEW HEALTH,PU01,26
+PLN004,Saltgrass Mutual PPO,PU02,91
+PLN005,Saltgrass Mutual Choice,PU02,57
+PLN006,Saltgrass Mut.,PU02,20
+PLN007,Kestrel Shield MA HMO,PU03,104
+PLN008,Kestrel Shield MA PPO,PU03,62
+PLN009,Brightfen Advantage Plus,PU04,102
+PLN010,Brightfen Adv. Plus,PU04,34
+PLN011,Sandmere Medicaid Plan,PU05,89
+PLN012,Sandmere Medicaid - LTC,PU05,18
+PLN013,Cobaltine Commercial PPO,PU06,67
+PLN014,Cobaltine EPO,PU06,38
+PLN015,Ospreyline Senior Advantage,PU07,78
+PLN016,Ospreyline Senior Adv,PU07,42
+PLN017,Driftwell Health Alliance,PU08,48
+PLN018,Driftwell Marketplace Silver,PU08,43
+PLN019,Coastline Partners by Driftwell,PU08,24
+PLN020,Fernhollow Care Medicaid,PU09,41
+PLN021,Fernhollow Care Kids,PU09,14
+PLN022,Quillmont Federal Medicare Part B,PU10,59
+PLN023,Quillmont Medicare Supplement,PU10,19
+PLN024,Other Commercial - Small Group,PU99,96
+PLN025,Self-pay,PU99,32
+PLN026,Workers Comp (mock),PU99,26
+PLN027,Heronview Hlth PPO ,UNMAPPED,2
+PLN028,DRIFTWELL MKTPLACE,UNMAPPED,1

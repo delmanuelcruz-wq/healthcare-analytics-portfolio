@@ -1,0 +1,248 @@
+provider_id,fictional_practice,specialty_label,county_name,state_code,record_count,created_date,first_referral,last_referral,referrals_90d,referrals_prior_90d,referrals_12m,referrals_all_time,new_patients_all_time,status_90d,is_newly_active,days_since_last_referral
+PRV0204,Marshland Neurology Associates of Cypressmoor (fictional),Neurology,Cypressmoor County,GA,1,2024-03-14,2024-07-01,2026-10-09,17,10,40,92,61,Active,0,15
+PRV0015,Sandhill Kidney Care (fictional),Nephrology,Wren Hollow County,GA,1,2022-09-25,2024-07-31,2026-10-21,15,18,66,135,93,Active,0,3
+PRV0227,Sandhill Pulmonary Care (fictional),Pulmonology,Gullwing County,SC,1,2025-06-12,2025-06-26,2026-10-19,15,12,48,62,42,Active,0,5
+PRV0120,Sandhill Allergy & Immunology (fictional),Immunology/Allergy,Tallow Creek County,GA,1,2024-10-31,2024-11-20,2026-10-06,13,12,48,77,54,Active,0,18
+PRV0104,Riverbend Digestive Health (fictional),Gastroenterology,Larkspur County,GA,1,2022-03-20,2024-10-08,2026-10-16,13,8,30,45,31,Active,0,8
+PRV0152,Bayline Family Medicine (fictional),Primary Care,Larkspur County,GA,1,2026-06-22,2026-07-07,2026-10-16,13,3,16,16,15,Active,0,8
+PRV0230,Sandhill Pulmonary Care (fictional),Pulmonology,Gullwing County,SC,2,2021-08-15,2024-07-16,2026-10-08,12,4,30,74,48,Active,0,16
+PRV0194,Seabreeze Neurology Associates of Gullwing (fictional),Neurology,Gullwing County,SC,1,2023-03-11,2024-07-02,2026-10-15,11,8,37,63,36,Active,0,9
+PRV0001,Marshland Family Medicine (fictional),Primary Care,Tallow Creek County,GA,1,2022-09-22,2024-07-29,2026-10-12,10,6,31,59,45,Active,0,12
+PRV0035,Oakmoss Neurology Associates (fictional),Neurology,Tallow Creek County,GA,1,2026-08-20,2026-09-08,2026-10-22,9,0,9,9,7,Active,1,2
+PRV0232,Harbor Pulmonary Care of Cypressmoor (fictional),Pulmonology,Cypressmoor County,GA,1,2023-03-02,2024-07-17,2026-10-13,8,6,28,58,30,Active,0,11
+PRV0042,Tidal Kidney Care (fictional),Nephrology,Wren Hollow County,GA,1,2021-08-23,2024-11-12,2026-10-12,8,1,17,30,22,Active,0,12
+PRV0085,Bluestem Neurology Associates of Larkspur (fictional),Neurology,Larkspur County,GA,1,2022-01-09,2024-07-01,2026-10-19,7,15,53,130,79,Active,0,5
+PRV0107,Riverbend Digestive Health (fictional),Gastroenterology,Larkspur County,GA,1,2024-07-29,2024-08-19,2026-10-22,7,3,24,51,37,Active,0,2
+PRV0100,Magnolia Pulmonary Care (fictional),Pulmonology,Palmetto Reach County,NC,1,2022-11-18,2024-07-30,2026-10-21,7,6,23,47,33,Active,0,3
+PRV0117,Bayline Digestive Health (fictional),Gastroenterology,Cedar Landing County,NC,1,2025-09-27,2025-10-10,2026-10-22,7,6,21,22,16,Active,0,2
+PRV0109,Oakmoss Pulmonary Care of Larkspur (fictional),Pulmonology,Larkspur County,GA,1,2022-01-26,2024-08-08,2026-10-08,7,4,20,36,23,Active,0,16
+PRV0139,Marshland Rheumatology of Cedar (fictional),Rheumatology,Cedar Landing County,NC,1,2025-12-25,2026-01-06,2026-09-29,7,1,11,11,10,Active,0,25
+PRV0171,Riverbend Rheumatology of Cypressmoor (fictional),Rheumatology,Cypressmoor County,GA,1,2023-11-27,2024-08-09,2026-10-12,6,8,41,71,41,Active,0,12
+PRV0057,Sandhill Kidney Care of Palmetto (fictional),Nephrology,Palmetto Reach County,NC,1,2021-12-27,2024-08-12,2026-10-15,6,5,27,44,35,Active,0,9
+PRV0151,Bayline Family Medicine (fictional),Primary Care,Larkspur County,GA,1,2023-02-11,2024-07-11,2026-10-09,6,2,17,30,25,Active,0,15
+PRV0134,Riverbend Neurology Associates of Cedar (fictional),Neurology,Cedar Landing County,NC,1,2022-06-15,2025-01-10,2026-09-30,6,1,16,26,16,Active,0,24
+PRV0144,Oakmoss Kidney Care (fictional),Nephrology,Indigo Flats County,SC,1,2021-06-13,2024-11-27,2026-10-19,6,0,7,12,6,Active,0,5
+PRV0061,Seabreeze Pulmonary Care (fictional),Pulmonology,Sablecrest County,SC,2,2024-12-01,2025-01-23,2026-09-23,5,7,28,45,26,Active,0,31
+PRV0145,Bluestem Allergy & Immunology (fictional),Immunology/Allergy,Ospreyford County,NC,1,2023-12-13,2024-08-08,2026-09-18,5,7,23,40,22,Active,0,36
+PRV0048,Sandhill Neurology Associates (fictional),Neurology,Cypressmoor County,GA,1,2023-11-28,2024-07-23,2026-10-21,5,5,18,54,38,Active,0,3
+PRV0192,Bayline Digestive Health of Tallow (fictional),Gastroenterology,Tallow Creek County,GA,1,2023-06-16,2024-07-05,2026-10-19,5,6,18,35,19,Active,0,5
+PRV0195,Seabreeze Neurology Associates of Gullwing (fictional),Neurology,Gullwing County,SC,1,2025-08-24,2025-10-16,2026-10-23,5,4,17,18,13,Active,0,1
+PRV0090,Lowcountry Rheumatology of Indigo (fictional),Rheumatology,Indigo Flats County,SC,1,2023-06-26,2024-09-05,2026-10-02,5,5,15,36,20,Active,0,22
+PRV0050,Bluestem Dermatology of Tallow (fictional),Dermatology,Tallow Creek County,GA,1,2024-01-18,2024-12-06,2026-10-19,5,5,14,21,10,Active,0,5
+PRV0174,Harbor Pulmonary Care of Gullwing (fictional),Pulmonology,Gullwing County,SC,1,2025-01-03,2025-03-13,2026-10-13,5,1,14,17,7,Active,0,11
+PRV0029,Tidal Dermatology (fictional),Dermatology,Larkspur County,GA,1,2021-05-28,2024-09-04,2026-10-12,5,3,13,22,17,Active,0,12
+PRV0112,Sandhill Rheumatology of Quarry (fictional),Rheumatology,Quarry Hill County,NC,1,2025-08-27,2026-01-15,2026-09-24,5,0,8,8,6,Active,0,30
+PRV0183,Oakmoss Rheumatology (fictional),Rheumatology,Heronmouth County,SC,1,2022-04-13,2024-07-12,2026-08-17,4,4,31,57,38,Active,0,68
+PRV0071,Oakmoss Pulmonary Care (fictional),Pulmonology,Larkspur County,GA,1,2025-04-18,2025-05-20,2026-10-05,4,7,26,35,20,Active,0,19
+PRV0218,Magnolia Pulmonary Care of Brinemoor (fictional),Pulmonology,Brinemoor County,NC,1,2023-09-08,2024-08-13,2026-10-23,4,7,23,38,29,Active,0,1
+PRV0207,Marshland Neurology Associates of Cypressmoor (fictional),Neurology,Cypressmoor County,GA,1,2022-08-18,2024-07-25,2026-10-05,4,3,21,39,16,Active,0,19
+PRV0143,Oakmoss Kidney Care (fictional),Nephrology,Indigo Flats County,SC,1,2023-03-05,2024-08-01,2026-10-16,4,8,19,28,22,Active,0,8
+PRV0105,Riverbend Digestive Health (fictional),Gastroenterology,Larkspur County,GA,1,2023-02-09,2024-07-01,2026-10-02,4,9,18,44,28,Active,0,22
+PRV0096,Pinewood Neurology Associates (fictional),Neurology,Heronmouth County,SC,1,2021-11-22,2024-08-08,2026-10-14,4,4,15,29,19,Active,0,10
+PRV0077,Marshland Digestive Health (fictional),Gastroenterology,Palmetto Reach County,NC,1,2022-05-11,2024-12-12,2026-09-30,4,1,10,18,12,Active,0,24
+PRV0118,Bayline Digestive Health (fictional),Gastroenterology,Cedar Landing County,NC,1,2025-05-12,2025-05-29,2026-09-28,4,4,10,14,10,Active,0,26
+PRV0039,Bayline Neurology Associates (fictional),Neurology,Ospreyford County,NC,1,2023-07-29,2024-09-27,2026-10-19,4,2,9,13,6,Active,0,5
+PRV0074,Magnolia Neurology Associates (fictional),Neurology,Quarry Hill County,NC,2,2024-02-17,2024-11-27,2026-10-06,4,1,9,13,9,Active,0,18
+PRV0093,Sandhill Digestive Health (fictional),Gastroenterology,Brinemoor County,NC,1,2025-05-29,2025-06-11,2026-09-14,4,2,8,10,7,Active,0,40
+PRV0175,Bluestem Neurology Associates of Saltmeadow (fictional),Neurology,Saltmeadow County,GA,1,2021-09-25,2024-07-29,2026-10-13,4,2,8,16,10,Active,0,11
+PRV0209,Lowcountry Hematology Group (fictional),Hematology,Cypressmoor County,GA,1,2023-06-04,2024-07-26,2026-09-21,4,2,8,23,19,Active,0,33
+PRV0099,Marshland Rheumatology (fictional),Rheumatology,Brinemoor County,NC,1,2022-09-15,2024-08-21,2026-10-21,4,1,5,12,10,Active,0,3
+PRV0205,Marshland Neurology Associates of Cypressmoor (fictional),Neurology,Cypressmoor County,GA,1,2025-11-01,2026-03-30,2026-10-19,4,0,5,5,4,Active,0,5
+PRV0173,Harbor Pulmonary Care of Gullwing (fictional),Pulmonology,Gullwing County,SC,1,2022-01-13,2024-07-19,2026-10-21,3,11,32,61,38,Active,0,3
+PRV0214,Bayline Rheumatology of Gullwing (fictional),Rheumatology,Gullwing County,SC,1,2023-09-29,2024-09-05,2026-10-05,3,5,17,21,10,Active,0,19
+PRV0065,Bluestem Neurology Associates (fictional),Neurology,Larkspur County,GA,1,2021-04-06,2024-08-07,2026-09-29,3,4,15,30,20,Active,0,25
+PRV0078,Harbor Pulmonary Care of Indigo (fictional),Pulmonology,Indigo Flats County,SC,1,2025-03-13,2025-07-01,2026-10-23,3,4,14,17,6,Active,0,1
+PRV0181,Oakmoss Rheumatology (fictional),Rheumatology,Heronmouth County,SC,1,2025-11-27,2026-01-13,2026-09-30,3,4,13,13,10,Active,0,24
+PRV0009,Tidal Pulmonary Care (fictional),Pulmonology,Palmetto Reach County,NC,1,2024-05-18,2024-08-15,2026-09-28,3,1,12,28,16,Active,0,26
+PRV0229,Sandhill Pulmonary Care (fictional),Pulmonology,Gullwing County,SC,1,2025-08-18,2026-01-06,2026-10-21,3,2,12,12,8,Active,0,3
+PRV0106,Riverbend Digestive Health (fictional),Gastroenterology,Larkspur County,GA,1,2021-05-25,2024-07-12,2026-09-16,3,4,11,29,23,Active,0,38
+PRV0140,Marshland Rheumatology of Cedar (fictional),Rheumatology,Cedar Landing County,NC,1,2023-08-26,2024-10-17,2026-10-22,3,5,11,15,11,Active,0,2
+PRV0131,Pinewood Digestive Health (fictional),Gastroenterology,Saltmeadow County,GA,1,2022-09-12,2024-10-24,2026-10-08,3,1,10,21,10,Active,0,16
+PRV0161,Magnolia Dermatology (fictional),Dermatology,Saltmeadow County,GA,1,2022-01-07,2024-09-20,2026-10-02,3,2,10,15,11,Active,0,22
+PRV0019,Pinewood Allergy & Immunology (fictional),Immunology/Allergy,Gullwing County,SC,1,2026-01-12,2026-02-27,2026-10-06,3,4,9,9,7,Active,0,18
+PRV0097,Seabreeze Dermatology (fictional),Dermatology,Heronmouth County,SC,1,2025-06-16,2025-10-21,2026-10-19,3,1,8,11,6,Active,0,5
+PRV0213,Lowcountry Rheumatology of Wren (fictional),Rheumatology,Wren Hollow County,GA,1,2021-08-21,2024-10-16,2026-09-29,3,3,8,20,13,Active,0,25
+PRV0003,Oakmoss Digestive Health (fictional),Gastroenterology,Saltmeadow County,GA,1,2021-11-30,2024-08-22,2026-09-16,3,4,7,11,10,Active,0,38
+PRV0002,Marshland Family Medicine (fictional),Primary Care,Tallow Creek County,GA,1,2025-05-28,2025-10-03,2026-10-14,3,1,6,8,6,Active,0,10
+PRV0216,Magnolia Pulmonary Care of Brinemoor (fictional),Pulmonology,Brinemoor County,NC,1,2025-05-23,2025-08-07,2026-10-22,3,0,6,9,7,Active,0,2
+PRV0066,Bluestem Neurology Associates (fictional),Neurology,Larkspur County,GA,1,2022-06-01,2024-07-17,2026-10-22,3,2,5,17,8,Active,0,2
+PRV0200,Marshland Allergy & Immunology of Saltmeadow (fictional),Immunology/Allergy,Saltmeadow County,GA,1,2021-03-06,2025-02-12,2026-10-02,3,2,5,8,5,Active,0,22
+PRV0017,Pinewood Allergy & Immunology (fictional),Immunology/Allergy,Gullwing County,SC,1,2021-07-21,2024-10-24,2026-09-21,3,0,4,11,8,Active,0,33
+PRV0121,Sandhill Allergy & Immunology (fictional),Immunology/Allergy,Tallow Creek County,GA,1,2023-12-31,2024-08-13,2026-10-12,3,1,4,13,7,Active,0,12
+PRV0225,Oakmoss Neurology Associates of Sablecrest (fictional),Neurology,Sablecrest County,SC,1,2022-02-25,2024-08-01,2026-10-13,3,0,4,9,5,Active,0,11
+PRV0058,Sandhill Kidney Care of Palmetto (fictional),Nephrology,Palmetto Reach County,NC,1,2026-08-01,2026-08-31,2026-10-01,3,0,3,3,2,Active,1,23
+PRV0092,Lowcountry Rheumatology of Indigo (fictional),Rheumatology,Indigo Flats County,SC,1,2023-03-12,2024-08-26,2026-09-21,2,8,19,38,24,Active,0,33
+PRV0224,Riverbend Kidney Care (fictional),Nephrology,Cedar Landing County,NC,1,2023-12-31,2024-09-04,2026-09-11,2,9,19,38,24,Active,0,43
+PRV0069,Seabreeze Kidney Care of Sablecrest (fictional),Nephrology,Sablecrest County,SC,1,2024-09-19,2024-11-26,2026-10-08,2,7,18,27,19,Active,0,16
+PRV0021,Bayline Rheumatology (fictional),Rheumatology,Palmetto Reach County,NC,1,2022-01-13,2024-07-19,2026-10-07,2,3,17,32,21,Active,0,17
+PRV0158,Lowcountry Neurology Associates of Gullwing (fictional),Neurology,Gullwing County,SC,1,2025-05-23,2025-09-29,2026-09-01,2,6,16,18,10,Active,0,53
+PRV0211,Lowcountry Rheumatology of Wren (fictional),Rheumatology,Wren Hollow County,GA,1,2022-04-25,2024-07-16,2026-09-29,2,5,16,27,18,Active,0,25
+PRV0038,Sandhill Rheumatology (fictional),Rheumatology,Cypressmoor County,GA,1,2021-12-14,2024-08-27,2026-09-21,2,4,12,20,12,Active,0,33
+PRV0122,Sandhill Allergy & Immunology (fictional),Immunology/Allergy,Tallow Creek County,GA,1,2025-05-09,2025-05-12,2026-09-22,2,6,12,14,6,Active,0,32
+PRV0210,Lowcountry Rheumatology of Wren (fictional),Rheumatology,Wren Hollow County,GA,1,2022-02-26,2024-09-12,2026-10-07,2,3,12,26,16,Active,0,17
+PRV0016,Sandhill Kidney Care (fictional),Nephrology,Wren Hollow County,GA,1,2024-01-20,2025-12-24,2026-10-08,2,4,11,11,7,Active,0,16
+PRV0062,Seabreeze Pulmonary Care (fictional),Pulmonology,Sablecrest County,SC,1,2022-02-15,2024-12-19,2026-09-10,2,4,11,18,10,Active,0,44
+PRV0082,Marshland Kidney Care (fictional),Nephrology,Larkspur County,GA,1,2024-01-23,2025-01-27,2026-08-27,2,1,11,17,9,Active,0,58
+PRV0083,Magnolia Digestive Health (fictional),Gastroenterology,Cypressmoor County,GA,1,2023-05-25,2024-10-01,2026-09-22,2,3,10,26,19,Active,0,32
+PRV0020,Bayline Rheumatology (fictional),Rheumatology,Palmetto Reach County,NC,1,2024-06-19,2024-07-29,2026-10-09,2,1,9,15,10,Active,0,15
+PRV0091,Lowcountry Rheumatology of Indigo (fictional),Rheumatology,Indigo Flats County,SC,1,2025-02-24,2025-05-05,2026-10-19,2,4,9,14,10,Active,0,5
+PRV0123,Marshland Neurology Associates (fictional),Neurology,Saltmeadow County,GA,1,2025-07-17,2025-09-12,2026-10-06,2,3,9,10,7,Active,0,18
+PRV0141,Oakmoss Kidney Care (fictional),Nephrology,Indigo Flats County,SC,1,2023-12-10,2024-07-26,2026-10-08,2,1,9,14,10,Active,0,16
+PRV0013,Sandhill Kidney Care (fictional),Nephrology,Wren Hollow County,GA,1,2022-08-16,2024-10-11,2026-09-10,2,2,8,24,13,Active,0,44
+PRV0055,Sandhill Hematology Group (fictional),Hematology,Brinemoor County,NC,1,2024-05-01,2024-09-09,2026-10-19,2,0,8,17,12,Active,0,5
+PRV0073,Magnolia Neurology Associates (fictional),Neurology,Quarry Hill County,NC,1,2025-07-13,2025-08-07,2026-10-12,2,1,8,9,7,Active,0,12
+PRV0101,Magnolia Pulmonary Care (fictional),Pulmonology,Palmetto Reach County,NC,1,2021-12-30,2024-07-10,2026-10-12,2,3,8,21,15,Active,0,12
+PRV0221,Riverbend Kidney Care (fictional),Nephrology,Cedar Landing County,NC,1,2022-02-01,2024-08-16,2026-08-10,2,1,8,16,10,Active,0,75
+PRV0008,Bluestem Dermatology (fictional),Dermatology,Cypressmoor County,GA,1,2025-08-19,2025-10-22,2026-08-24,2,2,7,8,4,Active,0,61
+PRV0089,Riverbend Neurology Associates (fictional),Neurology,Tallow Creek County,GA,1,2021-09-21,2024-08-06,2026-10-16,2,0,7,17,11,Active,0,8
+PRV0157,Lowcountry Neurology Associates of Gullwing (fictional),Neurology,Gullwing County,SC,1,2023-04-21,2025-06-06,2026-09-29,2,0,7,9,5,Active,0,25
+PRV0199,Riverbend Pulmonary Care (fictional),Pulmonology,Sablecrest County,SC,1,2025-09-21,2025-11-28,2026-10-13,2,2,7,7,7,Active,0,11
+PRV0228,Sandhill Pulmonary Care (fictional),Pulmonology,Gullwing County,SC,1,2026-04-23,2026-05-18,2026-09-01,2,4,6,6,6,Active,0,53
+PRV0033,Oakmoss Neurology Associates (fictional),Neurology,Tallow Creek County,GA,1,2025-04-20,2025-06-18,2026-09-08,2,2,5,8,4,Active,0,46
+PRV0040,Lowcountry Rheumatology of Saltmeadow (fictional),Rheumatology,Saltmeadow County,GA,1,2025-04-01,2025-05-02,2026-10-22,2,1,5,8,7,Active,0,2
+PRV0186,Sandhill Rheumatology of Heronmouth (fictional),Rheumatology,Heronmouth County,SC,1,2022-05-03,2024-10-29,2026-10-07,2,3,5,10,6,Active,0,17
+PRV0024,Lowcountry Rheumatology (fictional),Rheumatology,Brinemoor County,NC,1,2026-02-06,2026-03-09,2026-09-29,2,1,4,4,2,Active,0,25
+PRV0102,Magnolia Pulmonary Care (fictional),Pulmonology,Palmetto Reach County,NC,1,2023-10-03,2024-07-17,2026-10-01,2,0,4,13,8,Active,0,23
+PRV0142,Oakmoss Kidney Care (fictional),Nephrology,Indigo Flats County,SC,1,2026-04-01,2026-05-14,2026-10-14,2,2,4,4,4,Active,0,10
+PRV0166,Pinewood Family Medicine (fictional),Primary Care,Cypressmoor County,GA,1,2026-03-28,2026-07-02,2026-10-08,2,2,4,4,3,Active,0,16
+PRV0184,Lowcountry Pulmonary Care (fictional),Pulmonology,Heronmouth County,SC,1,2026-01-06,2026-04-28,2026-10-15,2,2,4,4,2,Active,0,9
+PRV0196,Harbor Digestive Health (fictional),Gastroenterology,Tallow Creek County,GA,1,2025-12-12,2026-01-07,2026-10-13,2,0,4,4,3,Active,0,11
+PRV0137,Riverbend Neurology Associates of Cedar (fictional),Neurology,Cedar Landing County,NC,1,2022-10-04,2024-07-22,2026-09-17,2,1,3,4,3,Active,0,37
+PRV0202,Marshland Allergy & Immunology of Saltmeadow (fictional),Immunology/Allergy,Saltmeadow County,GA,1,2026-01-21,2026-06-29,2026-08-31,2,1,3,3,2,Active,0,54
+PRV0034,Oakmoss Neurology Associates (fictional),Neurology,Tallow Creek County,GA,1,2026-09-16,2026-10-15,2026-10-15,2,0,2,2,2,Active,1,9
+PRV0047,Riverbend Rheumatology (fictional),Rheumatology,Sablecrest County,SC,1,2025-10-30,2026-08-25,2026-10-13,2,0,2,2,1,Active,1,11
+PRV0080,Harbor Pulmonary Care of Indigo (fictional),Pulmonology,Indigo Flats County,SC,1,2025-11-13,2026-10-16,2026-10-20,2,0,2,2,1,Active,1,4
+PRV0206,Marshland Neurology Associates of Cypressmoor (fictional),Neurology,Cypressmoor County,GA,1,2026-09-02,2026-09-14,2026-09-23,2,0,2,2,1,Active,1,31
+PRV0125,Pinewood Dermatology (fictional),Dermatology,Saltmeadow County,GA,1,2026-03-06,2026-04-09,2026-10-19,1,13,16,16,8,Active,0,5
+PRV0110,Sandhill Rheumatology of Quarry (fictional),Rheumatology,Quarry Hill County,NC,1,2022-11-30,2024-08-29,2026-10-01,1,2,13,30,19,Active,0,23
+PRV0031,Seabreeze Kidney Care (fictional),Nephrology,Sablecrest County,SC,1,2024-06-20,2025-05-21,2026-10-12,1,7,12,14,10,Active,0,12
+PRV0135,Riverbend Neurology Associates of Cedar (fictional),Neurology,Cedar Landing County,NC,1,2021-07-18,2025-01-06,2026-08-25,1,6,12,18,10,Active,0,60
+PRV0168,Pinewood Family Medicine (fictional),Primary Care,Cypressmoor County,GA,1,2022-02-03,2024-08-01,2026-08-31,1,6,11,24,19,Active,0,54
+PRV0070,Seabreeze Kidney Care of Sablecrest (fictional),Nephrology,Sablecrest County,SC,1,2025-04-28,2025-08-14,2026-08-07,1,1,10,12,7,Active,0,78
+PRV0188,Seabreeze Neurology Associates (fictional),Neurology,Sablecrest County,SC,1,2025-09-15,2025-10-15,2026-09-28,1,3,10,12,8,Active,0,26
+PRV0133,Pinewood Digestive Health (fictional),Gastroenterology,Saltmeadow County,GA,1,2022-11-23,2024-08-30,2026-08-20,1,2,9,15,12,Active,0,65
+PRV0185,Harbor Neurology Associates (fictional),Neurology,Larkspur County,GA,1,2025-05-15,2025-10-17,2026-10-06,1,3,9,10,6,Active,0,18
+PRV0044,Tidal Kidney Care (fictional),Nephrology,Wren Hollow County,GA,1,2022-02-16,2025-02-21,2026-08-31,1,2,8,10,6,Active,0,54
+PRV0138,Oakmoss Neurology Associates of Quarry (fictional),Neurology,Quarry Hill County,NC,1,2022-08-04,2025-05-09,2026-09-28,1,2,8,11,7,Active,0,26
+PRV0160,Lowcountry Neurology Associates of Gullwing (fictional),Neurology,Gullwing County,SC,1,2024-01-20,2024-08-21,2026-09-28,1,3,7,16,8,Active,0,26
+PRV0217,Magnolia Pulmonary Care of Brinemoor (fictional),Pulmonology,Brinemoor County,NC,1,2025-06-18,2025-06-26,2026-10-13,1,4,7,10,5,Active,0,11
+PRV0043,Tidal Kidney Care (fictional),Nephrology,Wren Hollow County,GA,1,2022-07-19,2024-07-16,2026-10-20,1,1,6,12,9,Active,0,4
+PRV0191,Riverbend Digestive Health of Brinemoor (fictional),Gastroenterology,Brinemoor County,NC,1,2022-04-02,2024-07-10,2026-10-14,1,0,6,24,13,Active,0,10
+PRV0045,Tidal Kidney Care (fictional),Nephrology,Wren Hollow County,GA,1,2022-09-17,2024-10-04,2026-10-06,1,1,5,10,7,Active,0,18
+PRV0075,Marshland Digestive Health (fictional),Gastroenterology,Palmetto Reach County,NC,1,2021-06-01,2024-11-14,2026-08-11,1,0,5,16,9,Active,0,74
+PRV0178,Marshland Rheumatology of Cypressmoor (fictional),Rheumatology,Cypressmoor County,GA,1,2024-11-05,2025-01-17,2026-08-03,1,3,5,11,8,Active,0,82
+PRV0193,Seabreeze Neurology Associates of Gullwing (fictional),Neurology,Gullwing County,SC,1,2021-08-28,2024-12-16,2026-08-17,1,0,5,10,7,Active,0,68
+PRV0201,Marshland Allergy & Immunology of Saltmeadow (fictional),Immunology/Allergy,Saltmeadow County,GA,1,2021-10-04,2024-07-03,2026-09-14,1,0,5,13,7,Active,0,40
+PRV0025,Lowcountry Rheumatology (fictional),Rheumatology,Brinemoor County,NC,1,2024-11-07,2025-03-17,2026-07-31,1,0,4,8,5,Active,0,85
+PRV0081,Marshland Kidney Care (fictional),Nephrology,Larkspur County,GA,1,2025-09-18,2026-01-07,2026-10-20,1,0,4,4,3,Active,0,4
+PRV0132,Pinewood Digestive Health (fictional),Gastroenterology,Saltmeadow County,GA,1,2021-01-16,2025-05-05,2026-10-20,1,0,4,8,6,Active,0,4
+PRV0177,Marshland Rheumatology of Cypressmoor (fictional),Rheumatology,Cypressmoor County,GA,1,2021-12-01,2024-07-31,2026-09-15,1,3,4,13,10,Active,0,39
+PRV0203,Marshland Allergy & Immunology of Saltmeadow (fictional),Immunology/Allergy,Saltmeadow County,GA,1,2025-08-13,2026-03-13,2026-09-02,1,2,4,4,3,Active,0,52
+PRV0028,Tidal Dermatology (fictional),Dermatology,Larkspur County,GA,1,2026-03-23,2026-04-16,2026-10-12,1,1,3,3,1,Active,0,12
+PRV0113,Seabreeze Digestive Health (fictional),Gastroenterology,Brinemoor County,NC,1,2024-09-24,2024-11-04,2026-09-28,1,0,3,7,4,Active,0,26
+PRV0130,Pinewood Digestive Health (fictional),Gastroenterology,Saltmeadow County,GA,1,2021-07-19,2024-07-26,2026-07-27,1,0,3,10,5,Active,0,89
+PRV0022,Bayline Rheumatology (fictional),Rheumatology,Palmetto Reach County,NC,1,2022-06-10,2025-01-28,2026-10-07,1,0,2,3,3,Active,0,17
+PRV0067,Oakmoss Neurology Associates of Indigo (fictional),Neurology,Indigo Flats County,SC,1,2025-01-13,2025-02-28,2026-08-11,1,0,2,9,5,Active,0,74
+PRV0114,Riverbend Rheumatology of Gullwing (fictional),Rheumatology,Gullwing County,SC,1,2026-03-18,2026-03-26,2026-09-28,1,0,2,2,1,Active,0,26
+PRV0149,Oakmoss Neurology Associates of Saltmeadow (fictional),Neurology,Saltmeadow County,GA,1,2025-12-13,2026-05-11,2026-09-01,1,1,2,2,1,Active,0,53
+PRV0159,Lowcountry Neurology Associates of Gullwing (fictional),Neurology,Gullwing County,SC,1,2026-05-17,2026-07-24,2026-10-21,1,1,2,2,2,Active,0,3
+PRV0169,Pinewood Family Medicine (fictional),Primary Care,Cypressmoor County,GA,1,2025-06-03,2025-07-25,2026-10-12,1,0,2,5,4,Active,0,12
+PRV0006,Bluestem Dermatology (fictional),Dermatology,Cypressmoor County,GA,1,2024-02-01,2024-10-17,2026-09-29,1,0,1,7,4,Active,0,25
+PRV0012,Harbor Pulmonary Care (fictional),Pulmonology,Cedar Landing County,NC,1,2026-09-05,2026-09-23,2026-09-23,1,0,1,1,1,Active,1,31
+PRV0129,Seabreeze Digestive Health of Saltmeadow (fictional),Gastroenterology,Saltmeadow County,GA,1,2026-05-10,2026-08-24,2026-08-24,1,0,1,1,1,Active,1,61
+PRV0165,Riverbend Dermatology (fictional),Dermatology,Gullwing County,SC,1,2026-04-20,2026-10-06,2026-10-06,1,0,1,1,0,Active,1,18
+PRV0219,Oakmoss Allergy & Immunology (fictional),Immunology/Allergy,Saltmeadow County,GA,1,2026-08-23,2026-09-22,2026-09-22,1,0,1,1,1,Active,1,32
+PRV0111,Sandhill Rheumatology of Quarry (fictional),Rheumatology,Quarry Hill County,NC,1,2026-01-12,2026-01-09,2026-06-29,0,5,20,20,13,Dormant,0,117
+PRV0004,Lowcountry Neurology Associates (fictional),Neurology,Cedar Landing County,NC,1,2023-07-22,2024-07-17,2026-06-29,0,2,12,22,13,Dormant,0,117
+PRV0079,Harbor Pulmonary Care of Indigo (fictional),Pulmonology,Indigo Flats County,SC,1,2024-12-27,2025-01-23,2026-06-11,0,2,12,43,23,Dormant,0,135
+PRV0098,Seabreeze Dermatology (fictional),Dermatology,Heronmouth County,SC,1,2021-11-30,2025-09-11,2026-05-04,0,1,9,10,6,Dormant,0,173
+PRV0119,Sandhill Allergy & Immunology (fictional),Immunology/Allergy,Tallow Creek County,GA,1,2025-12-22,2026-02-04,2026-07-24,0,6,9,9,5,Dormant,0,92
+PRV0084,Magnolia Digestive Health (fictional),Gastroenterology,Cypressmoor County,GA,1,2022-01-22,2024-07-09,2026-07-06,0,3,7,14,11,Dormant,0,110
+PRV0170,Riverbend Rheumatology of Cypressmoor (fictional),Rheumatology,Cypressmoor County,GA,1,2023-11-12,2024-09-06,2026-01-13,0,0,7,24,15,Dormant,0,284
+PRV0215,Magnolia Pulmonary Care of Brinemoor (fictional),Pulmonology,Brinemoor County,NC,1,2023-06-15,2025-01-31,2026-06-15,0,2,7,13,5,Dormant,0,131
+PRV0041,Bluestem Rheumatology (fictional),Rheumatology,Ospreyford County,NC,1,2025-02-05,2025-02-26,2025-12-17,0,0,6,31,20,Dormant,0,311
+PRV0148,Bayline Allergy & Immunology (fictional),Immunology/Allergy,Indigo Flats County,SC,1,2024-03-17,2024-11-13,2026-06-29,0,1,6,14,6,Dormant,0,117
+PRV0222,Riverbend Kidney Care (fictional),Nephrology,Cedar Landing County,NC,1,2021-09-13,2024-11-13,2026-07-02,0,2,6,9,5,Dormant,0,114
+PRV0226,Oakmoss Neurology Associates of Sablecrest (fictional),Neurology,Sablecrest County,SC,1,2022-04-09,2024-12-13,2026-04-06,0,0,6,8,6,Dormant,0,201
+PRV0076,Marshland Digestive Health (fictional),Gastroenterology,Palmetto Reach County,NC,1,2026-04-05,2026-05-01,2026-07-17,0,5,5,5,4,Dormant,0,99
+PRV0116,Riverbend Rheumatology of Sablecrest (fictional),Rheumatology,Sablecrest County,SC,1,2025-10-29,2026-02-12,2026-06-26,0,4,5,5,3,Dormant,0,120
+PRV0179,Marshland Rheumatology of Cypressmoor (fictional),Rheumatology,Cypressmoor County,GA,1,2025-01-24,2025-03-31,2026-06-22,0,1,5,8,3,Dormant,0,124
+PRV0005,Bluestem Dermatology (fictional),Dermatology,Cypressmoor County,GA,1,2025-12-21,2026-01-27,2026-07-22,0,2,4,4,2,Dormant,0,94
+PRV0030,Seabreeze Kidney Care (fictional),Nephrology,Sablecrest County,SC,1,2026-04-10,2026-05-08,2026-06-09,0,4,4,4,3,Dormant,0,137
+PRV0072,Oakmoss Pulmonary Care (fictional),Pulmonology,Larkspur County,GA,1,2022-10-08,2024-08-26,2026-06-29,0,2,4,21,11,Dormant,0,117
+PRV0094,Marshland Allergy & Immunology (fictional),Immunology/Allergy,Sablecrest County,SC,1,2021-11-21,2024-10-07,2026-06-29,0,1,4,11,8,Dormant,0,117
+PRV0147,Magnolia Kidney Care (fictional),Nephrology,Tallow Creek County,GA,1,2025-05-02,2025-07-09,2026-06-15,0,1,4,5,3,Dormant,0,131
+PRV0154,Bayline Family Medicine (fictional),Primary Care,Larkspur County,GA,1,2025-09-23,2026-02-10,2026-04-09,0,0,4,4,2,Dormant,0,198
+PRV0007,Bluestem Dermatology (fictional),Dermatology,Cypressmoor County,GA,1,2022-09-03,2024-07-29,2026-06-01,0,1,3,14,7,Dormant,0,145
+PRV0054,Sandhill Hematology Group (fictional),Hematology,Brinemoor County,NC,1,2023-03-30,2025-03-25,2026-05-12,0,1,3,6,4,Dormant,0,165
+PRV0088,Riverbend Neurology Associates (fictional),Neurology,Tallow Creek County,GA,1,2024-10-03,2024-12-03,2026-07-08,0,2,3,6,4,Dormant,0,108
+PRV0182,Oakmoss Rheumatology (fictional),Rheumatology,Heronmouth County,SC,1,2021-01-08,2024-10-16,2026-07-23,0,2,3,7,6,Dormant,0,93
+PRV0010,Tidal Pulmonary Care (fictional),Pulmonology,Palmetto Reach County,NC,1,2025-12-29,2026-07-23,2026-07-24,0,2,2,2,1,Dormant,0,92
+PRV0014,Sandhill Kidney Care (fictional),Nephrology,Wren Hollow County,GA,1,2025-12-30,2026-04-20,2026-04-22,0,0,2,2,2,Dormant,0,185
+PRV0037,Sandhill Rheumatology (fictional),Rheumatology,Cypressmoor County,GA,1,2024-10-18,2025-03-19,2025-12-24,0,0,2,7,4,Dormant,0,304
+PRV0046,Riverbend Rheumatology (fictional),Rheumatology,Sablecrest County,SC,1,2023-09-14,2024-07-23,2026-02-23,0,0,2,21,13,Dormant,0,243
+PRV0052,Bluestem Dermatology of Tallow (fictional),Dermatology,Tallow Creek County,GA,1,2025-12-28,2026-02-02,2026-04-29,0,1,2,2,2,Dormant,0,178
+PRV0056,Sandhill Hematology Group (fictional),Hematology,Brinemoor County,NC,1,2021-07-30,2024-12-03,2026-06-11,0,1,2,10,8,Dormant,0,135
+PRV0060,Sandhill Kidney Care of Palmetto (fictional),Nephrology,Palmetto Reach County,NC,1,2026-03-28,2026-04-22,2026-05-13,0,1,2,2,1,Dormant,0,164
+PRV0068,Oakmoss Neurology Associates of Indigo (fictional),Neurology,Indigo Flats County,SC,1,2025-02-05,2025-05-27,2026-04-02,0,0,2,5,3,Dormant,0,205
+PRV0172,Harbor Pulmonary Care of Gullwing (fictional),Pulmonology,Gullwing County,SC,1,2024-11-23,2025-01-02,2026-06-29,0,2,2,7,5,Dormant,0,117
+PRV0023,Bayline Rheumatology (fictional),Rheumatology,Palmetto Reach County,NC,1,2024-08-21,2024-09-09,2025-11-10,0,0,1,7,5,Dormant,0,348
+PRV0027,Tidal Dermatology (fictional),Dermatology,Larkspur County,GA,1,2023-12-03,2024-11-04,2026-02-05,0,0,1,10,5,Dormant,0,261
+PRV0036,Oakmoss Neurology Associates (fictional),Neurology,Tallow Creek County,GA,1,2024-08-27,2024-09-17,2025-10-31,0,0,1,5,4,Dormant,0,358
+PRV0059,Sandhill Kidney Care of Palmetto (fictional),Nephrology,Palmetto Reach County,NC,1,2022-06-19,2024-08-22,2025-12-15,0,0,1,8,6,Dormant,0,313
+PRV0103,Magnolia Pulmonary Care (fictional),Pulmonology,Palmetto Reach County,NC,1,2025-05-25,2025-07-28,2025-12-23,0,0,1,3,2,Dormant,0,305
+PRV0136,Riverbend Neurology Associates of Cedar (fictional),Neurology,Cedar Landing County,NC,1,2024-01-20,2024-10-08,2026-04-03,0,0,1,7,6,Dormant,0,204
+PRV0146,Oakmoss Digestive Health of Sablecrest (fictional),Gastroenterology,Sablecrest County,SC,1,2026-01-29,2026-03-31,2026-03-31,0,0,1,1,1,Dormant,0,207
+PRV0156,Bayline Neurology Associates of Tallow (fictional),Neurology,Tallow Creek County,GA,1,2023-04-10,2024-09-23,2026-07-13,0,1,1,5,3,Dormant,0,103
+PRV0176,Seabreeze Pulmonary Care of Tallow (fictional),Pulmonology,Tallow Creek County,GA,1,2024-06-08,2025-04-08,2026-07-13,0,1,1,7,4,Dormant,0,103
+PRV0189,Pinewood Digestive Health of Saltmeadow (fictional),Gastroenterology,Saltmeadow County,GA,1,2022-03-18,2024-07-26,2026-06-02,0,1,1,8,6,Dormant,0,144
+PRV0197,Harbor Digestive Health (fictional),Gastroenterology,Tallow Creek County,GA,1,2023-01-04,2024-11-27,2025-12-17,0,0,1,7,4,Dormant,0,311
+PRV0208,Lowcountry Hematology Group (fictional),Hematology,Cypressmoor County,GA,1,2026-03-18,2026-05-29,2026-05-29,0,1,1,1,1,Dormant,0,148
+PRV0220,Oakmoss Allergy & Immunology (fictional),Immunology/Allergy,Saltmeadow County,GA,1,2023-09-23,2024-09-09,2025-11-21,0,0,1,17,9,Dormant,0,337
+PRV0011,Harbor Pulmonary Care (fictional),Pulmonology,Cedar Landing County,NC,1,2026-01-12,,,0,0,0,0,0,Never referred,0,
+PRV0018,Pinewood Allergy & Immunology (fictional),Immunology/Allergy,Gullwing County,SC,1,2023-08-01,2024-07-15,2025-10-15,0,0,0,46,32,Dormant,0,374
+PRV0026,Tidal Dermatology (fictional),Dermatology,Larkspur County,GA,1,2023-10-19,2024-07-18,2025-01-22,0,0,0,3,2,Dormant,0,640
+PRV0032,Seabreeze Kidney Care (fictional),Nephrology,Sablecrest County,SC,1,2021-10-18,2024-08-01,2024-11-18,0,0,0,8,6,Dormant,0,705
+PRV0049,Seabreeze Allergy & Immunology (fictional),Immunology/Allergy,Heronmouth County,SC,1,2022-07-29,2024-07-11,2024-11-01,0,0,0,3,3,Dormant,0,722
+PRV0051,Bluestem Dermatology of Tallow (fictional),Dermatology,Tallow Creek County,GA,1,2024-10-24,2025-01-06,2025-01-06,0,0,0,1,1,Dormant,0,656
+PRV0053,Sandhill Hematology Group (fictional),Hematology,Brinemoor County,NC,1,2021-03-11,2024-08-06,2025-04-10,0,0,0,10,7,Dormant,0,562
+PRV0063,Seabreeze Pulmonary Care (fictional),Pulmonology,Sablecrest County,SC,1,2023-07-15,2025-01-10,2025-10-10,0,0,0,2,1,Dormant,0,379
+PRV0064,Seabreeze Pulmonary Care (fictional),Pulmonology,Sablecrest County,SC,1,2022-11-20,2024-09-06,2025-05-07,0,0,0,9,7,Dormant,0,535
+PRV0086,Harbor Rheumatology (fictional),Rheumatology,Cypressmoor County,GA,1,2021-02-16,,,0,0,0,0,0,Never referred,0,
+PRV0087,Harbor Rheumatology (fictional),Rheumatology,Cypressmoor County,GA,1,2026-09-13,,,0,0,0,0,0,Never referred,0,
+PRV0095,Pinewood Neurology Associates (fictional),Neurology,Heronmouth County,SC,1,2023-01-23,2024-10-04,2024-11-11,0,0,0,3,2,Dormant,0,712
+PRV0108,Oakmoss Pulmonary Care of Larkspur (fictional),Pulmonology,Larkspur County,GA,1,2025-06-02,,,0,0,0,0,0,Never referred,0,
+PRV0115,Marshland Family Medicine of Brinemoor (fictional),Primary Care,Brinemoor County,NC,1,2026-02-02,,,0,0,0,0,0,Never referred,0,
+PRV0124,Pinewood Dermatology (fictional),Dermatology,Saltmeadow County,GA,1,2022-11-23,2024-10-23,2024-10-23,0,0,0,1,1,Dormant,0,731
+PRV0126,Pinewood Dermatology (fictional),Dermatology,Saltmeadow County,GA,1,2026-08-19,,,0,0,0,0,0,Never referred,0,
+PRV0127,Pinewood Dermatology (fictional),Dermatology,Saltmeadow County,GA,1,2021-10-25,2024-07-10,2024-10-11,0,0,0,2,2,Dormant,0,743
+PRV0128,Seabreeze Digestive Health of Saltmeadow (fictional),Gastroenterology,Saltmeadow County,GA,1,2025-06-21,,,0,0,0,0,0,Never referred,0,
+PRV0150,Oakmoss Neurology Associates of Saltmeadow (fictional),Neurology,Saltmeadow County,GA,1,2023-03-12,2024-08-16,2024-12-03,0,0,0,5,3,Dormant,0,690
+PRV0153,Bayline Family Medicine (fictional),Primary Care,Larkspur County,GA,1,2024-07-19,2024-12-09,2024-12-09,0,0,0,1,1,Dormant,0,684
+PRV0155,Bluestem Dermatology of Heronmouth (fictional),Dermatology,Heronmouth County,SC,1,2022-11-29,2024-09-04,2024-12-09,0,0,0,5,4,Dormant,0,684
+PRV0162,Magnolia Dermatology (fictional),Dermatology,Saltmeadow County,GA,1,2025-04-27,2025-05-05,2025-08-04,0,0,0,7,4,Dormant,0,446
+PRV0163,Magnolia Dermatology (fictional),Dermatology,Saltmeadow County,GA,1,2021-02-14,2024-08-08,2025-03-17,0,0,0,3,1,Dormant,0,586
+PRV0164,Magnolia Dermatology (fictional),Dermatology,Saltmeadow County,GA,1,2023-02-14,2024-07-16,2024-12-27,0,0,0,5,3,Dormant,0,666
+PRV0167,Pinewood Family Medicine (fictional),Primary Care,Cypressmoor County,GA,1,2023-05-14,2024-08-21,2025-01-30,0,0,0,4,4,Dormant,0,632
+PRV0180,Marshland Rheumatology of Cypressmoor (fictional),Rheumatology,Cypressmoor County,GA,1,2023-05-30,2024-10-10,2025-04-30,0,0,0,11,9,Dormant,0,542
+PRV0187,Seabreeze Neurology Associates (fictional),Neurology,Sablecrest County,SC,1,2024-12-02,2025-01-21,2025-04-21,0,0,0,4,4,Dormant,0,551
+PRV0190,Pinewood Digestive Health of Saltmeadow (fictional),Gastroenterology,Saltmeadow County,GA,1,2021-01-02,2025-10-03,2025-10-03,0,0,0,1,0,Dormant,0,386
+PRV0198,Riverbend Pulmonary Care (fictional),Pulmonology,Sablecrest County,SC,1,2024-02-08,2024-07-24,2025-07-01,0,0,0,13,10,Dormant,0,480
+PRV0212,Lowcountry Rheumatology of Wren (fictional),Rheumatology,Wren Hollow County,GA,1,2023-10-10,2024-08-06,2025-09-22,0,0,0,12,5,Dormant,0,397
+PRV0223,Riverbend Kidney Care (fictional),Nephrology,Cedar Landing County,NC,1,2026-04-25,,,0,0,0,0,0,Never referred,0,
+PRV0231,Magnolia Family Medicine (fictional),Primary Care,Brinemoor County,NC,1,2021-12-24,2024-07-11,2024-10-11,0,0,0,2,2,Dormant,0,743
+PRV0233,Harbor Pulmonary Care of Cypressmoor (fictional),Pulmonology,Cypressmoor County,GA,1,2026-10-01,,,0,0,0,0,0,Never referred,0,
+PRV0234,Harbor Pulmonary Care of Cypressmoor (fictional),Pulmonology,Cypressmoor County,GA,1,2025-02-06,,,0,0,0,0,0,Never referred,0,
+PRV0235,Harbor Pulmonary Care of Cypressmoor (fictional),Pulmonology,Cypressmoor County,GA,1,2026-09-02,,,0,0,0,0,0,Never referred,0,
+PRV0236,Pinewood Rheumatology (fictional),Rheumatology,Saltmeadow County,GA,1,2026-05-30,,,0,0,0,0,0,Never referred,0,
+PRV0237,Magnolia Digestive Health of Cedar (fictional),Gastroenterology,Cedar Landing County,NC,1,2025-04-13,,,0,0,0,0,0,Never referred,0,
+PRV0238,Pinewood Family Medicine of Ospreyford (fictional),Primary Care,Ospreyford County,NC,1,2026-09-15,,,0,0,0,0,0,Never referred,0,
+PRV0239,Pinewood Family Medicine of Ospreyford (fictional),Primary Care,Ospreyford County,NC,1,2025-06-17,,,0,0,0,0,0,Never referred,0,
+PRV0240,Pinewood Family Medicine of Ospreyford (fictional),Primary Care,Ospreyford County,NC,1,2026-01-08,,,0,0,0,0,0,Never referred,0,
+PRV0241,Pinewood Family Medicine of Ospreyford (fictional),Primary Care,Ospreyford County,NC,1,2025-12-08,,,0,0,0,0,0,Never referred,0,
+PRV0242,Lowcountry Rheumatology of Brinemoor (fictional),Rheumatology,Brinemoor County,NC,1,2025-07-16,,,0,0,0,0,0,Never referred,0,
+PRV0243,Lowcountry Rheumatology of Brinemoor (fictional),Rheumatology,Brinemoor County,NC,1,2026-05-14,,,0,0,0,0,0,Never referred,0,
+PRV0244,Bayline Rheumatology of Quarry (fictional),Rheumatology,Quarry Hill County,NC,1,2025-01-18,,,0,0,0,0,0,Never referred,0,
+PRV0245,Magnolia Neurology Associates of Saltmeadow (fictional),Neurology,Saltmeadow County,GA,1,2024-12-10,,,0,0,0,0,0,Never referred,0,
+PRV0246,Riverbend Digestive Health of Gullwing (fictional),Gastroenterology,Gullwing County,SC,1,2026-07-24,,,0,0,0,0,0,Never referred,0,
+PRV0247,Riverbend Digestive Health of Gullwing (fictional),Gastroenterology,Gullwing County,SC,1,2026-01-07,,,0,0,0,0,0,Never referred,0,

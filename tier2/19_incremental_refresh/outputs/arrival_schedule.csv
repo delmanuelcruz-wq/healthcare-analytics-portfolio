@@ -1,0 +1,56 @@
+arrival_order,arrived_at,file,note
+1,2026-09-02 06:10:00,appt_changes_20260901.csv,Scheduled delivery
+2,2026-09-03 06:10:00,appt_changes_20260902.csv,Scheduled delivery
+3,2026-09-04 06:10:00,appt_changes_20260903.csv,Scheduled delivery
+4,2026-09-05 06:10:00,appt_changes_20260904.csv,Scheduled delivery
+5,2026-09-06 06:10:00,appt_changes_20260905.csv,Scheduled delivery
+6,2026-09-07 06:10:00,appt_changes_20260906.csv,Scheduled delivery
+7,2026-09-08 06:10:00,appt_changes_20260907.csv,Scheduled delivery
+8,2026-09-09 06:10:00,appt_changes_20260908.csv,Scheduled delivery
+9,2026-09-10 06:10:00,appt_changes_20260909.csv,Scheduled delivery
+10,2026-09-11 06:10:00,appt_changes_20260910.csv,Scheduled delivery
+11,2026-09-12 06:10:00,appt_changes_20260911.csv,Scheduled delivery
+12,2026-09-13 06:10:00,appt_changes_20260912.csv,Scheduled delivery
+13,2026-09-14 06:10:00,appt_changes_20260913.csv,Scheduled delivery
+14,2026-09-15 06:10:00,appt_changes_20260914.csv,Scheduled delivery
+15,2026-09-16 06:10:00,appt_changes_20260915.csv,Scheduled delivery
+16,2026-09-16 08:40:00,appt_changes_20260915.csv,Re-delivered by the sender (identical file)
+17,2026-09-17 06:10:00,appt_changes_20260916.csv,Scheduled delivery
+18,2026-09-18 06:10:00,appt_changes_20260917.csv,Scheduled delivery
+19,2026-09-19 06:10:00,appt_changes_20260918.csv,Scheduled delivery
+20,2026-09-20 06:10:00,appt_changes_20260919.csv,Scheduled delivery
+21,2026-09-21 06:10:00,appt_changes_20260920.csv,Scheduled delivery
+22,2026-09-22 06:10:00,appt_changes_20260921.csv,Scheduled delivery
+23,2026-09-23 06:10:00,appt_changes_20260922.csv,Scheduled delivery
+24,2026-09-24 06:10:00,appt_changes_20260923.csv,Scheduled delivery
+25,2026-09-25 06:10:00,appt_changes_20260924.csv,Scheduled delivery
+26,2026-09-26 06:10:00,appt_changes_20260925.csv,Scheduled delivery
+27,2026-09-27 06:10:00,appt_changes_20260926.csv,Scheduled delivery
+28,2026-09-28 06:10:00,appt_changes_20260927.csv,Scheduled delivery
+29,2026-09-29 06:10:00,appt_changes_20260928.csv,Scheduled delivery
+30,2026-09-30 06:10:00,appt_changes_20260929.csv,Scheduled delivery
+31,2026-10-01 06:10:00,appt_changes_20260930.csv,Scheduled delivery
+32,2026-10-02 06:10:00,appt_changes_20261001.csv,Scheduled delivery
+33,2026-10-03 06:10:00,appt_changes_20261002.csv,Scheduled delivery
+34,2026-10-04 06:10:00,appt_changes_20261003.csv,Scheduled delivery
+35,2026-10-05 06:10:00,appt_changes_20261004.csv,Scheduled delivery
+36,2026-10-06 06:10:00,appt_changes_20261005.csv,Scheduled delivery
+37,2026-10-08 06:10:00,appt_changes_20261007.csv,Scheduled delivery
+38,2026-10-08 06:25:00,appt_changes_20261006.csv,Arrived after the next day's file
+39,2026-10-09 06:10:00,appt_changes_20261008.csv,Scheduled delivery
+40,2026-10-10 06:10:00,appt_changes_20261009.csv,Scheduled delivery
+41,2026-10-11 06:10:00,appt_changes_20261010.csv,Scheduled delivery
+42,2026-10-12 06:10:00,appt_changes_20261011.csv,Scheduled delivery
+43,2026-10-13 06:10:00,appt_changes_20261012.csv,Scheduled delivery
+44,2026-10-16 06:10:00,appt_changes_20261015.csv,Scheduled delivery
+45,2026-10-16 07:00:00,appt_changes_20261013.csv,"Sender outage - held, delivered late"
+46,2026-10-16 07:05:00,appt_changes_20261014.csv,"Sender outage - held, delivered late"
+47,2026-10-17 06:10:00,appt_changes_20261016.csv,Scheduled delivery
+48,2026-10-18 06:10:00,appt_changes_20261017.csv,Scheduled delivery
+49,2026-10-19 06:10:00,appt_changes_20261018.csv,Scheduled delivery
+50,2026-10-20 06:10:00,appt_changes_20261019.csv,Scheduled delivery
+51,2026-10-21 06:10:00,appt_changes_20261020.csv,Scheduled delivery
+52,2026-10-22 06:10:00,appt_changes_20261021.csv,Scheduled delivery
+53,2026-10-23 06:10:00,appt_changes_20261022.csv,Scheduled delivery
+54,2026-10-24 06:10:00,appt_changes_20261023.csv,Scheduled delivery
+55,2026-10-25 06:10:00,appt_changes_20261024.csv,Scheduled delivery

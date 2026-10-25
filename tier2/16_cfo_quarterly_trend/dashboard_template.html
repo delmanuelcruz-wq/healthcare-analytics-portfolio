@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seven-Quarter Therapy Trend</title>
+<meta name="description" content="Synthetic portfolio page: seven-quarter specialty therapy utilization trend for a fictional infusion network.">
+<style>/*__SHARED_CSS__*/
+.summary { margin: 0; padding-left: 20px; font-size: 14px; display: grid; gap: 6px; }
+.footnote { font-size: 13px; color: var(--ink-2); border-left: 3px solid var(--axis); padding: 4px 0 4px 12px; margin: 10px 0 0; }
+</style>
+<script src="__PLOTLY_CDN__"></script>
+</head>
+<body>
+<div class="synthetic-bar">SYNTHETIC DEMONSTRATION - fictional organization and data. Not operational, medical or financial guidance.</div>
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Tier 2 · Workstream 16 · Coralline Infusion Network (fictional)</p>
+    <h1>Seven-quarter specialty therapy trend</h1>
+    <p>A one-page view for a finance executive: treated visits per quarter for one mock therapy, the quarter-over-quarter
+       and first-to-last change, and a footnote that states exactly what was counted.</p>
+    <div class="meta"><span>Therapy <b id="therapy"></b></span><span>2025 Q1 - 2026 Q3 · data as of <b id="asof"></b></span>
+      <span>Seed <span id="seed"></span></span></div>
+  </div>
+</header>
+<main class="wrap">
+  <div class="tiles" id="tiles"></div>
+
+  <div class="grid-2" style="margin-top:16px">
+    <section class="card">
+      <h3>Treated visits per quarter</h3>
+      <p class="sub">Distinct appointments where the therapy was given. Labels show the change vs the prior quarter.</p>
+      <div class="chart" id="c-trend"></div>
+      <p class="footnote" id="footnote"></p>
+      <details class="data"><summary>Show data table</summary><div id="d-trend"></div></details>
+    </section>
+    <section class="card">
+      <h3>Executive summary</h3>
+      <p class="sub">Three sentences, written from the synthetic numbers on this page.</p>
+      <ol class="summary" id="summary"></ol>
+      <h3 style="margin-top:18px">Why the line-item count is higher</h3>
+      <p class="sub">Every row between the two counts, by quarter. Visits + extra lines + waste + stray lines = line items.</p>
+      <div class="chart" id="c-recon" style="height:250px"></div>
+    </section>
+  </div>
+
+  <h2 class="section">Definitions</h2>
+  <div class="defs">
+    <div class="def"><b>Treated visit</b>One appointment that was Complete, had medication administered and has at least one line of this therapy given.
+      <div class="check">Not administration line items: a visit with a split lot has two lines.</div></div>
+    <div class="def"><b>Quarter</b>Calendar quarter of the site-local visit date, half-open: Q3 = [Jul 1, Oct 1).
+      <div class="check">2026 Q4 is in progress at the Oct 24 snapshot and is not shown.</div></div>
+    <div class="def"><b>QoQ and first-to-last change</b>new / old - 1. First-to-last compares 2025 Q1 with 2026 Q3.
+      <div class="check">The Excel workbook recomputes both with live formulas.</div></div>
+  </div>
+
+  <h2 class="section">Quality checks run on this build</h2>
+  <p class="section-lede">WARN means a real issue was found and handled - documented, excluded, or routed for cleanup.</p>
+  <div class="qa-list" id="qa"></div>
+
+  <h2 class="section">What is real and what is simulated</h2>
+  <div class="scope">
+    <div class="def"><b>On-the-job exposure (self-reported, general terms only)</b>
+      <ul><li>Prepared a seven-quarter specialty therapy utilization trend with a short executive summary for a finance executive.</li>
+          <li>Whether the count meant distinct appointments or line-item IDs was an open caution at the time.</li></ul></div>
+    <div class="def"><b>Independently built for this portfolio (synthetic)</b>
+      <ul><li>Every number on this page, the SQL, the reconciliation footnote, the workbook and the tests.</li>
+          <li>The mock therapy and all volumes are invented. Not a finance deliverable.</li></ul></div>
+  </div>
+  <footer class="foot">Coralline Infusion Network is fictional. All data is synthetic, generated from seed <span id="seed2"></span>.
+    SYNTHETIC DEMONSTRATION - not operational, medical or financial guidance.</footer>
+</main>
+<script>/*__DATA__*/</script>
+<script>/*__SHARED_JS__*/</script>
+<script>
+(function () {
+  const D = window.DATA;
+  const q = (s) => s.replace("-", " ");
+  document.getElementById("therapy").textContent = D.meta.therapy + " - " + D.meta.label;
+  document.getElementById("asof").textContent = D.meta.as_of;
+  document.getElementById("seed").textContent = D.meta.seed;
+  document.getElementById("seed2").textContent = D.meta.seed;
+  Dash.tiles(document.getElementById("tiles"), D.tiles);
+  document.getElementById("footnote").textContent = "Footnote: " + D.footnote;
+  document.getElementById("summary").innerHTML = D.summary.map((s) => `<li>${s}</li>`).join("");
+  const xs = D.trend.map((r) => q(r.quarter));
+
+  Dash.register((c) => {
+    const text = D.trend.map((r) => r.qoq_change === null ? `${r.treated_visits}` : `${r.treated_visits}<br>${r.qoq_change >= 0 ? "+" : "−"}${Math.abs(r.qoq_change * 100).toFixed(0)}%`);
+    Plotly.react("c-trend", [{
+      type: "bar", x: xs, y: D.trend.map((r) => r.treated_visits), marker: { color: c.s1, cornerradius: 4 },
+      text, textposition: "outside", textfont: { color: c.ink2, size: 11 }, cliponaxis: false,
+      hovertemplate: "%{x}: %{y} treated visits<extra></extra>" }],
+      Dash.layout({ showlegend: false, hovermode: "closest", margin: { t: 30 },
+                    yaxis: { range: [0, Math.max(...D.trend.map((r) => r.treated_visits)) * 1.3] } }), Dash.config);
+  });
+  Dash.register((c) => {
+    const part = (name, key, color) => ({ type: "bar", name, x: xs, y: D.trend.map((r) => r[key]), marker: { color },
+      hovertemplate: "%{y}<extra>" + name + "</extra>" });
+    Plotly.react("c-recon", [part("Treated visits", "treated_visits", c.s1),
+      part("Extra lines, same visit", "extra_lines_same_visit", c.s2),
+      part("Waste lines (not given)", "waste_lines", c.gray),
+      part("Given lines on untreated visits", "given_lines_on_untreated_visits", c.critical)],
+      Dash.layout({ barmode: "stack", margin: { t: 34 }, legend: { y: 1.22 } }), Dash.config);
+  });
+  Dash.table(document.getElementById("d-trend"), [
+    { key: "q", label: "Quarter" }, { key: "treated_visits", label: "Treated visits", num: true },
+    { key: "qoq", label: "QoQ" }, { key: "patients_treated", label: "Patients", num: true },
+    { key: "line_items", label: "Line items", num: true }, { key: "waste_lines", label: "Waste lines", num: true },
+    { key: "extra_lines_same_visit", label: "Extra lines, same visit", num: true },
+    { key: "exact_duplicate_lines", label: "of which exact duplicates", num: true }],
+    D.trend.map((r) => Object.assign({ q: q(r.quarter), qoq: r.qoq_change === null ? "" : (r.qoq_change * 100).toFixed(1) + "%" }, r)));
+
+  const icon = { pass: "Pass", warn: "Warn", fail: "Fail" };
+  document.getElementById("qa").innerHTML = D.qa.map((x) =>
+    `<div class="qa-item"><span class="badge ${x.status}"><span class="dot"></span>${icon[x.status]}</span>
+      <div><b>${x.check}</b><div class="obs">${x.observed}</div><div class="obs">Rule: ${x.rule}</div></div></div>`).join("");
+})();
+</script>
+</body>
+</html>

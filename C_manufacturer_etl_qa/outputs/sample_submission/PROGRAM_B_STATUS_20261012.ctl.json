@@ -1,0 +1,10 @@
+{
+  "file_name": "PROGRAM_B_STATUS_20261012.csv",
+  "program": "PROGRAM_B",
+  "file_type": "STATUS",
+  "reporting_week": "2026-10-12",
+  "record_count": 41,
+  "header_rows": 1,
+  "sha256": "641892400401479cbf6d9af3ed5f5af8eac903b50cfb1a3d3e0e0345ab1e4e97",
+  "destination": "mock://manufacturer-b/inbound"
+}

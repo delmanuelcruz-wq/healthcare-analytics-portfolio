@@ -1,0 +1,11 @@
+check,status,observed,rule
+Every request lands in exactly one bucket,pass,Matched: 33 · Zero-pay ($0.00): 6 · No match: 8 · Wrong claim type: 9 · Out of date range: 4 · Duplicate request: 1 = 61 of 61 requests,"Ordered rules: duplicate, match, no match, wrong claim type, out of range"
+"A match needs code + claim type + effective date, and hits one row",pass,0 overlapping schedule intervals; 0 requests matching more than one row,"service_date BETWEEN effective_from AND COALESCE(effective_to, open)"
+"$0.00 kept as zero-pay, never as 'no match'",pass,"6 requests priced at $0.00 (codes XJ114, XJ136, XJ139, XJ154, XQ209); the blank-or-zero shortcut files 6 of them as not found",A zero rate is an answer; a missing row is not
+Wrong claim type separated from no match,warn,9 Professional requests for codes on the Facility schedule only; the code-only shortcut prices 9 of them anyway,Claim type is part of the key
+Out-of-date-range requests flagged (inclusive boundaries),warn,"4 requests have no rate in force on the service date, including LR052 one day before its rate starts",Effective dates are inclusive on both ends
+"Duplicate requests removed once, original kept",pass,LR061 duplicates LR005,Same code + claim type + service date
+Rate changes priced from the interval covering the service date,pass,"20 codes changed rate on Jan 1, 2026; the code-only shortcut would use the 2025 rate for 6 matched request(s) dated 2026","Pick the interval by service date, not the first row"
+Codes missing from the schedule reported as no match,warn,8 requests for 8 catalog codes with no schedule row,"Route to code research, never guess a rate"
+Every amount labelled synthetic,pass,Amount columns end in _synthetic; workbook amount cells use the 'SYN $' number format; the dashboard prints 'SYN $',No amount can be mistaken for a real reimbursement rate
+Independent Python classifier agrees with SQL,pass,61/61 requests in the same bucket,"Same rules, different implementation"

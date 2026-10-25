@@ -1,0 +1,66 @@
+county_name,state_code,specialty_label,referrals_12m,referring_providers_12m,new_patients_12m
+Cypressmoor County,GA,Dermatology,15,4,5
+Cypressmoor County,GA,Gastroenterology,17,2,12
+Cypressmoor County,GA,Hematology,9,2,7
+Cypressmoor County,GA,Neurology,86,5,50
+Cypressmoor County,GA,Primary Care,17,3,13
+Cypressmoor County,GA,Pulmonology,28,1,13
+Cypressmoor County,GA,Rheumatology,76,7,37
+Larkspur County,GA,Dermatology,17,3,10
+Larkspur County,GA,Gastroenterology,83,4,58
+Larkspur County,GA,Nephrology,15,2,7
+Larkspur County,GA,Neurology,82,4,48
+Larkspur County,GA,Primary Care,37,3,29
+Larkspur County,GA,Pulmonology,50,3,29
+Saltmeadow County,GA,Dermatology,26,2,15
+Saltmeadow County,GA,Gastroenterology,35,7,22
+Saltmeadow County,GA,Immunology/Allergy,19,6,11
+Saltmeadow County,GA,Neurology,19,3,12
+Saltmeadow County,GA,Rheumatology,5,1,4
+Tallow Creek County,GA,Dermatology,16,2,7
+Tallow Creek County,GA,Gastroenterology,23,3,12
+Tallow Creek County,GA,Immunology/Allergy,73,4,43
+Tallow Creek County,GA,Nephrology,4,1,2
+Tallow Creek County,GA,Neurology,28,7,18
+Tallow Creek County,GA,Primary Care,37,2,26
+Tallow Creek County,GA,Pulmonology,1,1,1
+Wren Hollow County,GA,Nephrology,123,8,80
+Wren Hollow County,GA,Rheumatology,36,3,22
+Brinemoor County,NC,Gastroenterology,17,3,10
+Brinemoor County,NC,Hematology,13,3,12
+Brinemoor County,NC,Pulmonology,43,4,27
+Brinemoor County,NC,Rheumatology,13,3,8
+Cedar Landing County,NC,Gastroenterology,31,2,22
+Cedar Landing County,NC,Nephrology,33,3,20
+Cedar Landing County,NC,Neurology,44,5,26
+Cedar Landing County,NC,Pulmonology,1,1,1
+Cedar Landing County,NC,Rheumatology,22,2,17
+Ospreyford County,NC,Immunology/Allergy,23,1,12
+Ospreyford County,NC,Neurology,9,1,3
+Ospreyford County,NC,Rheumatology,6,1,1
+Palmetto Reach County,NC,Gastroenterology,20,3,15
+Palmetto Reach County,NC,Nephrology,33,4,24
+Palmetto Reach County,NC,Pulmonology,50,6,32
+Palmetto Reach County,NC,Rheumatology,29,4,19
+Quarry Hill County,NC,Neurology,25,3,18
+Quarry Hill County,NC,Rheumatology,41,3,26
+Gullwing County,SC,Dermatology,1,1,0
+Gullwing County,SC,Immunology/Allergy,13,2,10
+Gullwing County,SC,Neurology,91,7,50
+Gullwing County,SC,Pulmonology,144,7,85
+Gullwing County,SC,Rheumatology,19,2,8
+Heronmouth County,SC,Dermatology,17,2,10
+Heronmouth County,SC,Neurology,15,1,9
+Heronmouth County,SC,Pulmonology,4,1,2
+Heronmouth County,SC,Rheumatology,52,4,35
+Indigo Flats County,SC,Immunology/Allergy,6,1,3
+Indigo Flats County,SC,Nephrology,39,4,27
+Indigo Flats County,SC,Neurology,4,2,1
+Indigo Flats County,SC,Pulmonology,28,3,5
+Indigo Flats County,SC,Rheumatology,43,3,27
+Sablecrest County,SC,Gastroenterology,1,1,1
+Sablecrest County,SC,Immunology/Allergy,4,1,3
+Sablecrest County,SC,Nephrology,44,4,30
+Sablecrest County,SC,Neurology,20,3,12
+Sablecrest County,SC,Pulmonology,46,3,24
+Sablecrest County,SC,Rheumatology,9,3,4

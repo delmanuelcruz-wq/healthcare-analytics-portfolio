@@ -1,0 +1,11 @@
+field,column,as_modeled_nulls,as_modeled_null_pct,corrected_nulls,corrected_null_pct
+Therapy,therapy_key,317,0.7108,3,0.0067
+Patient,patient_key,317,0.7108,3,0.0067
+Order,order_key,317,0.7108,3,0.0067
+Pharmacy,dispensing_pharmacy,317,0.7108,3,0.0067
+Fill date,fill_date,317,0.7108,3,0.0067
+Vials dispensed,vials_dispensed,317,0.7108,3,0.0067
+Visit date,visit_at,317,0.7108,3,0.0067
+Destination site,site_key,0,0.0,0,0.0
+Shipped,shipped_at,0,0.0,0,0.0
+Delivered,delivered_at,7,0.0157,7,0.0157

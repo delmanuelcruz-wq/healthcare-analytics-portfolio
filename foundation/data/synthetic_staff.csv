@@ -1,0 +1,45 @@
+staff_key,staff_label,role,home_site_key,employment_status,hire_date
+STF001,RN-001 (fictional),Registered nurse,S08,Active,2020-08-03
+STF002,RN-002 (fictional),Registered nurse,S02,Active,2026-01-28
+STF003,RN-003 (fictional),Registered nurse,S05,Active,2018-01-06
+STF004,RN-004 (fictional),Registered nurse,S02,Active,2026-03-13
+STF005,RN-005 (fictional),Registered nurse,S06,Active,2024-07-20
+STF006,RN-006 (fictional),Registered nurse,S06,Active,2022-03-10
+STF007,RN-007 (fictional),Registered nurse,S08,Active,2026-01-23
+STF008,RN-008 (fictional),Registered nurse,S04,Active,2022-12-16
+STF009,RN-009 (fictional),Registered nurse,S06,Active,2018-03-01
+STF010,RN-010 (fictional),Registered nurse,S03,Active,2024-12-10
+STF011,RN-011 (fictional),Registered nurse,S02,Active,2021-06-28
+STF012,RN-012 (fictional),Registered nurse,S03,Active,2026-02-27
+STF013,RN-013 (fictional),Registered nurse,S07,Active,2022-10-18
+STF014,RN-014 (fictional),Registered nurse,S01,Active,2023-04-25
+STF015,RN-015 (fictional),Registered nurse,S01,Active,2023-03-28
+STF016,RN-016 (fictional),Registered nurse,S02,Active,2025-01-23
+STF017,RN-017 (fictional),Registered nurse,S01,Active,2021-01-10
+STF018,RN-018 (fictional),Registered nurse,S05,Active,2026-03-14
+STF019,RN-019 (fictional),Registered nurse,S05,Active,2021-07-08
+STF020,RN-020 (fictional),Registered nurse,S06,Active,2022-06-15
+STF021,RN-021 (fictional),Registered nurse,S04,Active,2024-03-12
+STF022,RN-022 (fictional),Registered nurse,S05,Active,2022-11-15
+STF023,RN-023 (fictional),Registered nurse,S01,Active,2018-07-04
+STF024,RN-024 (fictional),Registered nurse,S08,Active,2018-05-17
+STF025,RN-025 (fictional),Registered nurse,S04,Active,2021-08-07
+STF026,RN-026 (fictional),Registered nurse,S06,Active,2025-06-29
+STF027,RN-027 (fictional),Registered nurse,S02,Active,2018-10-18
+STF028,RN-028 (fictional),Registered nurse,S06,Active,2025-04-09
+STF029,RN-029 (fictional),Registered nurse,S05,Active,2024-01-28
+STF030,LPN-030 (fictional),Licensed practical nurse,S01,Active,2023-09-24
+STF031,LPN-031 (fictional),Licensed practical nurse,S06,Active,2024-03-19
+STF032,LPN-032 (fictional),Licensed practical nurse,S04,Active,2023-10-13
+STF033,LPN-033 (fictional),Licensed practical nurse,S01,Active,2023-12-22
+STF034,APRN-034 (fictional),Nurse practitioner,S01,Active,2020-12-21
+STF035,APRN-035 (fictional),Nurse practitioner,S03,Active,2022-06-02
+STF036,APRN-036 (fictional),Nurse practitioner,S04,Active,2020-06-22
+STF037,APRN-037 (fictional),Nurse practitioner,S01,Active,2019-07-12
+STF038,PharmD-038 (fictional),Pharmacist,S03,Active,2019-12-14
+STF039,PharmD-039 (fictional),Pharmacist,S01,Active,2019-06-01
+STF040,PharmD-040 (fictional),Pharmacist,S02,Active,2018-12-17
+STF041,MD-041 (fictional),Physician / medical director,S08,Active,2018-07-13
+STF042,MD-042 (fictional),Physician / medical director,S03,Active,2025-09-18
+STF043,MD-043 (fictional),Physician / medical director,S05,Active,2019-09-09
+STF044,MD-044 (fictional),Physician / medical director,S01,Active,2024-10-09

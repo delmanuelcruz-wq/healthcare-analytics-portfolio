@@ -1,0 +1,472 @@
+{
+  "generator_version": "1.1.0",
+  "seed": 20261024,
+  "as_of": "2026-10-24",
+  "data_start": "2024-07-01",
+  "future_end": "2026-12-31",
+  "python": "3.12.10",
+  "organization": "Coralline Infusion Network (fictional)",
+  "disclaimer": "SYNTHETIC DEMONSTRATION - not operational, medical or financial guidance",
+  "note": "All rows are newly generated. Nothing is derived from or calibrated to employer data.",
+  "tables": [
+    {
+      "table": "counties",
+      "file": "counties.csv",
+      "rows": 14,
+      "family": "dimension",
+      "grain": "one row per fictional county",
+      "primary_key": [
+        "county_key"
+      ],
+      "synthetic": true,
+      "sha256": "be27f326a2984f6cfdeda6ba65aa37858fd6b781c6f7e63d86b994ca89d59207"
+    },
+    {
+      "table": "postal_county_crosswalk",
+      "file": "postal_county_crosswalk.csv",
+      "rows": 34,
+      "family": "dimension",
+      "grain": "one row per ZIP x county allocation",
+      "primary_key": [
+        "zip5",
+        "county_key"
+      ],
+      "synthetic": true,
+      "sha256": "c28adad46bea6038245576a200d6759b9cfa36054c849101c09486ac8131a9aa"
+    },
+    {
+      "table": "sites",
+      "file": "sites.csv",
+      "rows": 8,
+      "family": "dimension",
+      "grain": "one row per infusion site",
+      "primary_key": [
+        "site_key"
+      ],
+      "synthetic": true,
+      "sha256": "a1bb2f2d03994d0296063a9dcd7aaf6c8340354fe7ad8107ae178c3e9a6a565b"
+    },
+    {
+      "table": "specialties",
+      "file": "specialties.csv",
+      "rows": 9,
+      "family": "dimension",
+      "grain": "one row per specialty",
+      "primary_key": [
+        "specialty_code"
+      ],
+      "synthetic": true,
+      "sha256": "10b9c8585d1f616c6c7968252bf35cc0ed9adf205703cfe2117c03f3efd4f527"
+    },
+    {
+      "table": "therapies",
+      "file": "therapies.csv",
+      "rows": 11,
+      "family": "dimension",
+      "grain": "one row per mock therapy",
+      "primary_key": [
+        "therapy_key"
+      ],
+      "synthetic": true,
+      "sha256": "4a38658cf343364f0b38fa536ad1ce1a6a7b43f61a4df65c0fd91c51b06aef8d"
+    },
+    {
+      "table": "payer_umbrellas",
+      "file": "payer_umbrellas.csv",
+      "rows": 11,
+      "family": "dimension",
+      "grain": "one row per payer umbrella",
+      "primary_key": [
+        "umbrella_key"
+      ],
+      "synthetic": true,
+      "sha256": "54e24ab155f66f5430a01aaf42a33258b5ed70541cafd3a2ee40713affe1d3e8"
+    },
+    {
+      "table": "payer_plans",
+      "file": "payer_plans.csv",
+      "rows": 28,
+      "family": "dimension",
+      "grain": "one row per raw plan name as it appears in source",
+      "primary_key": [
+        "plan_key"
+      ],
+      "synthetic": true,
+      "sha256": "deb33ab298bf1eacfc62f69877614dcba7ef8f48d94691ccac8be91f45bd8424"
+    },
+    {
+      "table": "payer_umbrella_map",
+      "file": "payer_umbrella_map.csv",
+      "rows": 26,
+      "family": "dimension",
+      "grain": "one row per mapped plan",
+      "primary_key": [
+        "plan_key"
+      ],
+      "synthetic": true,
+      "sha256": "acdf27a057cee01d806c3b393e85143c5512558cc1f8e5fa6fac527000a98822"
+    },
+    {
+      "table": "providers",
+      "file": "providers.csv",
+      "rows": 250,
+      "family": "dimension",
+      "grain": "one row per provider record (not per real person)",
+      "primary_key": [
+        "provider_key"
+      ],
+      "synthetic": true,
+      "sha256": "91530637e431b067ca161f5b5074b2ea89cf42d3ae0f74735de8405fa790f25e"
+    },
+    {
+      "table": "provider_specialties",
+      "file": "provider_specialties.csv",
+      "rows": 270,
+      "family": "dimension",
+      "grain": "one row per provider x specialty",
+      "primary_key": [
+        "provider_key",
+        "specialty_code"
+      ],
+      "synthetic": true,
+      "sha256": "34343f90532a345d3f2675b09419a312f0b3933573bb0cd7287f9fbafae7e149"
+    },
+    {
+      "table": "patients",
+      "file": "patients.csv",
+      "rows": 2502,
+      "family": "journey",
+      "grain": "one row per synthetic patient",
+      "primary_key": [
+        "patient_key"
+      ],
+      "synthetic": true,
+      "sha256": "ce45edfad3fb1919ad2fdaab1f266acfe1122876d08f8e32a4f468608bbd5134"
+    },
+    {
+      "table": "payer_history",
+      "file": "payer_history.csv",
+      "rows": 4303,
+      "family": "journey",
+      "grain": "one row per patient coverage interval",
+      "primary_key": [
+        "coverage_key"
+      ],
+      "synthetic": true,
+      "sha256": "10901ddfda6d82cbd26d81c7ff042d54db2aa5325e8007c3ab466fc0c3b55595"
+    },
+    {
+      "table": "referrals",
+      "file": "referrals.csv",
+      "rows": 3861,
+      "family": "journey",
+      "grain": "one row per referral event",
+      "primary_key": [
+        "referral_key"
+      ],
+      "synthetic": true,
+      "sha256": "0bf24438f44da7e3b0a50a47f214c75dd34a64cba13b23ee9b62ff6e5134e98f"
+    },
+    {
+      "table": "orders",
+      "file": "orders.csv",
+      "rows": 3516,
+      "family": "journey",
+      "grain": "one row per medication order series",
+      "primary_key": [
+        "order_key"
+      ],
+      "synthetic": true,
+      "sha256": "7061e35ee70d92babd8773d41c6f18a1547f5a302f2a49b4962ed2b4bb9a10db"
+    },
+    {
+      "table": "order_status_events",
+      "file": "order_status_events.csv",
+      "rows": 18897,
+      "family": "journey",
+      "grain": "one row per order stage transition",
+      "primary_key": [
+        "status_event_key"
+      ],
+      "synthetic": true,
+      "sha256": "b076202e6e49d8be16567c46ffe01c71bfa9cd26e36daf7f12b798647ebe06e4"
+    },
+    {
+      "table": "authorizations",
+      "file": "authorizations.csv",
+      "rows": 3113,
+      "family": "journey",
+      "grain": "one row per prior-authorization request",
+      "primary_key": [
+        "auth_key"
+      ],
+      "synthetic": true,
+      "sha256": "30e95c23d741b5fd52c12844178ba8b8b8a4f38179573c6ef3fc374a438f6fd2"
+    },
+    {
+      "table": "authorization_decisions",
+      "file": "authorization_decisions.csv",
+      "rows": 3631,
+      "family": "journey",
+      "grain": "one row per decision event",
+      "primary_key": [
+        "decision_key"
+      ],
+      "synthetic": true,
+      "sha256": "533f3b5cae92bc34d0c643bd5b8e71ff3f66ca1ba8a719a030cda07bf87bc293"
+    },
+    {
+      "table": "appointments",
+      "file": "appointments.csv",
+      "rows": 10246,
+      "family": "journey",
+      "grain": "one row per appointment",
+      "primary_key": [
+        "appt_key"
+      ],
+      "synthetic": true,
+      "sha256": "254ffe78639233d6bb0aae1d1234bcb57f22ea664e42aebc26a28b36e97b05b2"
+    },
+    {
+      "table": "appointment_change_log",
+      "file": "appointment_change_log.csv",
+      "rows": 25729,
+      "family": "journey",
+      "grain": "one row per appointment status change",
+      "primary_key": [
+        "change_key"
+      ],
+      "synthetic": true,
+      "sha256": "549a1dddf8c73adef1779ad67c37ca35852cde883fbd5d23d5bc6ddf891d69b0"
+    },
+    {
+      "table": "administrations",
+      "file": "administrations.csv",
+      "rows": 9424,
+      "family": "journey",
+      "grain": "one row per administration line item (many per appointment allowed)",
+      "primary_key": [
+        "admin_key"
+      ],
+      "synthetic": true,
+      "sha256": "965ed9a678e4df56b391c6e107106c57c694603dc639c32faf01101669f20f5e"
+    },
+    {
+      "table": "inventory_transactions",
+      "file": "inventory_transactions.csv",
+      "rows": 3777,
+      "family": "operations",
+      "grain": "one row per inventory movement",
+      "primary_key": [
+        "inventory_event_key"
+      ],
+      "synthetic": true,
+      "sha256": "4fa77ecb9644d5027552bb84b8a074d14cc366b21b29e02ca796ee6bfca5e654"
+    },
+    {
+      "table": "inventory_snapshots",
+      "file": "inventory_snapshots.csv",
+      "rows": 2715,
+      "family": "operations",
+      "grain": "one row per site x therapy x week",
+      "primary_key": [
+        "snapshot_key"
+      ],
+      "synthetic": true,
+      "sha256": "0cba55c95fb46ea8e805b7cb7ae5c1ffcb942231b2f819c5662f09f269628fc9"
+    },
+    {
+      "table": "purchase_orders",
+      "file": "purchase_orders.csv",
+      "rows": 333,
+      "family": "operations",
+      "grain": "one row per purchase order",
+      "primary_key": [
+        "po_key"
+      ],
+      "synthetic": true,
+      "sha256": "fa65fefde2024b0fa819ac3db47cb728eed07d18666eba70013d07083b25356e"
+    },
+    {
+      "table": "synthetic_staff",
+      "file": "synthetic_staff.csv",
+      "rows": 44,
+      "family": "compliance",
+      "grain": "one row per fictional staff member",
+      "primary_key": [
+        "staff_key"
+      ],
+      "synthetic": true,
+      "sha256": "01084f9f3c600ce7e428c25e8780974f818018c67332ca2a2f86be93548c7adb"
+    },
+    {
+      "table": "license_registry",
+      "file": "license_registry.csv",
+      "rows": 45,
+      "family": "compliance",
+      "grain": "one row per license record",
+      "primary_key": [
+        "license_record_key"
+      ],
+      "synthetic": true,
+      "sha256": "41d387b8e34587d483099f51c3a7372e52be80aea7251799b6e04c0c3425844a"
+    },
+    {
+      "table": "document_index",
+      "file": "document_index.csv",
+      "rows": 40,
+      "family": "compliance",
+      "grain": "one row per filed license document",
+      "primary_key": [
+        "document_key"
+      ],
+      "synthetic": true,
+      "sha256": "47e27d007c289f41359557f1cc30cc2338d51ce4d85acfa7b3d563eafdf1ad06"
+    },
+    {
+      "table": "site_licenses",
+      "file": "site_licenses.csv",
+      "rows": 16,
+      "family": "compliance",
+      "grain": "one row per site license",
+      "primary_key": [
+        "site_license_key"
+      ],
+      "synthetic": true,
+      "sha256": "50c5d471a264669d0e13d2ac9ee43ba4bddf87888132dcfd880f112ec82e909f"
+    },
+    {
+      "table": "medical_director_assignment",
+      "file": "medical_director_assignment.csv",
+      "rows": 10,
+      "family": "compliance",
+      "grain": "one row per director x site relationship interval",
+      "primary_key": [
+        "assignment_key"
+      ],
+      "synthetic": true,
+      "sha256": "52e6ca4fdbc01f70711842ea541a5b4709f0f0d0415533698b1628439551e41e"
+    },
+    {
+      "table": "code_catalog",
+      "file": "code_catalog.csv",
+      "rows": 78,
+      "family": "revenue",
+      "grain": "one row per mock billing code",
+      "primary_key": [
+        "mock_code"
+      ],
+      "synthetic": true,
+      "sha256": "adcfc8be5eb8a0fe4a27f6a0981cf0b85f81a1c95c7cff25ee8907d6edb1a3da"
+    },
+    {
+      "table": "mock_fee_schedule",
+      "file": "mock_fee_schedule.csv",
+      "rows": 90,
+      "family": "revenue",
+      "grain": "one row per code x claim type x effective interval",
+      "primary_key": [
+        "fee_row_key"
+      ],
+      "synthetic": true,
+      "sha256": "044944f1ef00308a3fe5a49cd2e65197c23ad8387c8b9c6c99d6723b88141aa2"
+    },
+    {
+      "table": "lookup_requests",
+      "file": "lookup_requests.csv",
+      "rows": 61,
+      "family": "revenue",
+      "grain": "one row per code lookup request",
+      "primary_key": [
+        "request_key"
+      ],
+      "synthetic": true,
+      "sha256": "ae10296ea582bc38562e8b27ed47625fe837833c366e89e6f9c8c2624d219755"
+    },
+    {
+      "table": "reporting_targets",
+      "file": "reporting_targets.csv",
+      "rows": 96,
+      "family": "operations",
+      "grain": "one row per site x month",
+      "primary_key": [
+        "site_key",
+        "target_month"
+      ],
+      "synthetic": true,
+      "sha256": "2918e2bb9cfffbbc26a78a7a407ac78d297eed40d2fcfa3bad708fd387252a56"
+    },
+    {
+      "table": "submission_log",
+      "file": "submission_log.csv",
+      "rows": 120,
+      "family": "operations",
+      "grain": "one row per generated manufacturer file",
+      "primary_key": [
+        "batch_key"
+      ],
+      "synthetic": true,
+      "sha256": "56236e14b52d190792f4811d4913426f9f232b219cb8d0bf6fd709fba8fbd4de"
+    },
+    {
+      "table": "prescriptions",
+      "file": "prescriptions.csv",
+      "rows": 201,
+      "family": "pharmacy",
+      "grain": "one row per prescription shipped by a specialty pharmacy",
+      "primary_key": [
+        "rx_key"
+      ],
+      "synthetic": true,
+      "sha256": "95828325691c91c8b50d29f9371418117f239b195021dfa71e3a61b2e755dbc3"
+    },
+    {
+      "table": "rx_fills",
+      "file": "rx_fills.csv",
+      "rows": 452,
+      "family": "pharmacy",
+      "grain": "one row per prescription fill",
+      "primary_key": [
+        "fill_key"
+      ],
+      "synthetic": true,
+      "sha256": "184be3cd28bf9b9552f7dfb551db37a548559d8cc2fd24d4272f5dadd21e2317"
+    },
+    {
+      "table": "delivery_tickets",
+      "file": "delivery_tickets.csv",
+      "rows": 446,
+      "family": "pharmacy",
+      "grain": "one row per pharmacy delivery ticket",
+      "primary_key": [
+        "ticket_key"
+      ],
+      "synthetic": true,
+      "sha256": "84aa4bb26411067cc3e001d554035998d1d4713a34a5bce26be5b536799a9b08"
+    },
+    {
+      "table": "accounting_ledger",
+      "file": "accounting_ledger.csv",
+      "rows": 1749,
+      "family": "accounting",
+      "grain": "one row per general-ledger inventory line",
+      "primary_key": [
+        "gl_line_key"
+      ],
+      "synthetic": true,
+      "sha256": "0b894cb5bb9b011a711f222ed8fae3a162ffab3a86d9fa434aceb71912d2f854"
+    },
+    {
+      "table": "exceptions_register",
+      "file": "exceptions_register.csv",
+      "rows": 406,
+      "family": "qa",
+      "grain": "one row per injected defect or designed edge case",
+      "primary_key": [
+        "exception_id"
+      ],
+      "synthetic": true,
+      "sha256": "75bc9a1e784c474727f52836538a0b57673644431bab9d94b89564e05cdea852"
+    }
+  ]
+}

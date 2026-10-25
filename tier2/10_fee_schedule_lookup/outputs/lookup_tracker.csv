@@ -1,0 +1,62 @@
+request_key,batch_key,mock_code,claim_type_requested,service_date,bucket,matched_fee_row,fictional_fee_amount_synthetic,effective_from,effective_to,claim_types_on_schedule,earliest_effective_from,duplicate_of,match_rows,action
+LR001,BATCH-2026-10,XJ131,Professional,2025-03-15,Matched,FS042,1849.09,2025-01-01,,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR002,BATCH-2026-10,XJ120,Professional,2025-11-05,Matched,FS026,83.85,2025-01-01,2025-12-31,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR003,BATCH-2026-10,XJ109,Professional,2025-10-11,Matched,FS011,3630.12,2025-01-01,,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR004,BATCH-2026-10,XJ156,Professional,2026-05-26,Matched,FS072,1974.39,2025-01-01,,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR005,BATCH-2026-10,XJ110,Professional,2025-08-29,Matched,FS012,1480.55,2025-01-01,,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR006,BATCH-2026-10,XQ210,Professional,2025-08-17,Out of date range,,,,,Professional,2026-04-01,,0,No rate in force on 2025-08-17 (schedule starts 2026-04-01) - check the date or prior schedule
+LR007,BATCH-2026-10,XJ119,Professional,2025-04-09,Matched,FS025,1197.11,2025-01-01,,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR008,BATCH-2026-10,XJ129,Professional,2026-06-18,Matched,FS040,272.64,2026-01-01,,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR009,BATCH-2026-10,XJ114,Professional,2025-11-08,Zero-pay ($0.00),FS018,0.0,2025-01-01,,Professional,2025-01-01,,1,"Rate is $0.00 (non-covered, mock) - a real answer, confirm before billing"
+LR010,BATCH-2026-10,XQ207,Professional,2025-06-22,Matched,FS087,3025.12,2025-01-01,,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR011,BATCH-2026-10,XJ140,Professional,2026-04-09,Wrong claim type,,,,,Facility,2026-04-01,,0,Code exists only as Facility - confirm the claim type
+LR012,BATCH-2026-10,XJ159,Professional,2026-05-01,Matched,FS077,682.81,2026-01-01,,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR013,BATCH-2026-10,XJ134,Professional,2026-06-17,Matched,FS047,3261.92,2026-01-01,,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR014,BATCH-2026-10,XJ149,Professional,2026-05-01,Wrong claim type,,,,,Facility,2025-01-01,,0,Code exists only as Facility - confirm the claim type
+LR015,BATCH-2026-10,XQ204,Professional,2026-08-27,Matched,FS084,3257.26,2025-01-01,,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR016,BATCH-2026-10,XQ208,Professional,2025-01-20,Matched,FS088,1613.45,2025-01-01,,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR017,BATCH-2026-10,XJ106,Professional,2025-10-06,Matched,FS007,2812.72,2025-01-01,,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR018,BATCH-2026-10,XJ168,Professional,2026-06-26,No match,,,,,,,,0,Code is not on the schedule - research the code or ask the payer
+LR019,BATCH-2026-10,XJ130,Professional,2026-01-07,Wrong claim type,,,,,Facility,2025-01-01,,0,Code exists only as Facility - confirm the claim type
+LR020,BATCH-2026-10,XJ148,Professional,2026-10-23,Matched,FS064,207.69,2025-01-01,,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR021,BATCH-2026-10,XJ140,Professional,2026-10-03,Wrong claim type,,,,,Facility,2026-04-01,,0,Code exists only as Facility - confirm the claim type
+LR022,BATCH-2026-10,XJ147,Professional,2025-04-06,Matched,FS062,2665.96,2025-01-01,2025-12-31,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR023,BATCH-2026-10,XJ115,Professional,2026-02-28,Matched,FS020,2811.77,2026-01-01,,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR024,BATCH-2026-10,XJ163,Professional,2026-06-02,No match,,,,,,,,0,Code is not on the schedule - research the code or ask the payer
+LR025,BATCH-2026-10,XJ101,Professional,2026-01-26,Matched,FS001,3924.52,2025-01-01,,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR026,BATCH-2026-10,XJ158,Professional,2025-04-18,Matched,FS074,1100.74,2025-01-01,2025-12-31,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR027,BATCH-2026-10,XJ121,Professional,2026-09-05,Matched,FS029,3551.13,2026-01-01,,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR028,BATCH-2026-10,XJ126,Professional,2025-12-20,Matched,FS035,2483.4,2025-01-01,,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR029,BATCH-2026-10,XJ143,Professional,2025-09-07,Matched,FS058,2112.34,2025-01-01,,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR030,BATCH-2026-10,XJ161,Professional,2025-01-08,No match,,,,,,,,0,Code is not on the schedule - research the code or ask the payer
+LR031,BATCH-2026-10,XJ144,Professional,2025-02-16,Matched,FS059,1328.85,2025-01-01,,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR032,BATCH-2026-10,XJ164,Professional,2026-01-31,No match,,,,,,,,0,Code is not on the schedule - research the code or ask the payer
+LR033,BATCH-2026-10,XJ167,Professional,2026-01-27,No match,,,,,,,,0,Code is not on the schedule - research the code or ask the payer
+LR034,BATCH-2026-10,XJ139,Professional,2026-07-28,Zero-pay ($0.00),FS054,0.0,2026-04-01,,Professional,2026-04-01,,1,"Rate is $0.00 (non-covered, mock) - a real answer, confirm before billing"
+LR035,BATCH-2026-10,XJ118,Professional,2026-08-28,Wrong claim type,,,,,Facility,2025-01-01,,0,Code exists only as Facility - confirm the claim type
+LR036,BATCH-2026-10,XQ209,Professional,2026-01-28,Zero-pay ($0.00),FS089,0.0,2025-01-01,,Professional,2025-01-01,,1,"Rate is $0.00 (non-covered, mock) - a real answer, confirm before billing"
+LR037,BATCH-2026-10,XJ152,Professional,2026-06-09,Wrong claim type,,,,,Facility,2025-01-01,,0,Code exists only as Facility - confirm the claim type
+LR038,BATCH-2026-10,XJ125,Professional,2026-01-23,Matched,FS034,303.5,2025-01-01,,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR039,BATCH-2026-10,XQ203,Professional,2026-04-23,Matched,FS083,558.35,2026-01-01,,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR040,BATCH-2026-10,XJ113,Professional,2025-03-14,Matched,FS016,4307.57,2025-01-01,2025-12-31,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR041,BATCH-2026-10,XJ153,Professional,2025-04-09,Matched,FS069,1394.07,2025-01-01,,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR042,BATCH-2026-10,XJ154,Professional,2025-09-09,Zero-pay ($0.00),FS070,0.0,2025-01-01,,Professional,2025-01-01,,1,"Rate is $0.00 (non-covered, mock) - a real answer, confirm before billing"
+LR043,BATCH-2026-10,XJ132,Professional,2025-04-09,Matched,FS043,1912.71,2025-01-01,2025-12-31,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR044,BATCH-2026-10,XJ162,Professional,2025-01-20,No match,,,,,,,,0,Code is not on the schedule - research the code or ask the payer
+LR045,BATCH-2026-10,XJ152,Professional,2025-09-13,Wrong claim type,,,,,Facility,2025-01-01,,0,Code exists only as Facility - confirm the claim type
+LR046,BATCH-2026-10,XJ146,Professional,2026-05-06,Matched,FS061,1124.56,2025-01-01,,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR047,BATCH-2026-10,XJ165,Professional,2026-07-13,No match,,,,,,,,0,Code is not on the schedule - research the code or ask the payer
+LR048,BATCH-2026-10,XJ166,Professional,2025-11-21,No match,,,,,,,,0,Code is not on the schedule - research the code or ask the payer
+LR049,BATCH-2026-10,XQ206,Professional,2026-05-19,Matched,FS086,3217.4,2025-01-01,,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR050,BATCH-2026-10,XJ133,Professional,2026-04-10,Matched,FS045,4298.53,2025-01-01,,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR051,BATCH-2026-10,XJ128,Professional,2025-09-13,Matched,FS037,1506.61,2025-01-01,2025-12-31,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR052,BATCH-2026-10,XJ122,Professional,2026-03-31,Out of date range,,,,,Professional,2026-04-01,,0,No rate in force on 2026-03-31 (schedule starts 2026-04-01) - check the date or prior schedule
+LR053,BATCH-2026-10,XJ138,Professional,2025-11-22,Matched,FS052,54.73,2025-01-01,2025-12-31,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR054,BATCH-2026-10,XJ136,Professional,2025-01-23,Zero-pay ($0.00),FS050,0.0,2025-01-01,,Professional,2025-01-01,,1,"Rate is $0.00 (non-covered, mock) - a real answer, confirm before billing"
+LR055,BATCH-2026-10,XJ130,Professional,2026-08-23,Wrong claim type,,,,,Facility,2025-01-01,,0,Code exists only as Facility - confirm the claim type
+LR056,BATCH-2026-10,XJ114,Professional,2025-09-12,Zero-pay ($0.00),FS018,0.0,2025-01-01,,Professional,2025-01-01,,1,"Rate is $0.00 (non-covered, mock) - a real answer, confirm before billing"
+LR057,BATCH-2026-10,XJ112,Professional,2025-12-01,Matched,FS015,2864.1,2025-01-01,,Professional,2025-01-01,,1,"Rate found for code, claim type and date"
+LR058,BATCH-2026-10,XJ110,Professional,2024-11-15,Out of date range,,,,,Professional,2025-01-01,,0,No rate in force on 2024-11-15 (schedule starts 2025-01-01) - check the date or prior schedule
+LR059,BATCH-2026-10,XJ118,Professional,2024-11-15,Wrong claim type,,,,,Facility,2025-01-01,,0,Code exists only as Facility - confirm the claim type
+LR060,BATCH-2026-10,XJ142,Professional,2024-11-15,Out of date range,,,,,Professional,2025-01-01,,0,No rate in force on 2024-11-15 (schedule starts 2025-01-01) - check the date or prior schedule
+LR061,BATCH-2026-10,XJ110,Professional,2025-08-29,Duplicate request,,,,,Professional,2025-01-01,LR005,1,Duplicate of LR005 - removed from the count

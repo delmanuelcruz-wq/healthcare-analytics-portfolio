@@ -1,0 +1,12 @@
+area,record,holder,code,finding,owner,severity
+Nursing & clinical licenses,LIC023,RN-023 (fictional),EXPIRED_STATUS_STALE,Expired 45 days ago but still recorded Active,HR / credentialing,High
+Nursing & clinical licenses,LIC029,RN-029 (fictional),EXPIRED_STATUS_STALE,Expired 12 days ago but still recorded Active,HR / credentialing,High
+Nursing & clinical licenses,LIC011,RN-011 (fictional),DOC_FLAG_WRONG,"Register says a document is on file, but none exists",HR / credentialing,Medium
+Nursing & clinical licenses,LIC045,RN-020 (fictional),DUPLICATE,Duplicate of LIC020 (same license ID),HR / credentialing,Medium
+Nursing & clinical licenses,LIC025,RN-025 (fictional),DOC_MISSING,No license document on file,HR / credentialing,Medium
+Nursing & clinical licenses,LIC005,RN-005 (fictional),DOC_FLAG_WRONG,"Register says a document is on file, but none exists",HR / credentialing,Medium
+Nursing & clinical licenses,LIC008,RN-008 (fictional),DOC_MISSING,No license document on file,HR / credentialing,Medium
+Location licenses,SLC012,Gullwing Infusion Suite,EXPIRED,Pharmacy permit (mock): Expired 20 days ago,Site operations,High
+Location licenses,SLC015,Cedar Landing Infusion Suite,DOC_MISSING,Ambulatory infusion center license (mock): No document on file,Site operations,Medium
+Medical director coverage,MDA009|MDA010,S08,MD_OVERLAP,Two primary directors overlap (2025-09-15 to 2025-12-31),Medical affairs,Medium
+Medical director coverage,MDA006,S05,MD_UNCOVERED,No active primary medical director since 2026-09-30,Medical affairs,High

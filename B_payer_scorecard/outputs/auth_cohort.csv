@@ -1,0 +1,27 @@
+quarter,umbrella_key,umbrella_name,sort_order,requests,orders_requested,appeal_requests,approved,denied,pending
+Q2 2026,PU01,Heronview Health (fictional),1,71,69,2,64,7,0
+Q2 2026,PU02,Saltgrass Mutual (fictional),2,51,47,5,41,10,0
+Q2 2026,PU03,Kestrel Shield Medicare Advantage (fictional),3,46,45,1,42,4,0
+Q2 2026,PU04,Brightfen Advantage (fictional),4,47,44,4,40,7,0
+Q2 2026,PU05,Sandmere Medicaid Plan (fictional),5,40,37,5,30,10,0
+Q2 2026,PU06,Cobaltine Commercial (fictional),6,32,32,0,30,2,0
+Q2 2026,PU07,Ospreyline Senior (fictional),7,39,35,4,28,11,0
+Q2 2026,PU08,Driftwell Health Alliance (fictional),8,33,29,5,27,6,0
+Q2 2026,PU09,Fernhollow Care (fictional),9,26,24,2,20,6,0
+Q2 2026,PU10,Quillmont Federal Medicare (fictional),10,9,9,0,8,1,0
+Q2 2026,PU99,Other / small plans (fictional),99,48,45,3,42,6,0
+Q2 2026,UNMAPPED,Unmapped alias (pending review),100,0,0,0,0,0,0
+Q2 2026,NO_COVERAGE,No coverage on file at event,101,0,0,0,0,0,0
+Q3 2026,PU01,Heronview Health (fictional),1,75,73,3,70,5,0
+Q3 2026,PU02,Saltgrass Mutual (fictional),2,34,34,1,32,2,0
+Q3 2026,PU03,Kestrel Shield Medicare Advantage (fictional),3,52,50,2,43,9,0
+Q3 2026,PU04,Brightfen Advantage (fictional),4,40,35,6,30,9,1
+Q3 2026,PU05,Sandmere Medicaid Plan (fictional),5,40,35,6,32,7,1
+Q3 2026,PU06,Cobaltine Commercial (fictional),6,28,28,0,28,0,0
+Q3 2026,PU07,Ospreyline Senior (fictional),7,45,43,3,38,7,0
+Q3 2026,PU08,Driftwell Health Alliance (fictional),8,29,28,1,25,4,0
+Q3 2026,PU09,Fernhollow Care (fictional),9,20,19,3,17,3,0
+Q3 2026,PU10,Quillmont Federal Medicare (fictional),10,7,7,0,7,0,0
+Q3 2026,PU99,Other / small plans (fictional),99,38,37,1,35,3,0
+Q3 2026,UNMAPPED,Unmapped alias (pending review),100,0,0,0,0,0,0
+Q3 2026,NO_COVERAGE,No coverage on file at event,101,0,0,0,0,0,0

@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manufacturer Submission Console</title>
+<meta name="description" content="Synthetic portfolio dashboard: weekly manufacturer data-agreement extracts, status rules engine and submission QA console.">
+<style>/* Shared dashboard styles - inlined into every project dashboard at build time. */
+:root {
+  color-scheme: light;
+  --page: #f9f9f7;
+  --surface: #fcfcfb;
+  --surface-2: #f3f2ee;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --muted: #6f6d68;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --border: rgba(11, 11, 11, 0.10);
+  --brand: #12344a;
+  --brand-ink: #ffffff;
+  --accent: #0f7c80;
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+  --series-gray: #a8a69f;
+  --seq-1: #cde2fb; --seq-2: #9ec5f4; --seq-3: #6da7ec; --seq-4: #3987e5; --seq-5: #256abf; --seq-6: #184f95; --seq-7: #0d366b;
+  --ord-1: #86b6ef; --ord-2: #5598e7; --ord-3: #2a78d6; --ord-4: #1c5cab; --ord-5: #104281;
+  --good: #0ca30c; --warning: #fab219; --serious: #ec835a; --critical: #d03b3b;
+  --good-ink: #006300;
+  --synthetic-bg: #fff4d6; --synthetic-ink: #5c4300;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --surface-2: #232321;
+    --ink: #f0efec; --ink-2: #c3c2b7; --muted: #9a988f; --grid: #2c2c2a; --axis: #383835;
+    --border: rgba(255, 255, 255, 0.10); --brand: #0f2a3b; --accent: #3fb0b3;
+    --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500; --series-gray: #6a6862;
+    --seq-1: #13304f; --seq-2: #184f95; --seq-3: #1c5cab; --seq-4: #256abf; --seq-5: #3987e5; --seq-6: #6da7ec; --seq-7: #b7d3f6;
+    --ord-1: #184f95; --ord-2: #1c5cab; --ord-3: #2a78d6; --ord-4: #5598e7; --ord-5: #86b6ef;
+    --good-ink: #0ca30c; --synthetic-bg: #3a2f10; --synthetic-ink: #ffd982;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #1a1a19; --surface-2: #232321;
+  --ink: #f0efec; --ink-2: #c3c2b7; --muted: #9a988f; --grid: #2c2c2a; --axis: #383835;
+  --border: rgba(255, 255, 255, 0.10); --brand: #0f2a3b; --accent: #3fb0b3;
+  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500; --series-gray: #6a6862;
+  --seq-1: #13304f; --seq-2: #184f95; --seq-3: #1c5cab; --seq-4: #256abf; --seq-5: #3987e5; --seq-6: #6da7ec; --seq-7: #b7d3f6;
+  --ord-1: #184f95; --ord-2: #1c5cab; --ord-3: #2a78d6; --ord-4: #5598e7; --ord-5: #86b6ef;
+  --good-ink: #0ca30c; --synthetic-bg: #3a2f10; --synthetic-ink: #ffd982;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--page); color: var(--ink);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.synthetic-bar {
+  background: var(--synthetic-bg); color: var(--synthetic-ink); text-align: center;
+  font-size: 13px; font-weight: 600; padding: 7px 16px; letter-spacing: .01em;
+}
+header.top { background: var(--brand); color: var(--brand-ink); }
+header.top .wrap { padding-top: 26px; padding-bottom: 24px; }
+header.top .eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; opacity: .75; margin: 0 0 6px; }
+header.top h1 { font-size: 28px; line-height: 1.2; margin: 0 0 8px; font-weight: 650; }
+header.top p { margin: 0; max-width: 860px; opacity: .88; }
+header.top .meta { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; opacity: .85; }
+.wrap { max-width: 1280px; margin: 0 auto; padding-left: 24px; padding-right: 24px; }
+main.wrap { padding-top: 24px; padding-bottom: 48px; }
+h2.section { font-size: 18px; margin: 34px 0 4px; font-weight: 650; }
+p.section-lede { margin: 0 0 14px; color: var(--ink-2); max-width: 900px; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr)); gap: 12px; }
+.tile { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px 12px; }
+.tile .label { font-size: 13px; color: var(--ink-2); margin: 0 0 4px; }
+.tile .value { font-size: 30px; font-weight: 600; line-height: 1.15; margin: 0; }
+.tile .delta { font-size: 12.5px; color: var(--muted); margin: 6px 0 0; }
+.tile .delta .up { color: var(--good-ink); font-weight: 600; }
+.tile .delta .down { color: var(--critical); font-weight: 600; }
+.tile .note { font-size: 12px; color: var(--muted); margin: 4px 0 0; }
+
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px 12px; min-width: 0; }
+.card.full { grid-column: 1 / -1; }
+.card h3 { font-size: 15.5px; margin: 0 0 2px; font-weight: 650; }
+.card .sub { font-size: 13px; color: var(--ink-2); margin: 0 0 8px; }
+.card .chart { width: 100%; height: 320px; }
+.card .chart.tall { height: 420px; }
+.chart-scroll { overflow-x: auto; }
+.chart-scroll > .chart { min-width: 720px; }
+.funnel { display: grid; gap: 12px; padding: 6px 0 4px; }
+.funnel-label { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--ink-2); margin-bottom: 4px; }
+.funnel-val { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.funnel-track { background: var(--surface-2); border-radius: 4px; height: 18px; }
+.funnel-bar { height: 18px; border-radius: 0 4px 4px 0; min-width: 2px; }
+.card .takeaway { font-size: 13px; color: var(--ink); background: var(--surface-2); border-radius: 8px; padding: 8px 10px; margin: 8px 0 4px; }
+details.data { margin-top: 6px; font-size: 13px; }
+details.data summary { cursor: pointer; color: var(--accent); font-weight: 600; padding: 4px 0; }
+.table-scroll { overflow-x: auto; max-height: 340px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; margin-top: 6px; }
+table.data { border-collapse: collapse; width: 100%; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+table.data th, table.data td { padding: 6px 10px; border-bottom: 1px solid var(--grid); text-align: left; white-space: nowrap; }
+table.data th { position: sticky; top: 0; background: var(--surface-2); color: var(--ink-2); font-weight: 600; }
+table.data td.num, table.data th.num { text-align: right; }
+
+.defs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 12px; }
+.def { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; font-size: 13.5px; }
+.def b { display: block; margin-bottom: 2px; }
+.def .check { color: var(--ink-2); font-size: 12.5px; margin-top: 4px; }
+
+.qa-list { display: grid; gap: 8px; }
+.qa-item { display: grid; grid-template-columns: 110px 1fr; gap: 12px; align-items: start; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 13.5px; }
+.badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 3px 10px 3px 8px; width: fit-content; }
+.badge .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.badge.pass { background: color-mix(in srgb, var(--good) 14%, transparent); color: var(--good-ink); }
+.badge.pass .dot { background: var(--good); }
+.badge.warn { background: color-mix(in srgb, var(--warning) 20%, transparent); color: var(--ink); }
+.badge.warn .dot { background: var(--warning); }
+.badge.fail { background: color-mix(in srgb, var(--critical) 14%, transparent); color: var(--critical); }
+.badge.fail .dot { background: var(--critical); }
+.qa-item .obs { color: var(--ink-2); font-size: 12.5px; margin-top: 2px; }
+
+.scope { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 12px; }
+.scope .def ul { margin: 6px 0 0; padding-left: 18px; }
+footer.foot { color: var(--muted); font-size: 12.5px; border-top: 1px solid var(--border); margin-top: 40px; padding-top: 16px; }
+
+@media (max-width: 860px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .wrap { padding-left: 16px; padding-right: 16px; }
+  header.top h1 { font-size: 23px; }
+  .qa-item { grid-template-columns: 1fr; gap: 6px; }
+  .card .chart { height: 280px; }
+}
+@media print { .synthetic-bar { -webkit-print-color-adjust: exact; print-color-adjust: exact; } details.data { display: none; } }
+
+.pipeline { display: flex; flex-wrap: wrap; gap: 8px; align-items: stretch; }
+.step { flex: 1 1 120px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 12.5px; }
+.step b { display: block; font-size: 13px; margin-bottom: 2px; }
+.step .tag { display: inline-block; margin-top: 6px; font-size: 11px; font-weight: 700; color: var(--ink-2); background: var(--surface-2); border-radius: 999px; padding: 2px 8px; }
+.console { overflow-x: auto; }
+.console table { border-collapse: separate; border-spacing: 3px; font-size: 11.5px; }
+.console th { color: var(--muted); font-weight: 600; white-space: nowrap; padding: 0 2px; }
+.console th.row { text-align: left; color: var(--ink); padding-right: 10px; }
+.cell { width: 26px; height: 26px; border-radius: 6px; text-align: center; vertical-align: middle; font-weight: 800; font-size: 13px; cursor: default; }
+.cell.green { background: color-mix(in srgb, var(--good) 22%, transparent); color: var(--good-ink); }
+.cell.yellow { background: color-mix(in srgb, var(--warning) 45%, transparent); color: var(--ink); }
+.cell.red { background: var(--critical); color: #fff; }
+.legend-row { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12.5px; color: var(--ink-2); margin: 8px 0 0; }
+.legend-row .cell { display: inline-block; width: 20px; height: 20px; line-height: 20px; margin-right: 6px; font-size: 11px; }
+table.wrap td { white-space: normal; min-width: 110px; vertical-align: top; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
+</head>
+<body>
+<div class="synthetic-bar">SYNTHETIC DEMONSTRATION - fictional programs, products and data; mock destinations only. Not operational, medical or financial guidance.</div>
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Portfolio project C · Coralline Infusion Network (fictional)</p>
+    <h1>Manufacturer data-agreement ETL and submission console</h1>
+    <p>Weekly inventory, dispense and status files for two fictional manufacturer programs - built, reconciled, controlled
+       and audited. Every logged submission is re-checked against a fresh recomputation.</p>
+    <div class="meta"><span>Data as of <b id="asof"></b></span><span>24 reporting weeks to <span id="latest"></span></span><span>Seed <span id="seed"></span></span></div>
+  </div>
+</header>
+<main class="wrap">
+  <div class="tiles" id="tiles"></div>
+
+  <h2 class="section">Pipeline</h2>
+  <p class="section-lede">A file existing on disk proves only the first five steps. Delivery and acceptance are tracked separately.</p>
+  <div class="pipeline">
+    <div class="step"><b>1 · Export</b>Source pulls by product and reporting window<span class="tag">SQL on warehouse</span></div>
+    <div class="step"><b>2 · Stage</b>Raw lines, ledger, snapshots, status history<span class="tag">temp tables</span></div>
+    <div class="step"><b>3 · Clean</b>Dedupe lines, drop non-treated visits, convert units<span class="tag">SQL + Python</span></div>
+    <div class="step"><b>4 · Build files</b>Inventory bridge, dispense, status codes<span class="tag">CSV</span></div>
+    <div class="step"><b>5 · Control</b>Record count (no header) + SHA-256<span class="tag">.ctl.json</span></div>
+    <div class="step"><b>6 · Format / QA</b>Mandatory fields, parity, rules engine<span class="tag">console</span></div>
+    <div class="step"><b>7 · Transfer</b>Attempts and retries<span class="tag">mock:// only</span></div>
+    <div class="step"><b>8 · Acknowledge</b>Accepted, rejected, pending<span class="tag">simulated log</span></div>
+  </div>
+
+  <h2 class="section">Submission console</h2>
+  <p class="section-lede">One square per file per week. Hover a square for its batch and findings. The worst test decides the color.</p>
+  <section class="card full">
+    <div class="console" id="console"></div>
+    <div class="legend-row"><span><span class="cell green">✓</span>All checks passed</span>
+      <span><span class="cell yellow">!</span>Needs attention (late updates, review items, awaiting acknowledgment)</span>
+      <span><span class="cell red">✕</span>Wrong or rejected - fix and resubmit</span></div>
+    <details class="data" open><summary>Batches needing attention</summary><div id="issues"></div></details>
+  </section>
+
+  <h2 class="section">Reconciliation and timing</h2>
+  <div class="grid-2">
+    <section class="card">
+      <h3>Inventory bridge, one site-product-week</h3>
+      <p class="sub" id="bridge-sub"></p>
+      <div class="chart" id="c-bridge"></div>
+      <p class="takeaway">Every site-product-week runs this bridge. Cells where the system count disagrees with the ledger are flagged, not forced to match.</p>
+    </section>
+    <section class="card">
+      <h3>When should dispense files be generated?</h3>
+      <p class="sub">Share of treated visits whose completion was recorded within N business days of week end.</p>
+      <div class="chart" id="c-cut"></div>
+      <p class="takeaway" id="t-cut"></p>
+      <details class="data"><summary>Show data table</summary><div id="d-cut"></div></details>
+    </section>
+    <section class="card">
+      <h3>Why injection numbers need history</h3>
+      <p class="sub">Program B dispense rows by dose number. A week-only extract sees every patient as dose #1.</p>
+      <div class="chart" id="c-ord"></div>
+      <details class="data"><summary>Show data table</summary><div id="d-ord"></div></details>
+    </section>
+    <section class="card">
+      <h3>Sample package: week of <span id="pkg-week"></span></h3>
+      <p class="sub">Files and control records written for the latest week (record counts exclude the header).</p>
+      <div id="pkg"></div>
+    </section>
+  </div>
+
+  <h2 class="section">Status exception tracker</h2>
+  <p class="section-lede">Every order-status change is routed to Verified, Review or Escalate. "Archived" is never read as "stopped".
+     Approved corrections are listed for audit.</p>
+  <section class="card full"><div id="cases"></div></section>
+
+  <h2 class="section">Quality checks run on this build</h2>
+  <div class="qa-list" id="qa"></div>
+
+  <h2 class="section">What is real and what is simulated</h2>
+  <div class="scope">
+    <div class="def"><b>On-the-job exposure (described in general terms only)</b>
+      <ul><li>Guided, hands-on weekly inventory and dispense extracts: BI filters by product and window, spreadsheet staging, Power Query refreshes, cleaned values-only outputs.</li>
+          <li>Multi-pull workflows for a second program, including the history needed for injection sequence.</li>
+          <li>Reviewed status exceptions case by case, and drafted a QA and handoff checklist covering scope, windows, control counts and escalation.</li>
+          <li>Transfer and manufacturer acceptance were not independently verified.</li></ul></div>
+    <div class="def"><b>Independently built for this portfolio (synthetic)</b>
+      <ul><li>The SQL pipeline, rules engine, control files and console on fabricated data.</li>
+          <li>Fictional programs and products; no real file layouts, endpoints or acknowledgments.</li>
+          <li>Not a claim of SFTP ownership or production delivery.</li></ul></div>
+  </div>
+  <footer class="foot">All programs, products, sites and patients are fictional (seed <span id="seed2"></span>). Destinations are mock:// URIs.
+    SYNTHETIC DEMONSTRATION - not operational, medical or financial guidance.</footer>
+</main>
+<script>window.DATA = {"meta": {"as_of": "October 24, 2026", "seed": "20261024", "latest": "2026-10-12"}, "tiles": [{"label": "Submission batches audited", "value": "120", "note": "24 weeks x 5 files, mock destinations"}, {"label": "Green / yellow / red", "value": "78 / 33 / 9", "note": "Worst test decides the batch"}, {"label": "Inventory cells reconciled", "value": "99.5%", "note": "576 site-product-weeks"}, {"label": "Dispense rows built", "value": "838", "note": "Treated appointment x product, deduplicated"}, {"label": "Status events routed", "value": "18,897", "note": "10 escalate \u00b7 13 review"}, {"label": "Files missing late updates", "value": "29", "note": "of 48 dispense files - see cut-off analysis"}], "weeks": ["2026-05-04", "2026-05-11", "2026-05-18", "2026-05-25", "2026-06-01", "2026-06-08", "2026-06-15", "2026-06-22", "2026-06-29", "2026-07-06", "2026-07-13", "2026-07-20", "2026-07-27", "2026-08-03", "2026-08-10", "2026-08-17", "2026-08-24", "2026-08-31", "2026-09-07", "2026-09-14", "2026-09-21", "2026-09-28", "2026-10-05", "2026-10-12"], "grid": {"PROGRAM_A \u00b7 Dispense": {"2026-05-04": {"s": "green", "b": "SB0001", "i": "All checks passed", "d": null}, "2026-05-11": {"s": "red", "b": "SB0006", "i": "Logged vs recomputed: 2 more rows than distinct records - duplicates left in the file; Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate", "d": "DUPLICATE_ROWS_IN_FILE"}, "2026-05-18": {"s": "green", "b": "SB0011", "i": "All checks passed", "d": null}, "2026-05-25": {"s": "yellow", "b": "SB0016", "i": "Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate", "d": null}, "2026-06-01": {"s": "yellow", "b": "SB0021", "i": "Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate", "d": null}, "2026-06-08": {"s": "yellow", "b": "SB0026", "i": "Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate", "d": null}, "2026-06-15": {"s": "green", "b": "SB0031", "i": "All checks passed", "d": null}, "2026-06-22": {"s": "yellow", "b": "SB0036", "i": "Mandatory fields: 1 row(s) missing site_id - corrected extract flags them before resubmission", "d": null}, "2026-06-29": {"s": "yellow", "b": "SB0041", "i": "Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate; Mandatory fields: 1 row(s) missing site_id - corrected extract flags them before resubmission", "d": null}, "2026-07-06": {"s": "green", "b": "SB0046", "i": "All checks passed", "d": null}, "2026-07-13": {"s": "green", "b": "SB0051", "i": "All checks passed", "d": null}, "2026-07-20": {"s": "green", "b": "SB0056", "i": "All checks passed", "d": null}, "2026-07-27": {"s": "yellow", "b": "SB0061", "i": "Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate", "d": null}, "2026-08-03": {"s": "green", "b": "SB0066", "i": "All checks passed", "d": null}, "2026-08-10": {"s": "green", "b": "SB0071", "i": "All checks passed", "d": null}, "2026-08-17": {"s": "yellow", "b": "SB0076", "i": "Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate", "d": null}, "2026-08-24": {"s": "green", "b": "SB0081", "i": "All checks passed", "d": null}, "2026-08-31": {"s": "green", "b": "SB0086", "i": "All checks passed", "d": null}, "2026-09-07": {"s": "green", "b": "SB0091", "i": "All checks passed", "d": null}, "2026-09-14": {"s": "red", "b": "SB0096", "i": "Acknowledgment: Rejected by the manufacturer", "d": null}, "2026-09-21": {"s": "green", "b": "SB0101", "i": "All checks passed", "d": null}, "2026-09-28": {"s": "yellow", "b": "SB0106", "i": "Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate", "d": null}, "2026-10-05": {"s": "green", "b": "SB0111", "i": "All checks passed", "d": null}, "2026-10-12": {"s": "green", "b": "SB0116", "i": "All checks passed", "d": null}}, "PROGRAM_A \u00b7 Inventory": {"2026-05-04": {"s": "green", "b": "SB0002", "i": "All checks passed", "d": null}, "2026-05-11": {"s": "green", "b": "SB0007", "i": "All checks passed", "d": null}, "2026-05-18": {"s": "green", "b": "SB0012", "i": "All checks passed", "d": null}, "2026-05-25": {"s": "green", "b": "SB0017", "i": "All checks passed", "d": null}, "2026-06-01": {"s": "green", "b": "SB0022", "i": "All checks passed", "d": null}, "2026-06-08": {"s": "green", "b": "SB0027", "i": "All checks passed", "d": null}, "2026-06-15": {"s": "green", "b": "SB0032", "i": "All checks passed", "d": null}, "2026-06-22": {"s": "green", "b": "SB0037", "i": "All checks passed", "d": null}, "2026-06-29": {"s": "green", "b": "SB0042", "i": "All checks passed", "d": null}, "2026-07-06": {"s": "green", "b": "SB0047", "i": "All checks passed", "d": null}, "2026-07-13": {"s": "yellow", "b": "SB0052", "i": "Inventory bridge: 1 site-product cell(s) do not reconcile: S05-THERAPY_D-2026-07-13", "d": null}, "2026-07-20": {"s": "green", "b": "SB0057", "i": "All checks passed", "d": null}, "2026-07-27": {"s": "green", "b": "SB0062", "i": "All checks passed", "d": null}, "2026-08-03": {"s": "green", "b": "SB0067", "i": "All checks passed", "d": null}, "2026-08-10": {"s": "green", "b": "SB0072", "i": "All checks passed", "d": null}, "2026-08-17": {"s": "green", "b": "SB0077", "i": "All checks passed", "d": null}, "2026-08-24": {"s": "green", "b": "SB0082", "i": "All checks passed", "d": null}, "2026-08-31": {"s": "green", "b": "SB0087", "i": "All checks passed", "d": null}, "2026-09-07": {"s": "green", "b": "SB0092", "i": "All checks passed", "d": null}, "2026-09-14": {"s": "green", "b": "SB0097", "i": "All checks passed", "d": null}, "2026-09-21": {"s": "green", "b": "SB0102", "i": "All checks passed", "d": null}, "2026-09-28": {"s": "green", "b": "SB0107", "i": "All checks passed", "d": null}, "2026-10-05": {"s": "green", "b": "SB0112", "i": "All checks passed", "d": null}, "2026-10-12": {"s": "green", "b": "SB0117", "i": "All checks passed", "d": null}}, "PROGRAM_B \u00b7 Dispense": {"2026-05-04": {"s": "green", "b": "SB0003", "i": "All checks passed", "d": null}, "2026-05-11": {"s": "green", "b": "SB0008", "i": "All checks passed", "d": null}, "2026-05-18": {"s": "yellow", "b": "SB0013", "i": "Late updates since send: 3 visit(s) completed in the source after the file was built - restatement candidate", "d": null}, "2026-05-25": {"s": "yellow", "b": "SB0018", "i": "Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate", "d": null}, "2026-06-01": {"s": "yellow", "b": "SB0023", "i": "Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate", "d": null}, "2026-06-08": {"s": "red", "b": "SB0028", "i": "Control count: Control count includes the header row (off by one); Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate; Mandatory fields: 1 row(s) missing site_id - corrected extract flags them before resubmission", "d": null}, "2026-06-15": {"s": "yellow", "b": "SB0033", "i": "Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate", "d": null}, "2026-06-22": {"s": "yellow", "b": "SB0038", "i": "Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate", "d": null}, "2026-06-29": {"s": "yellow", "b": "SB0043", "i": "Late updates since send: 3 visit(s) completed in the source after the file was built - restatement candidate", "d": null}, "2026-07-06": {"s": "yellow", "b": "SB0048", "i": "Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate", "d": null}, "2026-07-13": {"s": "yellow", "b": "SB0053", "i": "Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate", "d": null}, "2026-07-20": {"s": "yellow", "b": "SB0058", "i": "Late updates since send: 4 visit(s) completed in the source after the file was built - restatement candidate", "d": null}, "2026-07-27": {"s": "yellow", "b": "SB0063", "i": "Late updates since send: 4 visit(s) completed in the source after the file was built - restatement candidate", "d": null}, "2026-08-03": {"s": "yellow", "b": "SB0068", "i": "Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate; Mandatory fields: 1 row(s) missing site_id - corrected extract flags them before resubmission", "d": null}, "2026-08-10": {"s": "yellow", "b": "SB0073", "i": "Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate", "d": null}, "2026-08-17": {"s": "yellow", "b": "SB0078", "i": "Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate", "d": null}, "2026-08-24": {"s": "yellow", "b": "SB0083", "i": "Late updates since send: 5 visit(s) completed in the source after the file was built - restatement candidate", "d": null}, "2026-08-31": {"s": "yellow", "b": "SB0088", "i": "Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate", "d": null}, "2026-09-07": {"s": "red", "b": "SB0093", "i": "Logged vs recomputed: Counts match the PREVIOUS week (2026-08-31) - file built from the wrong date range; Late updates since send: 4 visit(s) completed in the source after the file was built - restatement candidate", "d": "WRONG_REPORTING_WEEK"}, "2026-09-14": {"s": "yellow", "b": "SB0098", "i": "Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate", "d": null}, "2026-09-21": {"s": "yellow", "b": "SB0103", "i": "Late updates since send: 3 visit(s) completed in the source after the file was built - restatement candidate", "d": null}, "2026-09-28": {"s": "yellow", "b": "SB0108", "i": "Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate", "d": null}, "2026-10-05": {"s": "yellow", "b": "SB0113", "i": "Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate", "d": null}, "2026-10-12": {"s": "green", "b": "SB0118", "i": "All checks passed", "d": null}}, "PROGRAM_B \u00b7 Inventory": {"2026-05-04": {"s": "green", "b": "SB0004", "i": "All checks passed", "d": null}, "2026-05-11": {"s": "green", "b": "SB0009", "i": "All checks passed", "d": null}, "2026-05-18": {"s": "green", "b": "SB0014", "i": "All checks passed", "d": null}, "2026-05-25": {"s": "green", "b": "SB0019", "i": "All checks passed", "d": null}, "2026-06-01": {"s": "yellow", "b": "SB0024", "i": "Inventory bridge: 1 site-product cell(s) do not reconcile: S07-THERAPY_G-2026-06-01", "d": null}, "2026-06-08": {"s": "green", "b": "SB0029", "i": "All checks passed", "d": null}, "2026-06-15": {"s": "yellow", "b": "SB0034", "i": "Inventory bridge: 1 site-product cell(s) do not reconcile: S04-THERAPY_F-2026-06-15", "d": null}, "2026-06-22": {"s": "green", "b": "SB0039", "i": "All checks passed", "d": null}, "2026-06-29": {"s": "red", "b": "SB0044", "i": "Control count: Control count includes the header row (off by one); Acknowledgment: Rejected by the manufacturer", "d": null}, "2026-07-06": {"s": "green", "b": "SB0049", "i": "All checks passed", "d": null}, "2026-07-13": {"s": "green", "b": "SB0054", "i": "All checks passed", "d": null}, "2026-07-20": {"s": "green", "b": "SB0059", "i": "All checks passed", "d": null}, "2026-07-27": {"s": "green", "b": "SB0064", "i": "All checks passed", "d": null}, "2026-08-03": {"s": "green", "b": "SB0069", "i": "All checks passed", "d": null}, "2026-08-10": {"s": "green", "b": "SB0074", "i": "All checks passed", "d": null}, "2026-08-17": {"s": "green", "b": "SB0079", "i": "All checks passed", "d": null}, "2026-08-24": {"s": "green", "b": "SB0084", "i": "All checks passed", "d": null}, "2026-08-31": {"s": "green", "b": "SB0089", "i": "All checks passed", "d": null}, "2026-09-07": {"s": "green", "b": "SB0094", "i": "All checks passed", "d": null}, "2026-09-14": {"s": "green", "b": "SB0099", "i": "All checks passed", "d": null}, "2026-09-21": {"s": "green", "b": "SB0104", "i": "All checks passed", "d": null}, "2026-09-28": {"s": "green", "b": "SB0109", "i": "All checks passed", "d": null}, "2026-10-05": {"s": "green", "b": "SB0114", "i": "All checks passed", "d": null}, "2026-10-12": {"s": "green", "b": "SB0119", "i": "All checks passed", "d": null}}, "PROGRAM_B \u00b7 Status": {"2026-05-04": {"s": "green", "b": "SB0005", "i": "All checks passed", "d": null}, "2026-05-11": {"s": "green", "b": "SB0010", "i": "All checks passed", "d": null}, "2026-05-18": {"s": "green", "b": "SB0015", "i": "All checks passed", "d": null}, "2026-05-25": {"s": "yellow", "b": "SB0020", "i": "Status rules: 1 event(s) routed for review", "d": null}, "2026-06-01": {"s": "red", "b": "SB0025", "i": "Acknowledgment: No acknowledgment after 98 business day(s) - escalate", "d": null}, "2026-06-08": {"s": "green", "b": "SB0030", "i": "All checks passed", "d": null}, "2026-06-15": {"s": "green", "b": "SB0035", "i": "All checks passed", "d": null}, "2026-06-22": {"s": "red", "b": "SB0040", "i": "Status rules: 1 event(s) need escalation before reporting", "d": null}, "2026-06-29": {"s": "green", "b": "SB0045", "i": "All checks passed", "d": null}, "2026-07-06": {"s": "green", "b": "SB0050", "i": "All checks passed", "d": null}, "2026-07-13": {"s": "green", "b": "SB0055", "i": "All checks passed", "d": null}, "2026-07-20": {"s": "green", "b": "SB0060", "i": "All checks passed", "d": null}, "2026-07-27": {"s": "green", "b": "SB0065", "i": "All checks passed", "d": null}, "2026-08-03": {"s": "green", "b": "SB0070", "i": "All checks passed", "d": null}, "2026-08-10": {"s": "yellow", "b": "SB0075", "i": "Status rules: 2 event(s) routed for review", "d": null}, "2026-08-17": {"s": "green", "b": "SB0080", "i": "All checks passed", "d": null}, "2026-08-24": {"s": "green", "b": "SB0085", "i": "All checks passed", "d": null}, "2026-08-31": {"s": "red", "b": "SB0090", "i": "Status rules: 1 event(s) need escalation before reporting", "d": null}, "2026-09-07": {"s": "red", "b": "SB0095", "i": "Status rules: 1 event(s) need escalation before reporting", "d": null}, "2026-09-14": {"s": "green", "b": "SB0100", "i": "All checks passed", "d": null}, "2026-09-21": {"s": "green", "b": "SB0105", "i": "All checks passed", "d": null}, "2026-09-28": {"s": "green", "b": "SB0110", "i": "All checks passed", "d": null}, "2026-10-05": {"s": "green", "b": "SB0115", "i": "All checks passed", "d": null}, "2026-10-12": {"s": "yellow", "b": "SB0120", "i": "Status rules: 1 event(s) routed for review", "d": null}}}, "rows": ["PROGRAM_A \u00b7 Inventory", "PROGRAM_A \u00b7 Dispense", "PROGRAM_B \u00b7 Inventory", "PROGRAM_B \u00b7 Dispense", "PROGRAM_B \u00b7 Status"], "issues": [{"batch_key": "SB0006", "program_key": "PROGRAM_A", "file_type": "DISPENSE", "reporting_week": "2026-05-11", "overall": "red", "diagnosis": "DUPLICATE_ROWS_IN_FILE", "logged_rows": 12, "recomputed_rows": 10, "recomputed_rows_now": 11, "control_count": 12, "ack_state": "Accepted", "generated_at": "2026-05-19 11:19:00", "sent_at": "2026-05-19 12:19:00", "acknowledged_at": "2026-05-20 13:19:00", "issues": "Logged vs recomputed: 2 more rows than distinct records - duplicates left in the file; Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate"}, {"batch_key": "SB0013", "program_key": "PROGRAM_B", "file_type": "DISPENSE", "reporting_week": "2026-05-18", "overall": "yellow", "diagnosis": null, "logged_rows": 19, "recomputed_rows": 19, "recomputed_rows_now": 22, "control_count": 19, "ack_state": "Accepted", "generated_at": "2026-05-26 09:55:00", "sent_at": "2026-05-26 12:55:00", "acknowledged_at": "2026-05-28 16:55:00", "issues": "Late updates since send: 3 visit(s) completed in the source after the file was built - restatement candidate"}, {"batch_key": "SB0016", "program_key": "PROGRAM_A", "file_type": "DISPENSE", "reporting_week": "2026-05-25", "overall": "yellow", "diagnosis": null, "logged_rows": 10, "recomputed_rows": 10, "recomputed_rows_now": 11, "control_count": 10, "ack_state": "Accepted", "generated_at": "2026-06-03 11:15:00", "sent_at": "2026-06-03 14:15:00", "acknowledged_at": "2026-06-04 19:15:00", "issues": "Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate"}, {"batch_key": "SB0018", "program_key": "PROGRAM_B", "file_type": "DISPENSE", "reporting_week": "2026-05-25", "overall": "yellow", "diagnosis": null, "logged_rows": 23, "recomputed_rows": 23, "recomputed_rows_now": 25, "control_count": 23, "ack_state": "Accepted", "generated_at": "2026-06-03 11:15:00", "sent_at": "2026-06-03 15:15:00", "acknowledged_at": "2026-06-05 20:15:00", "issues": "Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate"}, {"batch_key": "SB0020", "program_key": "PROGRAM_B", "file_type": "STATUS", "reporting_week": "2026-05-25", "overall": "yellow", "diagnosis": null, "logged_rows": 46, "recomputed_rows": 46, "recomputed_rows_now": null, "control_count": 46, "ack_state": "Accepted", "generated_at": "2026-06-03 11:15:00", "sent_at": "2026-06-03 14:15:00", "acknowledged_at": "2026-06-04 14:15:00", "issues": "Status rules: 1 event(s) routed for review"}, {"batch_key": "SB0021", "program_key": "PROGRAM_A", "file_type": "DISPENSE", "reporting_week": "2026-06-01", "overall": "yellow", "diagnosis": null, "logged_rows": 5, "recomputed_rows": 5, "recomputed_rows_now": 7, "control_count": 5, "ack_state": "Accepted", "generated_at": "2026-06-09 09:06:00", "sent_at": "2026-06-09 11:06:00", "acknowledged_at": "2026-06-12 14:06:00", "issues": "Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate"}, {"batch_key": "SB0023", "program_key": "PROGRAM_B", "file_type": "DISPENSE", "reporting_week": "2026-06-01", "overall": "yellow", "diagnosis": null, "logged_rows": 22, "recomputed_rows": 22, "recomputed_rows_now": 24, "control_count": 22, "ack_state": "Accepted", "generated_at": "2026-06-09 09:06:00", "sent_at": "2026-06-09 11:06:00", "acknowledged_at": "2026-06-11 11:06:00", "issues": "Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate"}, {"batch_key": "SB0024", "program_key": "PROGRAM_B", "file_type": "INVENTORY", "reporting_week": "2026-06-01", "overall": "yellow", "diagnosis": null, "logged_rows": 16, "recomputed_rows": 16, "recomputed_rows_now": null, "control_count": 16, "ack_state": "Accepted", "generated_at": "2026-06-09 09:06:00", "sent_at": "2026-06-09 10:06:00", "acknowledged_at": "2026-06-11 11:06:00", "issues": "Inventory bridge: 1 site-product cell(s) do not reconcile: S07-THERAPY_G-2026-06-01"}, {"batch_key": "SB0025", "program_key": "PROGRAM_B", "file_type": "STATUS", "reporting_week": "2026-06-01", "overall": "red", "diagnosis": null, "logged_rows": 52, "recomputed_rows": 52, "recomputed_rows_now": null, "control_count": 52, "ack_state": "Pending", "generated_at": "2026-06-09 09:06:00", "sent_at": "2026-06-09 13:06:00", "acknowledged_at": null, "issues": "Acknowledgment: No acknowledgment after 98 business day(s) - escalate"}, {"batch_key": "SB0026", "program_key": "PROGRAM_A", "file_type": "DISPENSE", "reporting_week": "2026-06-08", "overall": "yellow", "diagnosis": null, "logged_rows": 8, "recomputed_rows": 8, "recomputed_rows_now": 10, "control_count": 8, "ack_state": "Accepted", "generated_at": "2026-06-16 10:18:00", "sent_at": "2026-06-16 11:18:00", "acknowledged_at": "2026-06-17 14:18:00", "issues": "Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate"}, {"batch_key": "SB0028", "program_key": "PROGRAM_B", "file_type": "DISPENSE", "reporting_week": "2026-06-08", "overall": "red", "diagnosis": null, "logged_rows": 22, "recomputed_rows": 22, "recomputed_rows_now": 24, "control_count": 23, "ack_state": "Accepted", "generated_at": "2026-06-16 10:18:00", "sent_at": "2026-06-16 13:18:00", "acknowledged_at": "2026-06-18 15:18:00", "issues": "Control count: Control count includes the header row (off by one); Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate; Mandatory fields: 1 row(s) missing site_id - corrected extract flags them before resubmission"}, {"batch_key": "SB0033", "program_key": "PROGRAM_B", "file_type": "DISPENSE", "reporting_week": "2026-06-15", "overall": "yellow", "diagnosis": null, "logged_rows": 23, "recomputed_rows": 23, "recomputed_rows_now": 24, "control_count": 23, "ack_state": "Accepted", "generated_at": "2026-06-24 09:59:00", "sent_at": "2026-06-24 11:59:00", "acknowledged_at": "2026-06-27 14:59:00", "issues": "Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate"}, {"batch_key": "SB0034", "program_key": "PROGRAM_B", "file_type": "INVENTORY", "reporting_week": "2026-06-15", "overall": "yellow", "diagnosis": null, "logged_rows": 16, "recomputed_rows": 16, "recomputed_rows_now": null, "control_count": 16, "ack_state": "Accepted", "generated_at": "2026-06-24 09:59:00", "sent_at": "2026-06-24 10:59:00", "acknowledged_at": "2026-06-25 13:59:00", "issues": "Inventory bridge: 1 site-product cell(s) do not reconcile: S04-THERAPY_F-2026-06-15"}, {"batch_key": "SB0036", "program_key": "PROGRAM_A", "file_type": "DISPENSE", "reporting_week": "2026-06-22", "overall": "yellow", "diagnosis": null, "logged_rows": 7, "recomputed_rows": 7, "recomputed_rows_now": 7, "control_count": 7, "ack_state": "Accepted", "generated_at": "2026-06-30 11:43:00", "sent_at": "2026-06-30 12:43:00", "acknowledged_at": "2026-07-03 15:43:00", "issues": "Mandatory fields: 1 row(s) missing site_id - corrected extract flags them before resubmission"}, {"batch_key": "SB0038", "program_key": "PROGRAM_B", "file_type": "DISPENSE", "reporting_week": "2026-06-22", "overall": "yellow", "diagnosis": null, "logged_rows": 26, "recomputed_rows": 26, "recomputed_rows_now": 27, "control_count": 26, "ack_state": "Accepted", "generated_at": "2026-06-30 11:43:00", "sent_at": "2026-06-30 12:43:00", "acknowledged_at": "2026-07-02 18:43:00", "issues": "Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate"}, {"batch_key": "SB0040", "program_key": "PROGRAM_B", "file_type": "STATUS", "reporting_week": "2026-06-22", "overall": "red", "diagnosis": null, "logged_rows": 47, "recomputed_rows": 47, "recomputed_rows_now": null, "control_count": 47, "ack_state": "Accepted", "generated_at": "2026-06-30 11:43:00", "sent_at": "2026-06-30 14:43:00", "acknowledged_at": "2026-07-03 17:43:00", "issues": "Status rules: 1 event(s) need escalation before reporting"}, {"batch_key": "SB0041", "program_key": "PROGRAM_A", "file_type": "DISPENSE", "reporting_week": "2026-06-29", "overall": "yellow", "diagnosis": null, "logged_rows": 8, "recomputed_rows": 8, "recomputed_rows_now": 9, "control_count": 8, "ack_state": "Accepted", "generated_at": "2026-07-08 11:13:00", "sent_at": "2026-07-08 12:13:00", "acknowledged_at": "2026-07-09 16:13:00", "issues": "Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate; Mandatory fields: 1 row(s) missing site_id - corrected extract flags them before resubmission"}, {"batch_key": "SB0043", "program_key": "PROGRAM_B", "file_type": "DISPENSE", "reporting_week": "2026-06-29", "overall": "yellow", "diagnosis": null, "logged_rows": 27, "recomputed_rows": 27, "recomputed_rows_now": 30, "control_count": 27, "ack_state": "Accepted", "generated_at": "2026-07-08 11:13:00", "sent_at": "2026-07-08 15:13:00", "acknowledged_at": "2026-07-10 16:13:00", "issues": "Late updates since send: 3 visit(s) completed in the source after the file was built - restatement candidate"}, {"batch_key": "SB0044", "program_key": "PROGRAM_B", "file_type": "INVENTORY", "reporting_week": "2026-06-29", "overall": "red", "diagnosis": null, "logged_rows": 16, "recomputed_rows": 16, "recomputed_rows_now": null, "control_count": 17, "ack_state": "Rejected", "generated_at": "2026-07-08 11:13:00", "sent_at": "2026-07-08 15:13:00", "acknowledged_at": "2026-07-11 15:13:00", "issues": "Control count: Control count includes the header row (off by one); Acknowledgment: Rejected by the manufacturer"}, {"batch_key": "SB0048", "program_key": "PROGRAM_B", "file_type": "DISPENSE", "reporting_week": "2026-07-06", "overall": "yellow", "diagnosis": null, "logged_rows": 22, "recomputed_rows": 22, "recomputed_rows_now": 24, "control_count": 22, "ack_state": "Accepted", "generated_at": "2026-07-14 10:40:00", "sent_at": "2026-07-14 12:40:00", "acknowledged_at": "2026-07-17 17:40:00", "issues": "Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate"}, {"batch_key": "SB0052", "program_key": "PROGRAM_A", "file_type": "INVENTORY", "reporting_week": "2026-07-13", "overall": "yellow", "diagnosis": null, "logged_rows": 8, "recomputed_rows": 8, "recomputed_rows_now": null, "control_count": 8, "ack_state": "Accepted", "generated_at": "2026-07-21 09:34:00", "sent_at": "2026-07-21 10:34:00", "acknowledged_at": "2026-07-24 11:34:00", "issues": "Inventory bridge: 1 site-product cell(s) do not reconcile: S05-THERAPY_D-2026-07-13"}, {"batch_key": "SB0053", "program_key": "PROGRAM_B", "file_type": "DISPENSE", "reporting_week": "2026-07-13", "overall": "yellow", "diagnosis": null, "logged_rows": 21, "recomputed_rows": 21, "recomputed_rows_now": 23, "control_count": 21, "ack_state": "Accepted", "generated_at": "2026-07-21 09:34:00", "sent_at": "2026-07-21 13:34:00", "acknowledged_at": "2026-07-23 17:34:00", "issues": "Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate"}, {"batch_key": "SB0058", "program_key": "PROGRAM_B", "file_type": "DISPENSE", "reporting_week": "2026-07-20", "overall": "yellow", "diagnosis": null, "logged_rows": 20, "recomputed_rows": 20, "recomputed_rows_now": 24, "control_count": 20, "ack_state": "Accepted", "generated_at": "2026-07-28 09:31:00", "sent_at": "2026-07-28 13:31:00", "acknowledged_at": "2026-07-31 18:31:00", "issues": "Late updates since send: 4 visit(s) completed in the source after the file was built - restatement candidate"}, {"batch_key": "SB0061", "program_key": "PROGRAM_A", "file_type": "DISPENSE", "reporting_week": "2026-07-27", "overall": "yellow", "diagnosis": null, "logged_rows": 9, "recomputed_rows": 9, "recomputed_rows_now": 11, "control_count": 9, "ack_state": "Accepted", "generated_at": "2026-08-05 11:44:00", "sent_at": "2026-08-05 12:44:00", "acknowledged_at": "2026-08-08 15:44:00", "issues": "Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate"}, {"batch_key": "SB0063", "program_key": "PROGRAM_B", "file_type": "DISPENSE", "reporting_week": "2026-07-27", "overall": "yellow", "diagnosis": null, "logged_rows": 27, "recomputed_rows": 27, "recomputed_rows_now": 31, "control_count": 27, "ack_state": "Accepted", "generated_at": "2026-08-05 11:44:00", "sent_at": "2026-08-05 14:44:00", "acknowledged_at": "2026-08-08 16:44:00", "issues": "Late updates since send: 4 visit(s) completed in the source after the file was built - restatement candidate"}, {"batch_key": "SB0068", "program_key": "PROGRAM_B", "file_type": "DISPENSE", "reporting_week": "2026-08-03", "overall": "yellow", "diagnosis": null, "logged_rows": 22, "recomputed_rows": 22, "recomputed_rows_now": 23, "control_count": 22, "ack_state": "Accepted", "generated_at": "2026-08-11 11:53:00", "sent_at": "2026-08-11 15:53:00", "acknowledged_at": "2026-08-13 17:53:00", "issues": "Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate; Mandatory fields: 1 row(s) missing site_id - corrected extract flags them before resubmission"}, {"batch_key": "SB0073", "program_key": "PROGRAM_B", "file_type": "DISPENSE", "reporting_week": "2026-08-10", "overall": "yellow", "diagnosis": null, "logged_rows": 23, "recomputed_rows": 23, "recomputed_rows_now": 25, "control_count": 23, "ack_state": "Accepted", "generated_at": "2026-08-18 09:49:00", "sent_at": "2026-08-18 11:49:00", "acknowledged_at": "2026-08-19 15:49:00", "issues": "Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate"}, {"batch_key": "SB0075", "program_key": "PROGRAM_B", "file_type": "STATUS", "reporting_week": "2026-08-10", "overall": "yellow", "diagnosis": null, "logged_rows": 49, "recomputed_rows": 49, "recomputed_rows_now": null, "control_count": 49, "ack_state": "Accepted", "generated_at": "2026-08-18 09:49:00", "sent_at": "2026-08-18 11:49:00", "acknowledged_at": "2026-08-20 14:49:00", "issues": "Status rules: 2 event(s) routed for review"}, {"batch_key": "SB0076", "program_key": "PROGRAM_A", "file_type": "DISPENSE", "reporting_week": "2026-08-17", "overall": "yellow", "diagnosis": null, "logged_rows": 11, "recomputed_rows": 11, "recomputed_rows_now": 12, "control_count": 11, "ack_state": "Accepted", "generated_at": "2026-08-26 10:59:00", "sent_at": "2026-08-26 12:59:00", "acknowledged_at": "2026-08-27 17:59:00", "issues": "Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate"}, {"batch_key": "SB0078", "program_key": "PROGRAM_B", "file_type": "DISPENSE", "reporting_week": "2026-08-17", "overall": "yellow", "diagnosis": null, "logged_rows": 25, "recomputed_rows": 25, "recomputed_rows_now": 26, "control_count": 25, "ack_state": "Accepted", "generated_at": "2026-08-26 10:59:00", "sent_at": "2026-08-26 14:59:00", "acknowledged_at": "2026-08-27 19:59:00", "issues": "Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate"}, {"batch_key": "SB0083", "program_key": "PROGRAM_B", "file_type": "DISPENSE", "reporting_week": "2026-08-24", "overall": "yellow", "diagnosis": null, "logged_rows": 27, "recomputed_rows": 27, "recomputed_rows_now": 32, "control_count": 27, "ack_state": "Accepted", "generated_at": "2026-09-01 10:00:00", "sent_at": "2026-09-01 13:00:00", "acknowledged_at": "2026-09-04 16:00:00", "issues": "Late updates since send: 5 visit(s) completed in the source after the file was built - restatement candidate"}, {"batch_key": "SB0088", "program_key": "PROGRAM_B", "file_type": "DISPENSE", "reporting_week": "2026-08-31", "overall": "yellow", "diagnosis": null, "logged_rows": 24, "recomputed_rows": 24, "recomputed_rows_now": 26, "control_count": 24, "ack_state": "Accepted", "generated_at": "2026-09-09 10:07:00", "sent_at": "2026-09-09 12:07:00", "acknowledged_at": "2026-09-11 12:07:00", "issues": "Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate"}, {"batch_key": "SB0090", "program_key": "PROGRAM_B", "file_type": "STATUS", "reporting_week": "2026-08-31", "overall": "red", "diagnosis": null, "logged_rows": 44, "recomputed_rows": 44, "recomputed_rows_now": null, "control_count": 44, "ack_state": "Accepted", "generated_at": "2026-09-09 10:07:00", "sent_at": "2026-09-09 12:07:00", "acknowledged_at": "2026-09-11 18:07:00", "issues": "Status rules: 1 event(s) need escalation before reporting"}, {"batch_key": "SB0093", "program_key": "PROGRAM_B", "file_type": "DISPENSE", "reporting_week": "2026-09-07", "overall": "red", "diagnosis": "WRONG_REPORTING_WEEK", "logged_rows": 24, "recomputed_rows": 18, "recomputed_rows_now": 22, "control_count": 24, "ack_state": "Accepted", "generated_at": "2026-09-15 11:11:00", "sent_at": "2026-09-15 13:11:00", "acknowledged_at": "2026-09-18 13:11:00", "issues": "Logged vs recomputed: Counts match the PREVIOUS week (2026-08-31) - file built from the wrong date range; Late updates since send: 4 visit(s) completed in the source after the file was built - restatement candidate"}, {"batch_key": "SB0095", "program_key": "PROGRAM_B", "file_type": "STATUS", "reporting_week": "2026-09-07", "overall": "red", "diagnosis": null, "logged_rows": 35, "recomputed_rows": 35, "recomputed_rows_now": null, "control_count": 35, "ack_state": "Accepted", "generated_at": "2026-09-15 11:11:00", "sent_at": "2026-09-15 13:11:00", "acknowledged_at": "2026-09-18 14:11:00", "issues": "Status rules: 1 event(s) need escalation before reporting"}, {"batch_key": "SB0096", "program_key": "PROGRAM_A", "file_type": "DISPENSE", "reporting_week": "2026-09-14", "overall": "red", "diagnosis": null, "logged_rows": 11, "recomputed_rows": 11, "recomputed_rows_now": 11, "control_count": 11, "ack_state": "Rejected", "generated_at": "2026-09-23 09:48:00", "sent_at": "2026-09-23 10:48:00", "acknowledged_at": "2026-09-24 15:48:00", "issues": "Acknowledgment: Rejected by the manufacturer"}, {"batch_key": "SB0098", "program_key": "PROGRAM_B", "file_type": "DISPENSE", "reporting_week": "2026-09-14", "overall": "yellow", "diagnosis": null, "logged_rows": 26, "recomputed_rows": 26, "recomputed_rows_now": 27, "control_count": 26, "ack_state": "Accepted", "generated_at": "2026-09-23 09:48:00", "sent_at": "2026-09-23 11:48:00", "acknowledged_at": "2026-09-25 12:48:00", "issues": "Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate"}, {"batch_key": "SB0103", "program_key": "PROGRAM_B", "file_type": "DISPENSE", "reporting_week": "2026-09-21", "overall": "yellow", "diagnosis": null, "logged_rows": 23, "recomputed_rows": 23, "recomputed_rows_now": 26, "control_count": 23, "ack_state": "Accepted", "generated_at": "2026-09-30 11:45:00", "sent_at": "2026-09-30 14:45:00", "acknowledged_at": "2026-10-01 18:45:00", "issues": "Late updates since send: 3 visit(s) completed in the source after the file was built - restatement candidate"}, {"batch_key": "SB0106", "program_key": "PROGRAM_A", "file_type": "DISPENSE", "reporting_week": "2026-09-28", "overall": "yellow", "diagnosis": null, "logged_rows": 8, "recomputed_rows": 8, "recomputed_rows_now": 9, "control_count": 8, "ack_state": "Accepted", "generated_at": "2026-10-07 09:50:00", "sent_at": "2026-10-07 10:50:00", "acknowledged_at": "2026-10-10 10:50:00", "issues": "Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate"}, {"batch_key": "SB0108", "program_key": "PROGRAM_B", "file_type": "DISPENSE", "reporting_week": "2026-09-28", "overall": "yellow", "diagnosis": null, "logged_rows": 33, "recomputed_rows": 33, "recomputed_rows_now": 34, "control_count": 33, "ack_state": "Accepted", "generated_at": "2026-10-07 09:50:00", "sent_at": "2026-10-07 10:50:00", "acknowledged_at": "2026-10-09 16:50:00", "issues": "Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate"}, {"batch_key": "SB0113", "program_key": "PROGRAM_B", "file_type": "DISPENSE", "reporting_week": "2026-10-05", "overall": "yellow", "diagnosis": null, "logged_rows": 24, "recomputed_rows": 24, "recomputed_rows_now": 26, "control_count": 24, "ack_state": "Accepted", "generated_at": "2026-10-14 11:03:00", "sent_at": "2026-10-14 14:03:00", "acknowledged_at": "2026-10-16 19:03:00", "issues": "Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate"}, {"batch_key": "SB0120", "program_key": "PROGRAM_B", "file_type": "STATUS", "reporting_week": "2026-10-12", "overall": "yellow", "diagnosis": null, "logged_rows": 41, "recomputed_rows": 41, "recomputed_rows_now": null, "control_count": 41, "ack_state": "Accepted", "generated_at": "2026-10-21 10:33:00", "sent_at": "2026-10-21 14:33:00", "acknowledged_at": "2026-10-23 14:33:00", "issues": "Status rules: 1 event(s) routed for review"}], "bridge_example": {"snapshot_key": "S01-THERAPY_F-2026-10-12", "week_start": "2026-10-12", "site_key": "S01", "therapy_key": "THERAPY_F", "program_key": "PROGRAM_B", "opening_qty": 8, "receipts": 10, "returns_in": 0, "administered": 2, "waste_expired": 0, "count_adjustments": 0, "carton_rows_converted": 0, "conversion_effect": 0, "transactions": 3, "system_closing_qty": 16, "computed_closing_qty": 16, "variance": 0, "recon_status": "Reconciled"}, "cases": [{"case_key": "EXC-0001", "status_event_key": "SE018886", "order_token": "ORD-10E158D37DDD", "order_key": "OS01005", "program_key": "-", "therapy_key": "THERAPY_C", "transition": "Active -> Benefits Verification", "event_at": "2025-06-25 10:56:00", "doses_before_event": 1, "doses_after_archive": 0, "disposition": "Verified", "rule": "Backward move with approved correction", "recommended_action": "Report the corrected stage", "owner_role": "Order owner / clinical lead"}, {"case_key": "EXC-0002", "status_event_key": "SE018887", "order_token": "ORD-10E158D37DDD", "order_key": "OS01005", "program_key": "-", "therapy_key": "THERAPY_C", "transition": "Benefits Verification -> Active", "event_at": "2025-06-25 19:56:00", "doses_before_event": 1, "doses_after_archive": 0, "disposition": "Verified", "rule": "Valid transition with consistent evidence", "recommended_action": "", "owner_role": "Order owner / clinical lead"}, {"case_key": "EXC-0003", "status_event_key": "SE018884", "order_token": "ORD-F4B66C5F7486", "order_key": "OS00756", "program_key": "-", "therapy_key": "THERAPY_B", "transition": "Active -> Benefits Verification", "event_at": "2025-06-27 12:30:00", "doses_before_event": 1, "doses_after_archive": 0, "disposition": "Verified", "rule": "Backward move with approved correction", "recommended_action": "Report the corrected stage", "owner_role": "Order owner / clinical lead"}, {"case_key": "EXC-0004", "status_event_key": "SE018885", "order_token": "ORD-F4B66C5F7486", "order_key": "OS00756", "program_key": "-", "therapy_key": "THERAPY_B", "transition": "Benefits Verification -> Active", "event_at": "2025-06-28 06:30:00", "doses_before_event": 1, "doses_after_archive": 0, "disposition": "Verified", "rule": "Valid transition with consistent evidence", "recommended_action": "", "owner_role": "Order owner / clinical lead"}, {"case_key": "EXC-0005", "status_event_key": "SE018874", "order_token": "ORD-1CAF758BA345", "order_key": "OS01187", "program_key": "-", "therapy_key": "THERAPY_H", "transition": "Active -> Benefits Verification", "event_at": "2025-07-28 17:24:00", "doses_before_event": 1, "doses_after_archive": 0, "disposition": "Escalate", "rule": "Backward stage move without an approved correction", "recommended_action": "Confirm with the order owner before reporting", "owner_role": "Order owner / clinical lead"}, {"case_key": "EXC-0006", "status_event_key": "SE018893", "order_token": "ORD-A55414DAB63D", "order_key": "OS01464", "program_key": "PROGRAM_A", "therapy_key": "THERAPY_D", "transition": "(start) -> Intake", "event_at": "2025-09-12 14:01:00", "doses_before_event": 0, "doses_after_archive": 0, "disposition": "Review", "rule": "Duplicate status event", "recommended_action": "Suppress from the file; keep the first occurrence", "owner_role": "Analytics"}, {"case_key": "EXC-0007", "status_event_key": "SE018872", "order_token": "ORD-339C4980633B", "order_key": "OS01437", "program_key": "-", "therapy_key": "THERAPY_A", "transition": "Active -> Benefits Verification", "event_at": "2025-11-16 13:59:00", "doses_before_event": 1, "doses_after_archive": 0, "disposition": "Escalate", "rule": "Backward stage move without an approved correction", "recommended_action": "Confirm with the order owner before reporting", "owner_role": "Order owner / clinical lead"}, {"case_key": "EXC-0008", "status_event_key": "SE018891", "order_token": "ORD-6DA73237A387", "order_key": "OS01715", "program_key": "-", "therapy_key": "THERAPY_H", "transition": "Active -> Completed", "event_at": "2025-12-12 14:02:00", "doses_before_event": 1, "doses_after_archive": 0, "disposition": "Review", "rule": "Duplicate status event", "recommended_action": "Suppress from the file; keep the first occurrence", "owner_role": "Analytics"}, {"case_key": "EXC-0009", "status_event_key": "SE010222", "order_token": "ORD-53AE08A8F4E7", "order_key": "OS01780", "program_key": "-", "therapy_key": "THERAPY_I", "transition": "Ready to Schedule -> Discontinued", "event_at": "2025-12-30 11:59:00", "doses_before_event": 0, "doses_after_archive": 0, "disposition": "Review", "rule": "Discontinued with no prior dose", "recommended_action": "Reclassify as cancelled before first dose", "owner_role": "Analytics"}, {"case_key": "EXC-0010", "status_event_key": "SE010312", "order_token": "ORD-9C2258DEE760", "order_key": "OS01895", "program_key": "-", "therapy_key": "THERAPY_I", "transition": "Benefits Verification -> Discontinued", "event_at": "2026-01-02 11:39:00", "doses_before_event": 0, "doses_after_archive": 0, "disposition": "Review", "rule": "Discontinued with no prior dose", "recommended_action": "Reclassify as cancelled before first dose", "owner_role": "Analytics"}, {"case_key": "EXC-0011", "status_event_key": "SE018870", "order_token": "ORD-A51ACFFC627A", "order_key": "OS01738", "program_key": "-", "therapy_key": "THERAPY_J", "transition": "Active -> Benefits Verification", "event_at": "2026-01-13 09:32:00", "doses_before_event": 1, "doses_after_archive": 0, "disposition": "Escalate", "rule": "Backward stage move without an approved correction", "recommended_action": "Confirm with the order owner before reporting", "owner_role": "Order owner / clinical lead"}, {"case_key": "EXC-0012", "status_event_key": "SE018878", "order_token": "ORD-2D71DE77DCB9", "order_key": "OS02022", "program_key": "-", "therapy_key": "THERAPY_B", "transition": "Active -> Benefits Verification", "event_at": "2026-02-06 13:42:00", "doses_before_event": 1, "doses_after_archive": 0, "disposition": "Escalate", "rule": "Backward stage move without an approved correction", "recommended_action": "Confirm with the order owner before reporting", "owner_role": "Order owner / clinical lead"}, {"case_key": "EXC-0013", "status_event_key": "SE012028", "order_token": "ORD-E1E440A4FDC9", "order_key": "OS02128", "program_key": "-", "therapy_key": "THERAPY_C", "transition": "Ready to Schedule -> Discontinued", "event_at": "2026-03-09 08:19:00", "doses_before_event": 0, "doses_after_archive": 0, "disposition": "Review", "rule": "Discontinued with no prior dose", "recommended_action": "Reclassify as cancelled before first dose", "owner_role": "Analytics"}, {"case_key": "EXC-0014", "status_event_key": "SE012909", "order_token": "ORD-3A6345B5F651", "order_key": "OS02439", "program_key": "-", "therapy_key": "THERAPY_B", "transition": "(start) -> Intake", "event_at": "2026-04-08 08:45:00", "doses_before_event": 0, "doses_after_archive": 0, "disposition": "Review", "rule": "Order created after its first dose", "recommended_action": "Check for a re-created order before using order dates", "owner_role": "Analytics"}, {"case_key": "EXC-0015", "status_event_key": "SE018892", "order_token": "ORD-124B6547EB87", "order_key": "OS02613", "program_key": "-", "therapy_key": "THERAPY_B", "transition": "Prior Authorization -> Ready to Schedule", "event_at": "2026-05-22 15:57:00", "doses_before_event": 0, "doses_after_archive": 0, "disposition": "Review", "rule": "Duplicate status event", "recommended_action": "Suppress from the file; keep the first occurrence", "owner_role": "Analytics"}, {"case_key": "EXC-0016", "status_event_key": "SE014448", "order_token": "ORD-F5345C01527A", "order_key": "OS02720", "program_key": "PROGRAM_B", "therapy_key": "THERAPY_G", "transition": "(start) -> Intake", "event_at": "2026-05-28 11:16:00", "doses_before_event": 0, "doses_after_archive": 0, "disposition": "Review", "rule": "Order created after its first dose", "recommended_action": "Check for a re-created order before using order dates", "owner_role": "Analytics"}, {"case_key": "EXC-0017", "status_event_key": "SE018897", "order_token": "ORD-D9CC35FC1D03", "order_key": "OS02506", "program_key": "PROGRAM_B", "therapy_key": "THERAPY_F", "transition": "Active -> Discontinued", "event_at": "2026-06-25 12:30:00", "doses_before_event": 2, "doses_after_archive": 4, "disposition": "Escalate", "rule": "Treatment continued after the order was archived", "recommended_action": "Do not report as stopped; verify with clinical team", "owner_role": "Order owner / clinical lead"}, {"case_key": "EXC-0018", "status_event_key": "SE018880", "order_token": "ORD-038DBA26E440", "order_key": "OS02570", "program_key": "-", "therapy_key": "THERAPY_J", "transition": "Active -> Benefits Verification", "event_at": "2026-06-29 15:53:00", "doses_before_event": 1, "doses_after_archive": 0, "disposition": "Escalate", "rule": "Backward stage move without an approved correction", "recommended_action": "Confirm with the order owner before reporting", "owner_role": "Order owner / clinical lead"}, {"case_key": "EXC-0019", "status_event_key": "SE018876", "order_token": "ORD-419D90C7E176", "order_key": "OS02544", "program_key": "-", "therapy_key": "THERAPY_B", "transition": "Active -> Benefits Verification", "event_at": "2026-07-21 11:48:00", "doses_before_event": 1, "doses_after_archive": 0, "disposition": "Escalate", "rule": "Backward stage move without an approved correction", "recommended_action": "Confirm with the order owner before reporting", "owner_role": "Order owner / clinical lead"}, {"case_key": "EXC-0020", "status_event_key": "SE018894", "order_token": "ORD-1040967061FB", "order_key": "OS02799", "program_key": "-", "therapy_key": "THERAPY_B", "transition": "Active -> Discontinued", "event_at": "2026-08-01 08:30:00", "doses_before_event": 2, "doses_after_archive": 1, "disposition": "Escalate", "rule": "Treatment continued after the order was archived", "recommended_action": "Do not report as stopped; verify with clinical team", "owner_role": "Order owner / clinical lead"}, {"case_key": "EXC-0021", "status_event_key": "SE018882", "order_token": "ORD-F3344585A62F", "order_key": "OS02872", "program_key": "-", "therapy_key": "THERAPY_A", "transition": "Active -> Benefits Verification", "event_at": "2026-08-02 12:42:00", "doses_before_event": 1, "doses_after_archive": 0, "disposition": "Verified", "rule": "Backward move with approved correction", "recommended_action": "Report the corrected stage", "owner_role": "Order owner / clinical lead"}, {"case_key": "EXC-0022", "status_event_key": "SE018883", "order_token": "ORD-F3344585A62F", "order_key": "OS02872", "program_key": "-", "therapy_key": "THERAPY_A", "transition": "Benefits Verification -> Active", "event_at": "2026-08-03 05:42:00", "doses_before_event": 1, "doses_after_archive": 0, "disposition": "Verified", "rule": "Valid transition with consistent evidence", "recommended_action": "", "owner_role": "Order owner / clinical lead"}, {"case_key": "EXC-0023", "status_event_key": "SE018890", "order_token": "ORD-AB683611AFCC", "order_key": "OS03086", "program_key": "PROGRAM_B", "therapy_key": "THERAPY_F", "transition": "Benefits Verification -> Prior Authorization", "event_at": "2026-08-11 16:45:00", "doses_before_event": 0, "doses_after_archive": 0, "disposition": "Review", "rule": "Duplicate status event", "recommended_action": "Suppress from the file; keep the first occurrence", "owner_role": "Analytics"}, {"case_key": "EXC-0024", "status_event_key": "SE018889", "order_token": "ORD-5593C8B02DCF", "order_key": "OS03112", "program_key": "PROGRAM_B", "therapy_key": "THERAPY_G", "transition": "(start) -> Intake", "event_at": "2026-08-12 12:37:00", "doses_before_event": 0, "doses_after_archive": 0, "disposition": "Review", "rule": "Duplicate status event", "recommended_action": "Suppress from the file; keep the first occurrence", "owner_role": "Analytics"}, {"case_key": "EXC-0025", "status_event_key": "SE018896", "order_token": "ORD-ECE5785E67EC", "order_key": "OS02851", "program_key": "PROGRAM_B", "therapy_key": "THERAPY_G", "transition": "Active -> Discontinued", "event_at": "2026-09-02 10:00:00", "doses_before_event": 2, "doses_after_archive": 1, "disposition": "Escalate", "rule": "Treatment continued after the order was archived", "recommended_action": "Do not report as stopped; verify with clinical team", "owner_role": "Order owner / clinical lead"}, {"case_key": "EXC-0026", "status_event_key": "SE017394", "order_token": "ORD-59F44E11A5FD", "order_key": "OS03249", "program_key": "-", "therapy_key": "THERAPY_B", "transition": "(start) -> Intake", "event_at": "2026-09-08 14:15:00", "doses_before_event": 0, "doses_after_archive": 0, "disposition": "Review", "rule": "Order created after its first dose", "recommended_action": "Check for a re-created order before using order dates", "owner_role": "Analytics"}, {"case_key": "EXC-0027", "status_event_key": "SE018895", "order_token": "ORD-775BA6DBCB98", "order_key": "OS02877", "program_key": "PROGRAM_B", "therapy_key": "THERAPY_G", "transition": "Active -> Discontinued", "event_at": "2026-09-10 12:30:00", "doses_before_event": 2, "doses_after_archive": 1, "disposition": "Escalate", "rule": "Treatment continued after the order was archived", "recommended_action": "Do not report as stopped; verify with clinical team", "owner_role": "Order owner / clinical lead"}, {"case_key": "EXC-0028", "status_event_key": "SE018888", "order_token": "ORD-27AA1F4B11A1", "order_key": "OS03459", "program_key": "PROGRAM_B", "therapy_key": "THERAPY_F", "transition": "Intake -> Benefits Verification", "event_at": "2026-10-14 09:46:00", "doses_before_event": 0, "doses_after_archive": 0, "disposition": "Review", "rule": "Duplicate status event", "recommended_action": "Suppress from the file; keep the first occurrence", "owner_role": "Analytics"}, {"case_key": "EXC-0029", "status_event_key": "SE018852", "order_token": "ORD-FBBA4C2D0A01", "order_key": "OS03419", "program_key": "PROGRAM_B", "therapy_key": "THERAPY_G", "transition": "Benefits Verification -> Discontinued", "event_at": "2026-10-23 13:56:00", "doses_before_event": 0, "doses_after_archive": 0, "disposition": "Review", "rule": "Discontinued with no prior dose", "recommended_action": "Reclassify as cancelled before first dose", "owner_role": "Analytics"}], "sensitivity": [{"business_days_after_week_end": 0, "share_of_visits_captured": 0.9069212410501193}, {"business_days_after_week_end": 1, "share_of_visits_captured": 0.9176610978520287}, {"business_days_after_week_end": 2, "share_of_visits_captured": 0.9284009546539379}, {"business_days_after_week_end": 3, "share_of_visits_captured": 0.9427207637231504}, {"business_days_after_week_end": 4, "share_of_visits_captured": 0.9486873508353222}, {"business_days_after_week_end": 5, "share_of_visits_captured": 0.9594272076372315}, {"business_days_after_week_end": 6, "share_of_visits_captured": 0.9737470167064439}, {"business_days_after_week_end": 7, "share_of_visits_captured": 0.9856801909307876}, {"business_days_after_week_end": 8, "share_of_visits_captured": 0.9964200477326969}, {"business_days_after_week_end": 9, "share_of_visits_captured": 0.9988066825775657}, {"business_days_after_week_end": 10, "share_of_visits_captured": 1.0}], "n_visits": 838, "ordinal": {"full": [105, 109, 89, 69, 57, 185], "total": 614}, "sample": [{"file_name": "PROGRAM_A_INVENTORY_20261012.csv", "program": "PROGRAM_A", "file_type": "INVENTORY", "reporting_week": "2026-10-12", "record_count": 8, "header_rows": 1, "sha256": "932ac0b03c23fb2da0d715fcd2694f276d8f74667aa8954237dffdcb7b0321e9", "destination": "mock://manufacturer-a/inbound"}, {"file_name": "PROGRAM_A_DISPENSE_20261012.csv", "program": "PROGRAM_A", "file_type": "DISPENSE", "reporting_week": "2026-10-12", "record_count": 10, "header_rows": 1, "sha256": "a37b154ae74c762baf33626d9626843e1ee2e41262cc37381ab443d4919386a6", "destination": "mock://manufacturer-a/inbound"}, {"file_name": "PROGRAM_B_INVENTORY_20261012.csv", "program": "PROGRAM_B", "file_type": "INVENTORY", "reporting_week": "2026-10-12", "record_count": 16, "header_rows": 1, "sha256": "0ada93a057765a7d407be7ab8b718c43e92d74077814b795bcdafb5540a0e341", "destination": "mock://manufacturer-b/inbound"}, {"file_name": "PROGRAM_B_DISPENSE_20261012.csv", "program": "PROGRAM_B", "file_type": "DISPENSE", "reporting_week": "2026-10-12", "record_count": 21, "header_rows": 1, "sha256": "b062674b520775fb0471add45d108fd4b50a9ee2e52c8119aa3ae71c1fe34b06", "destination": "mock://manufacturer-b/inbound"}, {"file_name": "PROGRAM_B_STATUS_20261012.csv", "program": "PROGRAM_B", "file_type": "STATUS", "reporting_week": "2026-10-12", "record_count": 41, "header_rows": 1, "sha256": "641892400401479cbf6d9af3ed5f5af8eac903b50cfb1a3d3e0e0345ab1e4e97", "destination": "mock://manufacturer-b/inbound"}], "qa": [{"check": "Logged batch counts match a fresh recomputation", "status": "pass", "observed": "118/120 batches match; 2 flagged and diagnosed (SB0006: DUPLICATE_ROWS_IN_FILE, SB0093: WRONG_REPORTING_WEEK)", "rule": "Recompute every file with the original rules at its generation time"}, {"check": "Control counts exclude the header row", "status": "warn", "observed": "2 batch(es) counted the header: SB0028, SB0044", "rule": "record_count = data rows only"}, {"check": "Inventory bridge reconciles opening to closing", "status": "warn", "observed": "573/576 site-product-weeks reconcile; variances: S07-THERAPY_G-2026-06-01, S04-THERAPY_F-2026-06-15, S05-THERAPY_D-2026-07-13 (snapshot reflects an adjustment the ledger never posted)", "rule": "opening + receipts + returns - administered - waste +/- adjustments = closing"}, {"check": "Packaging units normalized before reconciling", "status": "pass", "observed": "1 receipt recorded in cartons converted (+18 vials); without conversion that week would show a false variance", "rule": "All quantities in vials"}, {"check": "Dispense extract cleaned at the right grain", "status": "warn", "observed": "838 appointment-product rows; 6 exact duplicate line(s) removed, 0 line(s) on non-treated visits excluded, 4 row(s) missing site flagged", "rule": "One row per treated appointment x product; vials never double-counted"}, {"check": "Inventory 'administered' ties to dispense vials", "status": "pass", "observed": "572/576 site-product-weeks tie; 4 differ only where a dispense row is missing its site", "rule": "Two independent sources must agree"}, {"check": "Injection number uses full treatment history", "status": "pass", "observed": "Program B: 509 of 614 rows are a 2nd-or-later dose; a week-only extract would label all of them dose #1", "rule": "Ordinal is therapy-specific and counts prior administered visits"}, {"check": "Status rules engine routes every planted exception", "status": "pass", "observed": "10 Escalate, 13 Review, 6 approved corrections out of 18,897 status events; no false positives", "rule": "Verified / Review / Escalate with written reasons"}, {"check": "Late source updates after files were sent", "status": "warn", "observed": "29 of 48 dispense files missed visits completed after generation", "rule": "Generate later or schedule restatements; see the cut-off analysis"}, {"check": "Acknowledgments tracked separately from file creation", "status": "warn", "observed": "117 accepted, 2 rejected, 1 pending (1 stale: SB0025)", "rule": "A file on disk is not a delivered file"}, {"check": "Mock destinations only", "status": "pass", "observed": "All 120 destinations are mock:// URIs; nothing is transmitted", "rule": "No real endpoints in a public portfolio"}, {"check": "Patient keys never leave the warehouse", "status": "pass", "observed": "Files carry salted one-way tokens (PT-..., ORD-...), never warehouse keys", "rule": "Pseudonymize before export"}]};</script>
+<script>/* Shared dashboard helpers - inlined into every project dashboard at build time.
+   Charts read colors from CSS variables, so light/dark themes stay in one place. */
+(function () {
+  // ?theme=light|dark forces a theme (used for README screenshots); otherwise follow the OS.
+  const forced = new URLSearchParams(location.search).get("theme");
+  if (forced === "light" || forced === "dark") document.documentElement.setAttribute("data-theme", forced);
+  const charts = [];
+  const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const fmt = new Intl.NumberFormat("en-US");
+
+  function colors() {
+    return {
+      ink: css("--ink"), ink2: css("--ink-2"), muted: css("--muted"), grid: css("--grid"), axis: css("--axis"),
+      surface: css("--surface"), s1: css("--series-1"), s2: css("--series-2"), s3: css("--series-3"),
+      gray: css("--series-gray"), good: css("--good"), warning: css("--warning"), critical: css("--critical"),
+      seq: [1, 2, 3, 4, 5, 6, 7].map((i) => css(`--seq-${i}`)),
+      ord: [1, 2, 3, 4, 5].map((i) => css(`--ord-${i}`)),
+    };
+  }
+
+  function layout(extra) {
+    const c = colors();
+    const axis = { gridcolor: c.grid, linecolor: c.axis, zeroline: false, tickfont: { color: c.muted, size: 11 },
+                   title: { font: { color: c.ink2, size: 12 } }, automargin: true };
+    const base = {
+      paper_bgcolor: "rgba(0,0,0,0)", plot_bgcolor: "rgba(0,0,0,0)",
+      font: { family: 'system-ui, -apple-system, "Segoe UI", sans-serif', color: c.ink, size: 12 },
+      margin: { l: 48, r: 18, t: 10, b: 40 }, hovermode: "x unified",
+      hoverlabel: { bgcolor: c.surface, bordercolor: c.axis, font: { color: c.ink } },
+      legend: { orientation: "h", x: 0, y: 1.12, font: { color: c.ink2, size: 12 } },
+      xaxis: Object.assign({}, axis, { showgrid: false, showline: true }),
+      yaxis: Object.assign({}, axis, { showline: false, rangemode: "tozero" }),
+      bargap: 0.35,
+    };
+    return deepMerge(base, extra || {});
+  }
+
+  function deepMerge(a, b) {
+    const out = Array.isArray(a) ? a.slice() : Object.assign({}, a);
+    for (const k of Object.keys(b)) {
+      if (b[k] && typeof b[k] === "object" && !Array.isArray(b[k]) && a[k] && typeof a[k] === "object") out[k] = deepMerge(a[k], b[k]);
+      else out[k] = b[k];
+    }
+    return out;
+  }
+
+  const config = { displayModeBar: false, responsive: true };
+
+  function register(fn) { charts.push(fn); }
+  function renderAll() { const c = colors(); charts.forEach((fn) => fn(c)); }
+
+  function table(el, columns, rows) {
+    const head = columns.map((c) => `<th class="${c.num ? "num" : ""}">${c.label}</th>`).join("");
+    const body = rows.map((r) => "<tr>" + columns.map((c) => {
+      let v = r[c.key];
+      if (c.num && typeof v === "number") v = c.pct ? (v * 100).toFixed(1) + "%" : (Number.isInteger(v) ? fmt.format(v) : v.toFixed(c.dp ?? 1));
+      return `<td class="${c.num ? "num" : ""}">${v ?? ""}</td>`;
+    }).join("") + "</tr>").join("");
+    el.innerHTML = `<div class="table-scroll"><table class="data"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+  }
+
+  function tiles(el, items) {
+    el.innerHTML = items.map((t) => {
+      let delta = "";
+      if (t.delta !== undefined && t.delta !== null) {
+        const up = t.delta >= 0;
+        const good = t.upIsGood === undefined ? null : (up === t.upIsGood);
+        const cls = good === null ? "" : (good ? "up" : "down");
+        const sign = up ? "+" : "−";
+        delta = `<p class="delta"><span class="${cls}">${sign}${Math.abs(t.delta).toFixed(1)}%</span> ${t.deltaLabel || ""}</p>`;
+      }
+      return `<div class="tile"><p class="label">${t.label}</p><p class="value">${t.value}</p>${delta}${t.note ? `<p class="note">${t.note}</p>` : ""}</div>`;
+    }).join("");
+  }
+
+  window.Dash = { register, renderAll, layout, config, table, tiles, colors, fmt };
+  document.addEventListener("DOMContentLoaded", renderAll);
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", renderAll);
+  new MutationObserver(renderAll).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+})();
+</script>
+<script>
+(function () {
+  const D = window.DATA, fmt = Dash.fmt;
+  document.getElementById("asof").textContent = D.meta.as_of;
+  document.getElementById("latest").textContent = D.meta.latest;
+  document.getElementById("pkg-week").textContent = D.meta.latest;
+  document.getElementById("seed").textContent = D.meta.seed;
+  document.getElementById("seed2").textContent = D.meta.seed;
+  Dash.tiles(document.getElementById("tiles"), D.tiles);
+  const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+  const sym = { green: "✓", yellow: "!", red: "✕" };
+  const wk = (w) => { const d = new Date(w + "T00:00:00"); return `${d.getMonth() + 1}/${d.getDate()}`; };
+
+  // Console grid
+  document.getElementById("console").innerHTML = `<table><thead><tr><th class="row">File</th>${D.weeks.map((w) => `<th>${wk(w)}</th>`).join("")}</tr></thead><tbody>${
+    D.rows.map((row) => `<tr><th class="row">${row}</th>${D.weeks.map((w) => {
+      const c = (D.grid[row] || {})[w];
+      if (!c) return "<td></td>";
+      return `<td class="cell ${c.s}" title="${esc(c.b)} · week of ${w}\n${esc(c.i)}" aria-label="${esc(c.b)} ${c.s}">${sym[c.s]}</td>`;
+    }).join("")}</tr>`).join("")}</tbody></table>`;
+  const badge = { green: "pass", yellow: "warn", red: "fail" };
+  const label = { green: "Green", yellow: "Yellow", red: "Red" };
+  const rank = { red: 0, yellow: 1, green: 2 };
+  const issues = D.issues.slice().sort((a, b) => rank[a.overall] - rank[b.overall] || a.reporting_week.localeCompare(b.reporting_week));
+  document.getElementById("issues").innerHTML = `<div class="table-scroll"><table class="data wrap"><thead><tr><th>Status</th><th>Batch</th>
+    <th>File</th><th>Week</th><th class="num">Logged rows</th><th class="num">Recomputed</th><th>Findings</th></tr></thead><tbody>${
+    issues.map((r) => `<tr><td><span class="badge ${badge[r.overall]}"><span class="dot"></span>${label[r.overall]}</span></td><td>${r.batch_key}</td>
+      <td>${r.program_key} ${r.file_type}</td><td>${r.reporting_week}</td><td class="num">${r.logged_rows}</td>
+      <td class="num">${r.recomputed_rows}</td><td>${esc(r.issues)}</td></tr>`).join("")}</tbody></table></div>`;
+
+  // Bridge waterfall
+  const b = D.bridge_example;
+  document.getElementById("bridge-sub").textContent = `${b.program_key} · ${b.therapy_key} at ${b.site_key}, week of ${b.week_start}. Vials.`;
+  Dash.register((c) => {
+    const steps = [["Opening", b.opening_qty, "absolute"], ["Received", b.receipts, "relative"], ["Returned", b.returns_in, "relative"],
+      ["Administered", -b.administered, "relative"], ["Waste / expired", -b.waste_expired, "relative"], ["Count adj.", b.count_adjustments, "relative"],
+      ["Closing", b.system_closing_qty, "total"]];
+    Plotly.react("c-bridge", [{ type: "waterfall", x: steps.map((s) => s[0]), y: steps.map((s) => s[1]), measure: steps.map((s) => s[2]),
+      text: steps.map((s) => (s[2] === "relative" && s[1] > 0 ? "+" : "") + s[1]), textposition: "outside", textfont: { color: c.ink2 },
+      increasing: { marker: { color: c.s1 } }, decreasing: { marker: { color: c.s2 } }, totals: { marker: { color: c.gray } },
+      connector: { line: { color: c.axis, width: 1 } }, cliponaxis: false, hovertemplate: "%{x}: %{y}<extra></extra>" }],
+      Dash.layout({ showlegend: false, hovermode: "closest", margin: { t: 24 } }), Dash.config);
+  });
+
+  // Cut-off sensitivity
+  Dash.register((c) => {
+    const s = D.sensitivity;
+    Plotly.react("c-cut", [{ type: "scatter", mode: "lines+markers", x: s.map((r) => r.business_days_after_week_end),
+      y: s.map((r) => r.share_of_visits_captured * 100), line: { color: c.s1, width: 2 }, marker: { size: 7, color: c.s1 },
+      hovertemplate: "Day %{x}: %{y:.1f}% captured<extra></extra>" }],
+      Dash.layout({ showlegend: false, hovermode: "closest", xaxis: { title: { text: "Business days after week end" }, dtick: 1 },
+        yaxis: { ticksuffix: "%", range: [80, 100.5], rangemode: "normal" },
+        shapes: [{ type: "rect", x0: 1.5, x1: 3.5, y0: 80, y1: 100.5, fillcolor: c.warning, opacity: 0.12, line: { width: 0 } }],
+        annotations: [{ x: 2.5, y: 81.5, text: "current build days", showarrow: false, font: { color: c.ink2, size: 11 } }] }), Dash.config);
+  });
+  const cap = (k) => (D.sensitivity.find((r) => r.business_days_after_week_end === k).share_of_visits_captured * 100).toFixed(1);
+  document.getElementById("t-cut").textContent =
+    `Files built 2-3 business days after week end capture ${cap(2)}-${cap(3)}% of visits; waiting 5 days captures ${cap(5)}% and 8 days ${cap(8)}%. Recommendation: build on day 5 and restate the rest.`;
+  Dash.table(document.getElementById("d-cut"), [{ key: "business_days_after_week_end", label: "Business days after week end", num: true },
+    { key: "share_of_visits_captured", label: "Visits captured", num: true, pct: true }], D.sensitivity);
+
+  // Ordinals
+  Dash.register((c) => {
+    const x = ["Dose 1", "2", "3", "4", "5", "6+"];
+    Plotly.react("c-ord", [
+      { type: "bar", name: "Week-only extract", x, y: [D.ordinal.total, 0, 0, 0, 0, 0], marker: { color: c.s2, cornerradius: 3 } },
+      { type: "bar", name: "Full history (correct)", x, y: D.ordinal.full, marker: { color: c.s1, cornerradius: 3 } }],
+      Dash.layout({ barmode: "group", bargap: 0.3, hovermode: "x unified", legend: { y: 1.12 }, xaxis: { type: "category" } }), Dash.config);
+  });
+  Dash.table(document.getElementById("d-ord"), [{ key: "dose", label: "Dose number" }, { key: "full", label: "Full history", num: true },
+    { key: "week", label: "Week-only", num: true }], ["1", "2", "3", "4", "5", "6+"].map((d, i) => ({ dose: d, full: D.ordinal.full[i], week: i ? 0 : D.ordinal.total })));
+
+  // Sample package
+  Dash.table(document.getElementById("pkg"), [{ key: "file_name", label: "File" }, { key: "record_count", label: "Records", num: true },
+    { key: "sha", label: "SHA-256 (first 12)" }, { key: "destination", label: "Destination" }],
+    D.sample.map((m) => Object.assign({ sha: m.sha256.slice(0, 12) }, m)));
+
+  // Cases
+  const disp = { Escalate: "fail", Review: "warn", Verified: "pass" };
+  document.getElementById("cases").innerHTML = `<div class="table-scroll" style="max-height:520px"><table class="data wrap"><thead><tr><th>Case</th><th>Disposition</th>
+    <th>Order token</th><th>Program</th><th>Transition</th><th>Event</th><th class="num">Doses before</th><th class="num">Doses after archive</th><th>Rule</th><th>Action</th></tr></thead><tbody>${
+    D.cases.map((r) => `<tr><td>${r.case_key}</td><td><span class="badge ${disp[r.disposition]}"><span class="dot"></span>${r.disposition}</span></td>
+      <td>${r.order_token}</td><td>${r.program_key}</td><td>${esc(r.transition)}</td><td>${r.event_at.slice(0, 10)}</td>
+      <td class="num">${r.doses_before_event}</td><td class="num">${r.doses_after_archive}</td><td>${esc(r.rule)}</td><td>${esc(r.recommended_action)}</td></tr>`).join("")}</tbody></table></div>`;
+
+  // QA
+  const icon = { pass: "Pass", warn: "Warn", fail: "Fail" };
+  document.getElementById("qa").innerHTML = D.qa.map((q) =>
+    `<div class="qa-item"><span class="badge ${q.status}"><span class="dot"></span>${icon[q.status]}</span>
+      <div><b>${q.check}</b><div class="obs">${esc(q.observed)}</div><div class="obs">Rule: ${esc(q.rule)}</div></div></div>`).join("");
+})();
+</script>
+</body>
+</html>

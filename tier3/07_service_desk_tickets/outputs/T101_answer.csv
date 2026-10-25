@@ -1,0 +1,4 @@
+definition,patients
+Active now (agreed): treated at S01 in the last 90 days or booked at S01,123
+Ever treated at S01,322
+Ever assigned to S01 at intake (any state),430

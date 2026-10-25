@@ -1,0 +1,8 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+# Derived: rebuild with `python foundation/build_warehouse.py`
+foundation/warehouse.sqlite
+# Notes about the real job record - never publish
+_private/

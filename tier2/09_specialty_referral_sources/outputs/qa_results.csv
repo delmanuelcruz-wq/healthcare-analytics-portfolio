@@ -1,0 +1,11 @@
+check,status,observed,rule
+Multi-specialty providers counted once,pass,Leaderboard total 560 = 560 distinct referral events. 1 provider(s) carry both specialties and 7 carry PUL/IMM only as a secondary specialty; the specialty-bridge join would report 567,"One row per provider person, one specialty group each (the primary specialty)"
+Duplicate provider records merged,warn,"2 in-scope provider(s) have two records (PRV0061, PRV0230); 27 referrals logged on the duplicate record roll up to the person",Group by source_identity_key
+Duplicate faxes excluded,warn,19 duplicate-fax referral events from in-scope providers removed,referral_type <> 'Duplicate'
+Every in-scope provider maps to exactly one county,pass,0 unmapped of 62; split ZIP 00150 resolves to its primary county,Crosswalk join restricted to is_primary = 1
+Trend and county views sum to the leaderboard,pass,trend 560 = county 560 = leaderboard 560,Every view reads the same scoped rows
+Trend is zero-filled for 12 months per group,pass,"Immunology/Allergy: 12 months, PUL/IMM as secondary specialty: 12 months, Pulmonology: 12 months","A quiet month shows as 0, not as a gap"
+Window is 12 full months,pass,"Oct 1, 2025 - Sep 30, 2026; 32 referrals from Oct 1-24, 2026 are excluded as a partial month","Half-open window [2025-10-01, 2026-10-01)"
+Location definition is explicit,pass,184 of 560 referrals (33%) came from patients who live in a different county than the referring practice - patient-county maps would tell a different story,Location = referring provider's practice county
+Independent Python recomputation matches SQL,pass,"53 providers on the leaderboard, 560 referrals; scope of 62 people matches: True","Same rules, different implementation"
+In-scope providers with no referral in the window,pass,9 of 62 in-scope providers sent nothing in the window and are not ranked,Leaderboard lists referring sources only

@@ -1,0 +1,27 @@
+request_key,mock_code,service_date,correct_bucket,correct_amount_synthetic,naive_result,naive_fee_row,naive_amount_synthetic,error
+LR006,XQ210,2025-08-17,Out of date range,,Priced,FS090,628.09,Priced outside the effective dates
+LR008,XJ129,2026-06-18,Matched,272.64,Priced,FS039,258.8,Priced from the wrong rate period
+LR009,XJ114,2025-11-08,Zero-pay ($0.00),0.0,Not found,FS018,0.0,Zero-pay read as not found
+LR011,XJ140,2026-04-09,Wrong claim type,,Priced,FS055,22.97,Priced under the wrong claim type
+LR012,XJ159,2026-05-01,Matched,682.81,Priced,FS076,665.28,Priced from the wrong rate period
+LR013,XJ134,2026-06-17,Matched,3261.92,Priced,FS046,3372.48,Priced from the wrong rate period
+LR014,XJ149,2026-05-01,Wrong claim type,,Priced,FS065,3356.19,Priced under the wrong claim type
+LR019,XJ130,2026-01-07,Wrong claim type,,Priced,FS041,2078.98,Priced under the wrong claim type
+LR021,XJ140,2026-10-03,Wrong claim type,,Priced,FS055,22.97,Priced under the wrong claim type
+LR023,XJ115,2026-02-28,Matched,2811.77,Priced,FS019,2774.51,Priced from the wrong rate period
+LR027,XJ121,2026-09-05,Matched,3551.13,Priced,FS028,3698.34,Priced from the wrong rate period
+LR034,XJ139,2026-07-28,Zero-pay ($0.00),0.0,Not found,FS054,0.0,Zero-pay read as not found
+LR035,XJ118,2026-08-28,Wrong claim type,,Priced,FS024,3379.21,Priced under the wrong claim type
+LR036,XQ209,2026-01-28,Zero-pay ($0.00),0.0,Not found,FS089,0.0,Zero-pay read as not found
+LR037,XJ152,2026-06-09,Wrong claim type,,Priced,FS068,4130.37,Priced under the wrong claim type
+LR039,XQ203,2026-04-23,Matched,558.35,Priced,FS082,521.0,Priced from the wrong rate period
+LR042,XJ154,2025-09-09,Zero-pay ($0.00),0.0,Not found,FS070,0.0,Zero-pay read as not found
+LR045,XJ152,2025-09-13,Wrong claim type,,Priced,FS068,4130.37,Priced under the wrong claim type
+LR052,XJ122,2026-03-31,Out of date range,,Priced,FS030,3739.19,Priced outside the effective dates
+LR054,XJ136,2025-01-23,Zero-pay ($0.00),0.0,Not found,FS050,0.0,Zero-pay read as not found
+LR055,XJ130,2026-08-23,Wrong claim type,,Priced,FS041,2078.98,Priced under the wrong claim type
+LR056,XJ114,2025-09-12,Zero-pay ($0.00),0.0,Not found,FS018,0.0,Zero-pay read as not found
+LR058,XJ110,2024-11-15,Out of date range,,Priced,FS012,1480.55,Priced outside the effective dates
+LR059,XJ118,2024-11-15,Wrong claim type,,Priced,FS024,3379.21,Priced under the wrong claim type
+LR060,XJ142,2024-11-15,Out of date range,,Priced,FS057,361.51,Priced outside the effective dates
+LR061,XJ110,2025-08-29,Duplicate request,,Priced,FS012,1480.55,Duplicate priced twice

@@ -1,0 +1,17 @@
+site_license_key,site_key,license_type,fictional_license_key,state_code,issue_date,expiry_date,document_flag
+SLC001,S01,Ambulatory infusion center license (mock),MOCK-AIC-GA-4435,GA,2026-04-17,2028-04-16,1
+SLC002,S01,Pharmacy permit (mock),MOCK-PHA-GA-9536,GA,2025-02-10,2027-02-10,1
+SLC003,S02,Ambulatory infusion center license (mock),MOCK-AIC-GA-3549,GA,2025-06-26,2027-06-26,1
+SLC004,S02,Pharmacy permit (mock),MOCK-PHA-GA-2772,GA,2025-12-07,2026-12-04,1
+SLC005,S03,Ambulatory infusion center license (mock),MOCK-AIC-GA-2500,GA,2025-11-17,2027-11-17,1
+SLC006,S03,Pharmacy permit (mock),MOCK-PHA-GA-6068,GA,2026-03-16,2028-03-15,1
+SLC007,S04,Ambulatory infusion center license (mock),MOCK-AIC-SC-3576,SC,2026-05-16,2028-05-15,1
+SLC008,S04,Pharmacy permit (mock),MOCK-PHA-SC-8088,SC,2026-05-01,2028-04-30,1
+SLC009,S05,Ambulatory infusion center license (mock),MOCK-AIC-SC-6059,SC,2025-04-13,2027-04-13,1
+SLC010,S05,Pharmacy permit (mock),MOCK-PHA-SC-3620,SC,2025-10-28,2027-10-28,1
+SLC011,S06,Ambulatory infusion center license (mock),MOCK-AIC-SC-1184,SC,2026-08-09,2028-08-08,1
+SLC012,S06,Pharmacy permit (mock),MOCK-PHA-SC-5542,SC,2026-06-17,2026-10-04,1
+SLC013,S07,Ambulatory infusion center license (mock),MOCK-AIC-NC-1997,NC,2025-07-20,2027-07-20,1
+SLC014,S07,Pharmacy permit (mock),MOCK-PHA-NC-4046,NC,2025-10-05,2027-10-05,1
+SLC015,S08,Ambulatory infusion center license (mock),MOCK-AIC-NC-4112,NC,2026-03-06,2028-03-05,0
+SLC016,S08,Pharmacy permit (mock),MOCK-PHA-NC-5035,NC,2025-09-06,2027-09-06,1

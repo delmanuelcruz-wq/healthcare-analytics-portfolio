@@ -1,0 +1,9 @@
+check,status,observed,rule
+"Every planted compliance defect is found, nothing extra",pass,"11 exceptions across staff, site and director records; mismatched codes: none",Graded against the ground-truth register
+"Status computed from dates, not trusted from the register",warn,"2 license(s) past expiry still typed as Active: LIC023, LIC029","Status = f(expiry_date, as-of date)"
+One row per license,warn,45 register rows -> 44 unique licenses; duplicates excluded from counts and reminders,Deduplicate on license ID
+Document presence audited against the index,warn,4 license(s) lack a filed document (2 where the flag wrongly says one exists),Flag and index must agree
+Every site has exactly one primary medical director,warn,7/8 sites covered today; one historical overlap of two primaries,Effective intervals may not overlap for primaries
+Renewal buckets are complete and exclusive,pass,"Expired: 2, Due in 0-30 days: 3, Due in 31-60 days: 3, Due in 61-90 days: 4, Current (90+ days): 32",Each license in exactly one 30/60/90 bucket
+"Reminder automation is planned, not claimed",pass,69 reminder dates planned for licenses expiring within 180 days; none sent,Never describe a plan as deployed
+Only nonfunctional MOCK- license IDs and role labels,pass,"No names, real license numbers, scans or addresses exist in the data",Public-safe by construction

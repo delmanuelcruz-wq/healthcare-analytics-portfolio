@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fee Schedule Lookup</title>
+<meta name="description" content="Synthetic portfolio page: fee-schedule lookup and exception tracker for a batch of mock billing codes.">
+<style>/*__SHARED_CSS__*/
+.rule { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 10px; margin-top: 4px; }
+.rule .step { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 13px; }
+.rule .step b { display: block; font-size: 13.5px; margin-bottom: 2px; }
+.rule .step .n { color: var(--muted); font-size: 12px; }
+.table-scroll { max-height: 520px; }
+</style>
+<script src="__PLOTLY_CDN__"></script>
+</head>
+<body>
+<div class="synthetic-bar">SYNTHETIC DEMONSTRATION - mock codes and invented amounts. Not reimbursement, billing, operational or financial guidance.</div>
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Tier 2 · Workstream 10 · Coralline Infusion Network (fictional)</p>
+    <h1>Fee-schedule lookup and exception tracker</h1>
+    <p>A batch of mock billing codes priced against a mock fee schedule. Every request gets exactly one answer, and a $0.00 rate
+       is reported as zero-pay - never confused with a code that has no rate at all. Every amount here is <b>SYNTHETIC</b>.</p>
+    <div class="meta"><span>Batch BATCH-2026-10</span><span>Data as of <b id="asof"></b></span><span>Seed <span id="seed"></span></span></div>
+  </div>
+</header>
+<main class="wrap">
+  <div class="tiles" id="tiles"></div>
+
+  <h2 class="section">The matching rule</h2>
+  <p class="section-lede">A match needs the same code, the same claim type and a service date inside the rate's effective dates (inclusive).
+     Buckets are assigned in this order, so each request lands in exactly one.</p>
+  <div class="rule">
+    <div class="step"><span class="n">1</span><b>Duplicate request</b>Same code, claim type and date as an earlier request. The original keeps its bucket.</div>
+    <div class="step"><span class="n">2</span><b>Matched / Zero-pay</b>All three keys match. $0.00 is a real (non-covered, mock) rate.</div>
+    <div class="step"><span class="n">3</span><b>No match</b>The code is not on the schedule at all.</div>
+    <div class="step"><span class="n">4</span><b>Wrong claim type</b>The code exists, but only under another claim type.</div>
+    <div class="step"><span class="n">5</span><b>Out of date range</b>Code and claim type exist, but no rate was in force on the service date.</div>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px">
+    <section class="card full">
+      <h3>Requests by bucket</h3>
+      <p class="sub">61 requests, one bucket each.</p>
+      <div class="chart" id="c-buckets" style="height:250px"></div>
+    </section>
+    <section class="card full">
+      <h3>What a code-only lookup gets wrong</h3>
+      <p class="sub">A VLOOKUP on the code alone, reading blank-or-zero as "not found". Amounts are SYNTHETIC.</p>
+      <div id="tbl-errors"></div>
+    </section>
+    <section class="card full">
+      <h3>Lookup tracker</h3>
+      <p class="sub">Every request with its bucket, matched rate row and next action. Fictional fee column = SYNTHETIC amounts.</p>
+      <div id="tbl-tracker"></div>
+    </section>
+  </div>
+
+  <h2 class="section">Quality checks run on this build</h2>
+  <p class="section-lede">WARN means a real exception was found and routed - it is the tracker doing its job.</p>
+  <div class="qa-list" id="qa"></div>
+
+  <h2 class="section">What is real and what is simulated</h2>
+  <div class="scope">
+    <div class="def"><b>On-the-job exposure (self-reported, general terms only)</b>
+      <ul><li>Completed a fee-schedule lookup for a batch of medication billing codes and tracked exceptions.</li>
+          <li>The final state of that tracker was not available for review.</li></ul></div>
+    <div class="def"><b>Independently built for this portfolio (synthetic)</b>
+      <ul><li>Mock codes (XJ/XQ prefixes are not valid billing formats), the schedule and every amount.</li>
+          <li>The matching rules, SQL, Python cross-check, Excel tracker, tests and this page.</li></ul></div>
+  </div>
+  <footer class="foot">Coralline Infusion Network is fictional. All data is synthetic, generated from seed <span id="seed2"></span>.
+    Amounts are invented and are not reimbursement rates. SYNTHETIC DEMONSTRATION - not operational, medical or financial guidance.</footer>
+</main>
+<script>/*__DATA__*/</script>
+<script>/*__SHARED_JS__*/</script>
+<script>
+(function () {
+  const D = window.DATA;
+  document.getElementById("asof").textContent = D.meta.as_of;
+  document.getElementById("seed").textContent = D.meta.seed;
+  document.getElementById("seed2").textContent = D.meta.seed;
+  Dash.tiles(document.getElementById("tiles"), D.tiles);
+
+  Dash.register((c) => {
+    const color = { "Matched": c.good, "Zero-pay ($0.00)": c.s1, "No match": c.critical, "Wrong claim type": c.s2,
+                    "Out of date range": c.warning, "Duplicate request": c.gray };
+    const rows = D.summary.slice().reverse();
+    Plotly.react("c-buckets", [{
+      type: "bar", orientation: "h", y: rows.map((r) => r.bucket), x: rows.map((r) => r.requests),
+      marker: { color: rows.map((r) => color[r.bucket]) }, text: rows.map((r) => r.requests), textposition: "outside",
+      textfont: { color: c.ink2 }, cliponaxis: false, hovertemplate: "%{y}: %{x}<extra></extra>" }],
+      Dash.layout({ showlegend: false, hovermode: "closest", margin: { l: 140, r: 30 }, xaxis: { showgrid: true, showline: false },
+                    yaxis: { showgrid: false } }), Dash.config);
+  });
+  Dash.table(document.getElementById("tbl-errors"), [
+    { key: "request_key", label: "Request" }, { key: "mock_code", label: "Code" }, { key: "service_date", label: "Service date" },
+    { key: "correct_bucket", label: "Correct answer" }, { key: "correct_display", label: "Correct fee (synthetic)", num: true },
+    { key: "naive_display", label: "Code-only fee (synthetic)", num: true }, { key: "error", label: "What went wrong" }], D.errors);
+  Dash.table(document.getElementById("tbl-tracker"), [
+    { key: "request_key", label: "Request" }, { key: "mock_code", label: "Code" }, { key: "claim_type_requested", label: "Claim type" },
+    { key: "service_date", label: "Service date" }, { key: "bucket", label: "Bucket" }, { key: "matched_fee_row", label: "Fee row" },
+    { key: "fee_display", label: "Fictional fee (SYNTHETIC)", num: true }, { key: "action", label: "Action / note" }], D.tracker);
+
+  const icon = { pass: "Pass", warn: "Warn", fail: "Fail" };
+  document.getElementById("qa").innerHTML = D.qa.map((x) =>
+    `<div class="qa-item"><span class="badge ${x.status}"><span class="dot"></span>${icon[x.status]}</span>
+      <div><b>${x.check}</b><div class="obs">${x.observed}</div><div class="obs">Rule: ${x.rule}</div></div></div>`).join("");
+})();
+</script>
+</body>
+</html>

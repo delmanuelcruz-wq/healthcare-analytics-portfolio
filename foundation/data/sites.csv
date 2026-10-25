@@ -1,0 +1,9 @@
+site_key,site_name,county_key,state_code,opened_date,chairs,timezone
+S01,Saltmeadow Infusion Suite (fictional),CTY01,GA,2019-03-04,14,America/New_York
+S02,Cypressmoor Infusion Suite (fictional),CTY03,GA,2020-06-01,12,America/New_York
+S03,Larkspur Infusion Suite (fictional),CTY05,GA,2022-01-10,8,America/New_York
+S04,Heronmouth Infusion Suite (fictional),CTY06,SC,2018-09-17,14,America/New_York
+S05,Sablecrest Infusion Suite (fictional),CTY07,SC,2021-04-05,10,America/New_York
+S06,Gullwing Infusion Suite (fictional),CTY09,SC,2023-02-06,8,America/New_York
+S07,Brinemoor Infusion Suite (fictional),CTY10,NC,2019-11-04,12,America/New_York
+S08,Cedar Landing Infusion Suite (fictional),CTY11,NC,2025-09-15,8,America/New_York

@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Incremental Refresh Demo</title>
+<meta name="description" content="Synthetic portfolio page: idempotent daily incremental refresh with an audit table, late corrections and goals vs actuals.">
+<style>/* Shared dashboard styles - inlined into every project dashboard at build time. */
+:root {
+  color-scheme: light;
+  --page: #f9f9f7;
+  --surface: #fcfcfb;
+  --surface-2: #f3f2ee;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --muted: #6f6d68;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --border: rgba(11, 11, 11, 0.10);
+  --brand: #12344a;
+  --brand-ink: #ffffff;
+  --accent: #0f7c80;
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+  --series-gray: #a8a69f;
+  --seq-1: #cde2fb; --seq-2: #9ec5f4; --seq-3: #6da7ec; --seq-4: #3987e5; --seq-5: #256abf; --seq-6: #184f95; --seq-7: #0d366b;
+  --ord-1: #86b6ef; --ord-2: #5598e7; --ord-3: #2a78d6; --ord-4: #1c5cab; --ord-5: #104281;
+  --good: #0ca30c; --warning: #fab219; --serious: #ec835a; --critical: #d03b3b;
+  --good-ink: #006300;
+  --synthetic-bg: #fff4d6; --synthetic-ink: #5c4300;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --surface-2: #232321;
+    --ink: #f0efec; --ink-2: #c3c2b7; --muted: #9a988f; --grid: #2c2c2a; --axis: #383835;
+    --border: rgba(255, 255, 255, 0.10); --brand: #0f2a3b; --accent: #3fb0b3;
+    --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500; --series-gray: #6a6862;
+    --seq-1: #13304f; --seq-2: #184f95; --seq-3: #1c5cab; --seq-4: #256abf; --seq-5: #3987e5; --seq-6: #6da7ec; --seq-7: #b7d3f6;
+    --ord-1: #184f95; --ord-2: #1c5cab; --ord-3: #2a78d6; --ord-4: #5598e7; --ord-5: #86b6ef;
+    --good-ink: #0ca30c; --synthetic-bg: #3a2f10; --synthetic-ink: #ffd982;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #1a1a19; --surface-2: #232321;
+  --ink: #f0efec; --ink-2: #c3c2b7; --muted: #9a988f; --grid: #2c2c2a; --axis: #383835;
+  --border: rgba(255, 255, 255, 0.10); --brand: #0f2a3b; --accent: #3fb0b3;
+  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500; --series-gray: #6a6862;
+  --seq-1: #13304f; --seq-2: #184f95; --seq-3: #1c5cab; --seq-4: #256abf; --seq-5: #3987e5; --seq-6: #6da7ec; --seq-7: #b7d3f6;
+  --ord-1: #184f95; --ord-2: #1c5cab; --ord-3: #2a78d6; --ord-4: #5598e7; --ord-5: #86b6ef;
+  --good-ink: #0ca30c; --synthetic-bg: #3a2f10; --synthetic-ink: #ffd982;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--page); color: var(--ink);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.synthetic-bar {
+  background: var(--synthetic-bg); color: var(--synthetic-ink); text-align: center;
+  font-size: 13px; font-weight: 600; padding: 7px 16px; letter-spacing: .01em;
+}
+header.top { background: var(--brand); color: var(--brand-ink); }
+header.top .wrap { padding-top: 26px; padding-bottom: 24px; }
+header.top .eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; opacity: .75; margin: 0 0 6px; }
+header.top h1 { font-size: 28px; line-height: 1.2; margin: 0 0 8px; font-weight: 650; }
+header.top p { margin: 0; max-width: 860px; opacity: .88; }
+header.top .meta { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; opacity: .85; }
+.wrap { max-width: 1280px; margin: 0 auto; padding-left: 24px; padding-right: 24px; }
+main.wrap { padding-top: 24px; padding-bottom: 48px; }
+h2.section { font-size: 18px; margin: 34px 0 4px; font-weight: 650; }
+p.section-lede { margin: 0 0 14px; color: var(--ink-2); max-width: 900px; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr)); gap: 12px; }
+.tile { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px 12px; }
+.tile .label { font-size: 13px; color: var(--ink-2); margin: 0 0 4px; }
+.tile .value { font-size: 30px; font-weight: 600; line-height: 1.15; margin: 0; }
+.tile .delta { font-size: 12.5px; color: var(--muted); margin: 6px 0 0; }
+.tile .delta .up { color: var(--good-ink); font-weight: 600; }
+.tile .delta .down { color: var(--critical); font-weight: 600; }
+.tile .note { font-size: 12px; color: var(--muted); margin: 4px 0 0; }
+
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px 12px; min-width: 0; }
+.card.full { grid-column: 1 / -1; }
+.card h3 { font-size: 15.5px; margin: 0 0 2px; font-weight: 650; }
+.card .sub { font-size: 13px; color: var(--ink-2); margin: 0 0 8px; }
+.card .chart { width: 100%; height: 320px; }
+.card .chart.tall { height: 420px; }
+.chart-scroll { overflow-x: auto; }
+.chart-scroll > .chart { min-width: 720px; }
+.funnel { display: grid; gap: 12px; padding: 6px 0 4px; }
+.funnel-label { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--ink-2); margin-bottom: 4px; }
+.funnel-val { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.funnel-track { background: var(--surface-2); border-radius: 4px; height: 18px; }
+.funnel-bar { height: 18px; border-radius: 0 4px 4px 0; min-width: 2px; }
+.card .takeaway { font-size: 13px; color: var(--ink); background: var(--surface-2); border-radius: 8px; padding: 8px 10px; margin: 8px 0 4px; }
+details.data { margin-top: 6px; font-size: 13px; }
+details.data summary { cursor: pointer; color: var(--accent); font-weight: 600; padding: 4px 0; }
+.table-scroll { overflow-x: auto; max-height: 340px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; margin-top: 6px; }
+table.data { border-collapse: collapse; width: 100%; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+table.data th, table.data td { padding: 6px 10px; border-bottom: 1px solid var(--grid); text-align: left; white-space: nowrap; }
+table.data th { position: sticky; top: 0; background: var(--surface-2); color: var(--ink-2); font-weight: 600; }
+table.data td.num, table.data th.num { text-align: right; }
+
+.defs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 12px; }
+.def { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; font-size: 13.5px; }
+.def b { display: block; margin-bottom: 2px; }
+.def .check { color: var(--ink-2); font-size: 12.5px; margin-top: 4px; }
+
+.qa-list { display: grid; gap: 8px; }
+.qa-item { display: grid; grid-template-columns: 110px 1fr; gap: 12px; align-items: start; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 13.5px; }
+.badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 3px 10px 3px 8px; width: fit-content; }
+.badge .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.badge.pass { background: color-mix(in srgb, var(--good) 14%, transparent); color: var(--good-ink); }
+.badge.pass .dot { background: var(--good); }
+.badge.warn { background: color-mix(in srgb, var(--warning) 20%, transparent); color: var(--ink); }
+.badge.warn .dot { background: var(--warning); }
+.badge.fail { background: color-mix(in srgb, var(--critical) 14%, transparent); color: var(--critical); }
+.badge.fail .dot { background: var(--critical); }
+.qa-item .obs { color: var(--ink-2); font-size: 12.5px; margin-top: 2px; }
+
+.scope { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 12px; }
+.scope .def ul { margin: 6px 0 0; padding-left: 18px; }
+footer.foot { color: var(--muted); font-size: 12.5px; border-top: 1px solid var(--border); margin-top: 40px; padding-top: 16px; }
+
+@media (max-width: 860px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .wrap { padding-left: 16px; padding-right: 16px; }
+  header.top h1 { font-size: 23px; }
+  .qa-item { grid-template-columns: 1fr; gap: 6px; }
+  .card .chart { height: 280px; }
+}
+@media print { .synthetic-bar { -webkit-print-color-adjust: exact; print-color-adjust: exact; } details.data { display: none; } }
+
+.flow { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(170px, 100%), 1fr)); gap: 10px; }
+.flow .step { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 13px; position: relative; }
+.flow .step b { display: block; font-size: 13.5px; margin-bottom: 2px; }
+.flow .step code { font-size: 12px; color: var(--accent); }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
+</head>
+<body>
+<div class="synthetic-bar">SYNTHETIC DEMONSTRATION - fictional organization and data. Not operational, medical or financial guidance.</div>
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Tier 2 · Workstream 19 · Coralline Infusion Network (fictional)</p>
+    <h1>Incremental refresh with an audit trail</h1>
+    <p>Daily appointment-change files loaded with an idempotent upsert, so re-sent, late and out-of-order files cannot double count
+       or move a visit backwards - then completed appointments reported against monthly goals, with late corrections made visible.</p>
+    <div class="meta"><span>Initial load to Aug 31 + daily drops Sep 1 - Oct 24, 2026</span><span>Data as of <b id="asof"></b></span>
+      <span>Seed <span id="seed"></span></span></div>
+  </div>
+</header>
+<main class="wrap">
+  <div class="tiles" id="tiles"></div>
+
+  <h2 class="section">How each file is loaded</h2>
+  <div class="flow">
+    <div class="step"><b>1 · Daily drop</b>Every status change recorded yesterday and today (a deliberate two-day overlap).</div>
+    <div class="step"><b>2 · Stage</b>File rows land in a staging table inside one transaction per file.</div>
+    <div class="step"><b>3 · History</b><code>INSERT OR IGNORE</code> on the natural key <code>(appt_key, changed_at)</code>.</div>
+    <div class="step"><b>4 · Current state</b>Upsert one row per appointment, only <code>WHERE new.changed_at &gt; current.changed_at</code>.</div>
+    <div class="step"><b>5 · Audit</b>One row per delivery: rows read, inserted, ignored, stale, late, restated.</div>
+    <div class="step"><b>6 · Goals vs actuals</b>Completed appointments by site and month against the 2026 goals.</div>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px">
+    <section class="card full">
+      <h3>Every delivery, in arrival order</h3>
+      <p class="sub">New rows vs rows ignored because they were already loaded. Labelled bars are the simulated delivery incidents.</p>
+      <div class="chart" id="c-loads"></div>
+      <details class="data"><summary>Show the audit table</summary><div id="d-audit"></div></details>
+    </section>
+    <section class="card">
+      <h3>Late corrections restate closed months</h3>
+      <p class="sub">Completed appointments for August and September as each delivery landed. August had closed before the first file; September builds up during the month, then every rise after the dotted line is a late correction to a closed month.</p>
+      <div class="chart" id="c-restate"></div>
+      <div id="tbl-restate"></div>
+    </section>
+    <section class="card">
+      <h3>Idempotency proof</h3>
+      <p class="sub">Five independent runs. Same content hash = same history and current-state tables.</p>
+      <div id="tbl-runs"></div>
+      <p class="takeaway" id="t-runs"></p>
+    </section>
+  </div>
+
+  <h2 class="section">Goals vs actuals, 2026</h2>
+  <p class="section-lede">Actual = distinct appointments whose current status is Complete, by site-local visit month. October is partial (through Oct 24).</p>
+  <div class="grid-2">
+    <section class="card">
+      <h3>Network: completed appointments vs goal</h3>
+      <p class="sub">Bars: actual. Line: sum of site goals. Faded bar = partial month.</p>
+      <div class="chart" id="c-monthly"></div>
+    </section>
+    <section class="card">
+      <h3>September 2026 by site</h3>
+      <p class="sub">Latest full month. Completed visits with a blank site appear as "Unassigned" (no goal) in the table below.</p>
+      <div class="chart" id="c-sites"></div>
+      <details class="data"><summary>Show all months by site</summary><div id="d-gva"></div></details>
+    </section>
+  </div>
+
+  <h2 class="section">Quality checks run on this build</h2>
+  <p class="section-lede">WARN means a real issue was found and handled - here, mostly the simulated delivery incidents doing what they should.</p>
+  <div class="qa-list" id="qa"></div>
+
+  <h2 class="section">What is real and what is simulated</h2>
+  <div class="scope">
+    <div class="def"><b>On-the-job exposure (general terms only)</b>
+      <ul><li>A recurring appointment-goals report was assigned; refresh architecture and reporting requirements were documented.</li>
+          <li>Automation was demonstrated, not deployed. Nothing here claims a production pipeline.</li></ul></div>
+    <div class="def"><b>Independently built for this portfolio (synthetic)</b>
+      <ul><li>The drop files, delivery incidents, load logic, audit table, proofs, goals report, tests and this page.</li>
+          <li>A personal project on fabricated data.</li></ul></div>
+  </div>
+  <footer class="foot">Coralline Infusion Network is fictional. All data is synthetic, generated from seed <span id="seed2"></span>.
+    SYNTHETIC DEMONSTRATION - not operational, medical or financial guidance.</footer>
+</main>
+<script>window.DATA = {"meta": {"as_of": "October 24, 2026", "seed": "20261024"}, "tiles": [{"label": "Deliveries loaded", "value": "55", "note": "54 daily files + 1 re-delivery, Sep 1 - Oct 24"}, {"label": "Rows received", "value": "4,687", "note": "2,259 new, 2,428 overlap ignored"}, {"label": "Late corrections", "value": "87", "note": "Visit outcomes recorded 3+ days after the visit"}, {"label": "September restated", "value": "+14", "note": "413 first reported -> 427 by Oct 24"}, {"label": "Proof runs agreeing", "value": "5/5", "note": "Rerun, reload, clean order, reverse order"}], "audit": [{"load_seq": 0, "file_name": "initial full load (warehouse query to Aug 31)", "file_date": null, "arrived_at": "2026-09-01 02:00:00", "sha256_12": null, "rows_in_file": 23470, "rows_inserted": 23470, "duplicates_ignored": 0, "appts_new": 9338, "appts_updated": 0, "stale_rows_skipped": 0, "late_updates": 825, "restates_closed_month": 21846, "max_changed_at": "2026-08-31 23:30:00", "note": "Initial full load"}, {"load_seq": 1, "file_name": "appt_changes_20260901.csv", "file_date": "2026-09-01", "arrived_at": "2026-09-02 06:10:00", "sha256_12": "3b5a3c37cdb2", "rows_in_file": 124, "rows_inserted": 69, "duplicates_ignored": 55, "appts_new": 40, "appts_updated": 28, "stale_rows_skipped": 0, "late_updates": 4, "restates_closed_month": 4, "max_changed_at": "2026-09-01 23:52:00", "note": "Scheduled delivery"}, {"load_seq": 2, "file_name": "appt_changes_20260902.csv", "file_date": "2026-09-02", "arrived_at": "2026-09-03 06:10:00", "sha256_12": "c6d1fdd61408", "rows_in_file": 126, "rows_inserted": 57, "duplicates_ignored": 69, "appts_new": 16, "appts_updated": 41, "stale_rows_skipped": 0, "late_updates": 1, "restates_closed_month": 1, "max_changed_at": "2026-09-02 22:30:00", "note": "Scheduled delivery"}, {"load_seq": 3, "file_name": "appt_changes_20260903.csv", "file_date": "2026-09-03", "arrived_at": "2026-09-04 06:10:00", "sha256_12": "395d6e691316", "rows_in_file": 112, "rows_inserted": 55, "duplicates_ignored": 57, "appts_new": 23, "appts_updated": 32, "stale_rows_skipped": 0, "late_updates": 3, "restates_closed_month": 3, "max_changed_at": "2026-09-03 22:36:00", "note": "Scheduled delivery"}, {"load_seq": 4, "file_name": "appt_changes_20260904.csv", "file_date": "2026-09-04", "arrived_at": "2026-09-05 06:10:00", "sha256_12": "ce20e93cb52a", "rows_in_file": 100, "rows_inserted": 45, "duplicates_ignored": 55, "appts_new": 15, "appts_updated": 30, "stale_rows_skipped": 0, "late_updates": 6, "restates_closed_month": 6, "max_changed_at": "2026-09-04 23:30:00", "note": "Scheduled delivery"}, {"load_seq": 5, "file_name": "appt_changes_20260905.csv", "file_date": "2026-09-05", "arrived_at": "2026-09-06 06:10:00", "sha256_12": "aac1381210a3", "rows_in_file": 55, "rows_inserted": 10, "duplicates_ignored": 45, "appts_new": 10, "appts_updated": 0, "stale_rows_skipped": 0, "late_updates": 0, "restates_closed_month": 0, "max_changed_at": "2026-09-05 23:33:00", "note": "Scheduled delivery"}, {"load_seq": 6, "file_name": "appt_changes_20260906.csv", "file_date": "2026-09-06", "arrived_at": "2026-09-07 06:10:00", "sha256_12": "96b267262e34", "rows_in_file": 15, "rows_inserted": 5, "duplicates_ignored": 10, "appts_new": 3, "appts_updated": 2, "stale_rows_skipped": 0, "late_updates": 0, "restates_closed_month": 0, "max_changed_at": "2026-09-06 14:32:00", "note": "Scheduled delivery"}, {"load_seq": 7, "file_name": "appt_changes_20260907.csv", "file_date": "2026-09-07", "arrived_at": "2026-09-08 06:10:00", "sha256_12": "9e7b7196dde9", "rows_in_file": 11, "rows_inserted": 6, "duplicates_ignored": 5, "appts_new": 2, "appts_updated": 4, "stale_rows_skipped": 0, "late_updates": 0, "restates_closed_month": 0, "max_changed_at": "2026-09-07 20:23:00", "note": "Scheduled delivery"}, {"load_seq": 8, "file_name": "appt_changes_20260908.csv", "file_date": "2026-09-08", "arrived_at": "2026-09-09 06:10:00", "sha256_12": "84234789928a", "rows_in_file": 84, "rows_inserted": 78, "duplicates_ignored": 6, "appts_new": 17, "appts_updated": 61, "stale_rows_skipped": 0, "late_updates": 2, "restates_closed_month": 2, "max_changed_at": "2026-09-08 22:19:00", "note": "Scheduled delivery"}, {"load_seq": 9, "file_name": "appt_changes_20260909.csv", "file_date": "2026-09-09", "arrived_at": "2026-09-10 06:10:00", "sha256_12": "f86641afa0bf", "rows_in_file": 138, "rows_inserted": 60, "duplicates_ignored": 78, "appts_new": 37, "appts_updated": 23, "stale_rows_skipped": 0, "late_updates": 1, "restates_closed_month": 0, "max_changed_at": "2026-09-09 22:00:00", "note": "Scheduled delivery"}, {"load_seq": 10, "file_name": "appt_changes_20260910.csv", "file_date": "2026-09-10", "arrived_at": "2026-09-11 06:10:00", "sha256_12": "1ee8230c0f40", "rows_in_file": 111, "rows_inserted": 51, "duplicates_ignored": 60, "appts_new": 18, "appts_updated": 33, "stale_rows_skipped": 0, "late_updates": 0, "restates_closed_month": 0, "max_changed_at": "2026-09-10 22:30:00", "note": "Scheduled delivery"}, {"load_seq": 11, "file_name": "appt_changes_20260911.csv", "file_date": "2026-09-11", "arrived_at": "2026-09-12 06:10:00", "sha256_12": "6656606e7165", "rows_in_file": 99, "rows_inserted": 48, "duplicates_ignored": 51, "appts_new": 17, "appts_updated": 30, "stale_rows_skipped": 0, "late_updates": 1, "restates_closed_month": 0, "max_changed_at": "2026-09-11 23:30:00", "note": "Scheduled delivery"}, {"load_seq": 12, "file_name": "appt_changes_20260912.csv", "file_date": "2026-09-12", "arrived_at": "2026-09-13 06:10:00", "sha256_12": "138b538add4f", "rows_in_file": 59, "rows_inserted": 11, "duplicates_ignored": 48, "appts_new": 10, "appts_updated": 1, "stale_rows_skipped": 0, "late_updates": 0, "restates_closed_month": 0, "max_changed_at": "2026-09-12 21:30:00", "note": "Scheduled delivery"}, {"load_seq": 13, "file_name": "appt_changes_20260913.csv", "file_date": "2026-09-13", "arrived_at": "2026-09-14 06:10:00", "sha256_12": "49f0410c6da5", "rows_in_file": 20, "rows_inserted": 9, "duplicates_ignored": 11, "appts_new": 3, "appts_updated": 6, "stale_rows_skipped": 0, "late_updates": 0, "restates_closed_month": 0, "max_changed_at": "2026-09-13 12:13:00", "note": "Scheduled delivery"}, {"load_seq": 14, "file_name": "appt_changes_20260914.csv", "file_date": "2026-09-14", "arrived_at": "2026-09-15 06:10:00", "sha256_12": "0d853b14d1a9", "rows_in_file": 70, "rows_inserted": 61, "duplicates_ignored": 9, "appts_new": 16, "appts_updated": 45, "stale_rows_skipped": 0, "late_updates": 3, "restates_closed_month": 1, "max_changed_at": "2026-09-14 22:30:00", "note": "Scheduled delivery"}, {"load_seq": 15, "file_name": "appt_changes_20260915.csv", "file_date": "2026-09-15", "arrived_at": "2026-09-16 06:10:00", "sha256_12": "58e8053280d2", "rows_in_file": 128, "rows_inserted": 67, "duplicates_ignored": 61, "appts_new": 30, "appts_updated": 37, "stale_rows_skipped": 0, "late_updates": 5, "restates_closed_month": 1, "max_changed_at": "2026-09-15 23:33:00", "note": "Scheduled delivery"}, {"load_seq": 16, "file_name": "appt_changes_20260915.csv", "file_date": "2026-09-15", "arrived_at": "2026-09-16 08:40:00", "sha256_12": "58e8053280d2", "rows_in_file": 128, "rows_inserted": 0, "duplicates_ignored": 128, "appts_new": 0, "appts_updated": 0, "stale_rows_skipped": 0, "late_updates": 0, "restates_closed_month": 0, "max_changed_at": "2026-09-15 23:33:00", "note": "Re-delivered by the sender (identical file)"}, {"load_seq": 17, "file_name": "appt_changes_20260916.csv", "file_date": "2026-09-16", "arrived_at": "2026-09-17 06:10:00", "sha256_12": "ce6f977b0840", "rows_in_file": 120, "rows_inserted": 53, "duplicates_ignored": 67, "appts_new": 28, "appts_updated": 25, "stale_rows_skipped": 0, "late_updates": 0, "restates_closed_month": 0, "max_changed_at": "2026-09-16 23:00:00", "note": "Scheduled delivery"}, {"load_seq": 18, "file_name": "appt_changes_20260917.csv", "file_date": "2026-09-17", "arrived_at": "2026-09-18 06:10:00", "sha256_12": "9ca821ae03fa", "rows_in_file": 103, "rows_inserted": 50, "duplicates_ignored": 53, "appts_new": 16, "appts_updated": 34, "stale_rows_skipped": 0, "late_updates": 4, "restates_closed_month": 0, "max_changed_at": "2026-09-17 21:14:00", "note": "Scheduled delivery"}, {"load_seq": 19, "file_name": "appt_changes_20260918.csv", "file_date": "2026-09-18", "arrived_at": "2026-09-19 06:10:00", "sha256_12": "73fe6f5d8958", "rows_in_file": 105, "rows_inserted": 55, "duplicates_ignored": 50, "appts_new": 21, "appts_updated": 34, "stale_rows_skipped": 0, "late_updates": 1, "restates_closed_month": 0, "max_changed_at": "2026-09-18 23:30:00", "note": "Scheduled delivery"}, {"load_seq": 20, "file_name": "appt_changes_20260919.csv", "file_date": "2026-09-19", "arrived_at": "2026-09-20 06:10:00", "sha256_12": "7f418c203600", "rows_in_file": 67, "rows_inserted": 12, "duplicates_ignored": 55, "appts_new": 9, "appts_updated": 2, "stale_rows_skipped": 0, "late_updates": 0, "restates_closed_month": 0, "max_changed_at": "2026-09-19 22:53:00", "note": "Scheduled delivery"}, {"load_seq": 21, "file_name": "appt_changes_20260920.csv", "file_date": "2026-09-20", "arrived_at": "2026-09-21 06:10:00", "sha256_12": "468867328bc0", "rows_in_file": 17, "rows_inserted": 5, "duplicates_ignored": 12, "appts_new": 3, "appts_updated": 2, "stale_rows_skipped": 0, "late_updates": 0, "restates_closed_month": 0, "max_changed_at": "2026-09-20 12:00:00", "note": "Scheduled delivery"}, {"load_seq": 22, "file_name": "appt_changes_20260921.csv", "file_date": "2026-09-21", "arrived_at": "2026-09-22 06:10:00", "sha256_12": "4f13e1486e9c", "rows_in_file": 61, "rows_inserted": 56, "duplicates_ignored": 5, "appts_new": 11, "appts_updated": 45, "stale_rows_skipped": 0, "late_updates": 2, "restates_closed_month": 0, "max_changed_at": "2026-09-21 22:35:00", "note": "Scheduled delivery"}, {"load_seq": 23, "file_name": "appt_changes_20260922.csv", "file_date": "2026-09-22", "arrived_at": "2026-09-23 06:10:00", "sha256_12": "b32c92ebf757", "rows_in_file": 112, "rows_inserted": 56, "duplicates_ignored": 56, "appts_new": 25, "appts_updated": 31, "stale_rows_skipped": 0, "late_updates": 7, "restates_closed_month": 0, "max_changed_at": "2026-09-22 23:43:00", "note": "Scheduled delivery"}, {"load_seq": 24, "file_name": "appt_changes_20260923.csv", "file_date": "2026-09-23", "arrived_at": "2026-09-24 06:10:00", "sha256_12": "f7c6112e8ac0", "rows_in_file": 119, "rows_inserted": 63, "duplicates_ignored": 56, "appts_new": 28, "appts_updated": 35, "stale_rows_skipped": 0, "late_updates": 5, "restates_closed_month": 0, "max_changed_at": "2026-09-23 23:30:00", "note": "Scheduled delivery"}, {"load_seq": 25, "file_name": "appt_changes_20260924.csv", "file_date": "2026-09-24", "arrived_at": "2026-09-25 06:10:00", "sha256_12": "f6b7ddfb361f", "rows_in_file": 111, "rows_inserted": 48, "duplicates_ignored": 63, "appts_new": 20, "appts_updated": 28, "stale_rows_skipped": 0, "late_updates": 2, "restates_closed_month": 0, "max_changed_at": "2026-09-24 22:30:00", "note": "Scheduled delivery"}, {"load_seq": 26, "file_name": "appt_changes_20260925.csv", "file_date": "2026-09-25", "arrived_at": "2026-09-26 06:10:00", "sha256_12": "63aea36cc98c", "rows_in_file": 96, "rows_inserted": 48, "duplicates_ignored": 48, "appts_new": 17, "appts_updated": 31, "stale_rows_skipped": 0, "late_updates": 2, "restates_closed_month": 0, "max_changed_at": "2026-09-25 23:30:00", "note": "Scheduled delivery"}, {"load_seq": 27, "file_name": "appt_changes_20260926.csv", "file_date": "2026-09-26", "arrived_at": "2026-09-27 06:10:00", "sha256_12": "632055dc5708", "rows_in_file": 61, "rows_inserted": 13, "duplicates_ignored": 48, "appts_new": 11, "appts_updated": 2, "stale_rows_skipped": 0, "late_updates": 0, "restates_closed_month": 0, "max_changed_at": "2026-09-26 22:30:00", "note": "Scheduled delivery"}, {"load_seq": 28, "file_name": "appt_changes_20260927.csv", "file_date": "2026-09-27", "arrived_at": "2026-09-28 06:10:00", "sha256_12": "fc9b994141a9", "rows_in_file": 16, "rows_inserted": 3, "duplicates_ignored": 13, "appts_new": 1, "appts_updated": 2, "stale_rows_skipped": 0, "late_updates": 0, "restates_closed_month": 0, "max_changed_at": "2026-09-27 10:32:00", "note": "Scheduled delivery"}, {"load_seq": 29, "file_name": "appt_changes_20260928.csv", "file_date": "2026-09-28", "arrived_at": "2026-09-29 06:10:00", "sha256_12": "3e5c6245987e", "rows_in_file": 56, "rows_inserted": 53, "duplicates_ignored": 3, "appts_new": 7, "appts_updated": 46, "stale_rows_skipped": 0, "late_updates": 4, "restates_closed_month": 0, "max_changed_at": "2026-09-28 21:30:00", "note": "Scheduled delivery"}, {"load_seq": 30, "file_name": "appt_changes_20260929.csv", "file_date": "2026-09-29", "arrived_at": "2026-09-30 06:10:00", "sha256_12": "58702fbd5630", "rows_in_file": 111, "rows_inserted": 58, "duplicates_ignored": 53, "appts_new": 29, "appts_updated": 29, "stale_rows_skipped": 0, "late_updates": 0, "restates_closed_month": 0, "max_changed_at": "2026-09-29 21:00:00", "note": "Scheduled delivery"}, {"load_seq": 31, "file_name": "appt_changes_20260930.csv", "file_date": "2026-09-30", "arrived_at": "2026-10-01 06:10:00", "sha256_12": "c4b5bafdd16f", "rows_in_file": 114, "rows_inserted": 56, "duplicates_ignored": 58, "appts_new": 21, "appts_updated": 35, "stale_rows_skipped": 0, "late_updates": 3, "restates_closed_month": 0, "max_changed_at": "2026-09-30 23:30:00", "note": "Scheduled delivery"}, {"load_seq": 32, "file_name": "appt_changes_20261001.csv", "file_date": "2026-10-01", "arrived_at": "2026-10-02 06:10:00", "sha256_12": "b1a9837866f9", "rows_in_file": 132, "rows_inserted": 76, "duplicates_ignored": 56, "appts_new": 26, "appts_updated": 49, "stale_rows_skipped": 0, "late_updates": 1, "restates_closed_month": 1, "max_changed_at": "2026-10-01 22:30:00", "note": "Scheduled delivery"}, {"load_seq": 33, "file_name": "appt_changes_20261002.csv", "file_date": "2026-10-02", "arrived_at": "2026-10-03 06:10:00", "sha256_12": "2260a88dd7ec", "rows_in_file": 126, "rows_inserted": 50, "duplicates_ignored": 76, "appts_new": 20, "appts_updated": 30, "stale_rows_skipped": 0, "late_updates": 0, "restates_closed_month": 1, "max_changed_at": "2026-10-02 23:30:00", "note": "Scheduled delivery"}, {"load_seq": 34, "file_name": "appt_changes_20261003.csv", "file_date": "2026-10-03", "arrived_at": "2026-10-04 06:10:00", "sha256_12": "2bc51c1a5c58", "rows_in_file": 59, "rows_inserted": 9, "duplicates_ignored": 50, "appts_new": 8, "appts_updated": 1, "stale_rows_skipped": 0, "late_updates": 0, "restates_closed_month": 0, "max_changed_at": "2026-10-03 23:06:00", "note": "Scheduled delivery"}, {"load_seq": 35, "file_name": "appt_changes_20261004.csv", "file_date": "2026-10-04", "arrived_at": "2026-10-05 06:10:00", "sha256_12": "d1f3c5b996fe", "rows_in_file": 11, "rows_inserted": 2, "duplicates_ignored": 9, "appts_new": 2, "appts_updated": 0, "stale_rows_skipped": 0, "late_updates": 0, "restates_closed_month": 0, "max_changed_at": "2026-10-04 10:10:00", "note": "Scheduled delivery"}, {"load_seq": 36, "file_name": "appt_changes_20261005.csv", "file_date": "2026-10-05", "arrived_at": "2026-10-06 06:10:00", "sha256_12": "1612557641d4", "rows_in_file": 61, "rows_inserted": 59, "duplicates_ignored": 2, "appts_new": 9, "appts_updated": 50, "stale_rows_skipped": 0, "late_updates": 6, "restates_closed_month": 6, "max_changed_at": "2026-10-05 23:00:00", "note": "Scheduled delivery"}, {"load_seq": 37, "file_name": "appt_changes_20261007.csv", "file_date": "2026-10-07", "arrived_at": "2026-10-08 06:10:00", "sha256_12": "fc57a6561423", "rows_in_file": 98, "rows_inserted": 98, "duplicates_ignored": 0, "appts_new": 50, "appts_updated": 46, "stale_rows_skipped": 0, "late_updates": 3, "restates_closed_month": 3, "max_changed_at": "2026-10-07 22:30:00", "note": "Scheduled delivery"}, {"load_seq": 38, "file_name": "appt_changes_20261006.csv", "file_date": "2026-10-06", "arrived_at": "2026-10-08 06:25:00", "sha256_12": "40695b087bcd", "rows_in_file": 121, "rows_inserted": 0, "duplicates_ignored": 121, "appts_new": 0, "appts_updated": 0, "stale_rows_skipped": 3, "late_updates": 0, "restates_closed_month": 0, "max_changed_at": "2026-10-06 22:50:00", "note": "Arrived after the next day's file"}, {"load_seq": 39, "file_name": "appt_changes_20261008.csv", "file_date": "2026-10-08", "arrived_at": "2026-10-09 06:10:00", "sha256_12": "23fa828b7642", "rows_in_file": 72, "rows_inserted": 36, "duplicates_ignored": 36, "appts_new": 7, "appts_updated": 29, "stale_rows_skipped": 0, "late_updates": 4, "restates_closed_month": 2, "max_changed_at": "2026-10-08 20:35:00", "note": "Scheduled delivery"}, {"load_seq": 40, "file_name": "appt_changes_20261009.csv", "file_date": "2026-10-09", "arrived_at": "2026-10-10 06:10:00", "sha256_12": "d134655afb62", "rows_in_file": 77, "rows_inserted": 41, "duplicates_ignored": 36, "appts_new": 13, "appts_updated": 28, "stale_rows_skipped": 0, "late_updates": 0, "restates_closed_month": 0, "max_changed_at": "2026-10-09 21:57:00", "note": "Scheduled delivery"}, {"load_seq": 41, "file_name": "appt_changes_20261010.csv", "file_date": "2026-10-10", "arrived_at": "2026-10-11 06:10:00", "sha256_12": "4d90f5ff5909", "rows_in_file": 53, "rows_inserted": 12, "duplicates_ignored": 41, "appts_new": 11, "appts_updated": 1, "stale_rows_skipped": 0, "late_updates": 0, "restates_closed_month": 0, "max_changed_at": "2026-10-10 21:00:00", "note": "Scheduled delivery"}, {"load_seq": 42, "file_name": "appt_changes_20261011.csv", "file_date": "2026-10-11", "arrived_at": "2026-10-12 06:10:00", "sha256_12": "17fc34210afe", "rows_in_file": 17, "rows_inserted": 5, "duplicates_ignored": 12, "appts_new": 3, "appts_updated": 2, "stale_rows_skipped": 0, "late_updates": 0, "restates_closed_month": 0, "max_changed_at": "2026-10-11 13:10:00", "note": "Scheduled delivery"}, {"load_seq": 43, "file_name": "appt_changes_20261012.csv", "file_date": "2026-10-12", "arrived_at": "2026-10-13 06:10:00", "sha256_12": "369a86c937a2", "rows_in_file": 62, "rows_inserted": 57, "duplicates_ignored": 5, "appts_new": 16, "appts_updated": 41, "stale_rows_skipped": 0, "late_updates": 2, "restates_closed_month": 0, "max_changed_at": "2026-10-12 23:58:00", "note": "Scheduled delivery"}, {"load_seq": 44, "file_name": "appt_changes_20261015.csv", "file_date": "2026-10-15", "arrived_at": "2026-10-16 06:10:00", "sha256_12": "4d85c20018e8", "rows_in_file": 97, "rows_inserted": 97, "duplicates_ignored": 0, "appts_new": 37, "appts_updated": 53, "stale_rows_skipped": 0, "late_updates": 3, "restates_closed_month": 0, "max_changed_at": "2026-10-15 23:38:00", "note": "Scheduled delivery"}, {"load_seq": 45, "file_name": "appt_changes_20261013.csv", "file_date": "2026-10-13", "arrived_at": "2026-10-16 07:00:00", "sha256_12": "9b775ccbb671", "rows_in_file": 117, "rows_inserted": 60, "duplicates_ignored": 57, "appts_new": 28, "appts_updated": 22, "stale_rows_skipped": 14, "late_updates": 3, "restates_closed_month": 1, "max_changed_at": "2026-10-13 23:00:00", "note": "Sender outage - held, delivered late"}, {"load_seq": 46, "file_name": "appt_changes_20261014.csv", "file_date": "2026-10-14", "arrived_at": "2026-10-16 07:05:00", "sha256_12": "842ac6289634", "rows_in_file": 112, "rows_inserted": 0, "duplicates_ignored": 112, "appts_new": 0, "appts_updated": 0, "stale_rows_skipped": 12, "late_updates": 0, "restates_closed_month": 0, "max_changed_at": "2026-10-14 23:55:00", "note": "Sender outage - held, delivered late"}, {"load_seq": 47, "file_name": "appt_changes_20261016.csv", "file_date": "2026-10-16", "arrived_at": "2026-10-17 06:10:00", "sha256_12": "ea951ed09eb4", "rows_in_file": 107, "rows_inserted": 62, "duplicates_ignored": 45, "appts_new": 27, "appts_updated": 34, "stale_rows_skipped": 0, "late_updates": 1, "restates_closed_month": 0, "max_changed_at": "2026-10-16 23:03:00", "note": "Scheduled delivery"}, {"load_seq": 48, "file_name": "appt_changes_20261017.csv", "file_date": "2026-10-17", "arrived_at": "2026-10-18 06:10:00", "sha256_12": "226debf1cbad", "rows_in_file": 76, "rows_inserted": 14, "duplicates_ignored": 62, "appts_new": 12, "appts_updated": 2, "stale_rows_skipped": 0, "late_updates": 0, "restates_closed_month": 0, "max_changed_at": "2026-10-17 23:14:00", "note": "Scheduled delivery"}, {"load_seq": 49, "file_name": "appt_changes_20261018.csv", "file_date": "2026-10-18", "arrived_at": "2026-10-19 06:10:00", "sha256_12": "259f1f8de485", "rows_in_file": 20, "rows_inserted": 6, "duplicates_ignored": 14, "appts_new": 5, "appts_updated": 1, "stale_rows_skipped": 0, "late_updates": 0, "restates_closed_month": 0, "max_changed_at": "2026-10-18 19:11:00", "note": "Scheduled delivery"}, {"load_seq": 50, "file_name": "appt_changes_20261019.csv", "file_date": "2026-10-19", "arrived_at": "2026-10-20 06:10:00", "sha256_12": "62b2ad960cae", "rows_in_file": 69, "rows_inserted": 63, "duplicates_ignored": 6, "appts_new": 11, "appts_updated": 52, "stale_rows_skipped": 0, "late_updates": 3, "restates_closed_month": 0, "max_changed_at": "2026-10-19 22:30:00", "note": "Scheduled delivery"}, {"load_seq": 51, "file_name": "appt_changes_20261020.csv", "file_date": "2026-10-20", "arrived_at": "2026-10-21 06:10:00", "sha256_12": "37b71d755288", "rows_in_file": 134, "rows_inserted": 71, "duplicates_ignored": 63, "appts_new": 39, "appts_updated": 32, "stale_rows_skipped": 0, "late_updates": 0, "restates_closed_month": 0, "max_changed_at": "2026-10-20 22:00:00", "note": "Scheduled delivery"}, {"load_seq": 52, "file_name": "appt_changes_20261021.csv", "file_date": "2026-10-21", "arrived_at": "2026-10-22 06:10:00", "sha256_12": "5d13db14fb22", "rows_in_file": 137, "rows_inserted": 66, "duplicates_ignored": 71, "appts_new": 27, "appts_updated": 38, "stale_rows_skipped": 0, "late_updates": 2, "restates_closed_month": 0, "max_changed_at": "2026-10-21 23:30:00", "note": "Scheduled delivery"}, {"load_seq": 53, "file_name": "appt_changes_20261022.csv", "file_date": "2026-10-22", "arrived_at": "2026-10-23 06:10:00", "sha256_12": "623dc60e6c79", "rows_in_file": 120, "rows_inserted": 54, "duplicates_ignored": 66, "appts_new": 21, "appts_updated": 33, "stale_rows_skipped": 0, "late_updates": 1, "restates_closed_month": 0, "max_changed_at": "2026-10-22 23:00:00", "note": "Scheduled delivery"}, {"load_seq": 54, "file_name": "appt_changes_20261023.csv", "file_date": "2026-10-23", "arrived_at": "2026-10-24 06:10:00", "sha256_12": "227aac8e3e19", "rows_in_file": 100, "rows_inserted": 46, "duplicates_ignored": 54, "appts_new": 20, "appts_updated": 26, "stale_rows_skipped": 0, "late_updates": 2, "restates_closed_month": 0, "max_changed_at": "2026-10-23 22:24:00", "note": "Scheduled delivery"}, {"load_seq": 55, "file_name": "appt_changes_20261024.csv", "file_date": "2026-10-24", "arrived_at": "2026-10-25 06:10:00", "sha256_12": "a9899f6ed3c4", "rows_in_file": 60, "rows_inserted": 14, "duplicates_ignored": 46, "appts_new": 12, "appts_updated": 2, "stale_rows_skipped": 0, "late_updates": 0, "restates_closed_month": 0, "max_changed_at": "2026-10-24 21:38:00", "note": "Scheduled delivery"}], "trend": [{"load_seq": 0, "arrived_at": "2026-09-01 02:00:00", "file": "initial full load", "august_completed": 445, "september_completed": 0}, {"load_seq": 1, "arrived_at": "2026-09-02 06:10:00", "file": "appt_changes_20260901.csv", "august_completed": 449, "september_completed": 14}, {"load_seq": 2, "arrived_at": "2026-09-03 06:10:00", "file": "appt_changes_20260902.csv", "august_completed": 450, "september_completed": 30}, {"load_seq": 3, "arrived_at": "2026-09-04 06:10:00", "file": "appt_changes_20260903.csv", "august_completed": 453, "september_completed": 40}, {"load_seq": 4, "arrived_at": "2026-09-05 06:10:00", "file": "appt_changes_20260904.csv", "august_completed": 459, "september_completed": 50}, {"load_seq": 5, "arrived_at": "2026-09-06 06:10:00", "file": "appt_changes_20260905.csv", "august_completed": 459, "september_completed": 50}, {"load_seq": 6, "arrived_at": "2026-09-07 06:10:00", "file": "appt_changes_20260906.csv", "august_completed": 459, "september_completed": 50}, {"load_seq": 7, "arrived_at": "2026-09-08 06:10:00", "file": "appt_changes_20260907.csv", "august_completed": 459, "september_completed": 50}, {"load_seq": 8, "arrived_at": "2026-09-09 06:10:00", "file": "appt_changes_20260908.csv", "august_completed": 461, "september_completed": 97}, {"load_seq": 9, "arrived_at": "2026-09-10 06:10:00", "file": "appt_changes_20260909.csv", "august_completed": 461, "september_completed": 111}, {"load_seq": 10, "arrived_at": "2026-09-11 06:10:00", "file": "appt_changes_20260910.csv", "august_completed": 461, "september_completed": 124}, {"load_seq": 11, "arrived_at": "2026-09-12 06:10:00", "file": "appt_changes_20260911.csv", "august_completed": 461, "september_completed": 136}, {"load_seq": 12, "arrived_at": "2026-09-13 06:10:00", "file": "appt_changes_20260912.csv", "august_completed": 461, "september_completed": 136}, {"load_seq": 13, "arrived_at": "2026-09-14 06:10:00", "file": "appt_changes_20260913.csv", "august_completed": 461, "september_completed": 136}, {"load_seq": 14, "arrived_at": "2026-09-15 06:10:00", "file": "appt_changes_20260914.csv", "august_completed": 462, "september_completed": 169}, {"load_seq": 15, "arrived_at": "2026-09-16 06:10:00", "file": "appt_changes_20260915.csv", "august_completed": 463, "september_completed": 190}, {"load_seq": 16, "arrived_at": "2026-09-16 08:40:00", "file": "appt_changes_20260915.csv", "august_completed": 463, "september_completed": 190}, {"load_seq": 17, "arrived_at": "2026-09-17 06:10:00", "file": "appt_changes_20260916.csv", "august_completed": 463, "september_completed": 203}, {"load_seq": 18, "arrived_at": "2026-09-18 06:10:00", "file": "appt_changes_20260917.csv", "august_completed": 463, "september_completed": 223}, {"load_seq": 19, "arrived_at": "2026-09-19 06:10:00", "file": "appt_changes_20260918.csv", "august_completed": 463, "september_completed": 240}, {"load_seq": 20, "arrived_at": "2026-09-20 06:10:00", "file": "appt_changes_20260919.csv", "august_completed": 463, "september_completed": 240}, {"load_seq": 21, "arrived_at": "2026-09-21 06:10:00", "file": "appt_changes_20260920.csv", "august_completed": 463, "september_completed": 240}, {"load_seq": 22, "arrived_at": "2026-09-22 06:10:00", "file": "appt_changes_20260921.csv", "august_completed": 463, "september_completed": 271}, {"load_seq": 23, "arrived_at": "2026-09-23 06:10:00", "file": "appt_changes_20260922.csv", "august_completed": 463, "september_completed": 290}, {"load_seq": 24, "arrived_at": "2026-09-24 06:10:00", "file": "appt_changes_20260923.csv", "august_completed": 463, "september_completed": 313}, {"load_seq": 25, "arrived_at": "2026-09-25 06:10:00", "file": "appt_changes_20260924.csv", "august_completed": 463, "september_completed": 329}, {"load_seq": 26, "arrived_at": "2026-09-26 06:10:00", "file": "appt_changes_20260925.csv", "august_completed": 463, "september_completed": 344}, {"load_seq": 27, "arrived_at": "2026-09-27 06:10:00", "file": "appt_changes_20260926.csv", "august_completed": 463, "september_completed": 344}, {"load_seq": 28, "arrived_at": "2026-09-28 06:10:00", "file": "appt_changes_20260927.csv", "august_completed": 463, "september_completed": 344}, {"load_seq": 29, "arrived_at": "2026-09-29 06:10:00", "file": "appt_changes_20260928.csv", "august_completed": 463, "september_completed": 378}, {"load_seq": 30, "arrived_at": "2026-09-30 06:10:00", "file": "appt_changes_20260929.csv", "august_completed": 463, "september_completed": 397}, {"load_seq": 31, "arrived_at": "2026-10-01 06:10:00", "file": "appt_changes_20260930.csv", "august_completed": 463, "september_completed": 413}, {"load_seq": 32, "arrived_at": "2026-10-02 06:10:00", "file": "appt_changes_20261001.csv", "august_completed": 463, "september_completed": 414}, {"load_seq": 33, "arrived_at": "2026-10-03 06:10:00", "file": "appt_changes_20261002.csv", "august_completed": 463, "september_completed": 415}, {"load_seq": 34, "arrived_at": "2026-10-04 06:10:00", "file": "appt_changes_20261003.csv", "august_completed": 463, "september_completed": 415}, {"load_seq": 35, "arrived_at": "2026-10-05 06:10:00", "file": "appt_changes_20261004.csv", "august_completed": 463, "september_completed": 415}, {"load_seq": 36, "arrived_at": "2026-10-06 06:10:00", "file": "appt_changes_20261005.csv", "august_completed": 463, "september_completed": 421}, {"load_seq": 37, "arrived_at": "2026-10-08 06:10:00", "file": "appt_changes_20261007.csv", "august_completed": 463, "september_completed": 424}, {"load_seq": 38, "arrived_at": "2026-10-08 06:25:00", "file": "appt_changes_20261006.csv", "august_completed": 463, "september_completed": 424}, {"load_seq": 39, "arrived_at": "2026-10-09 06:10:00", "file": "appt_changes_20261008.csv", "august_completed": 463, "september_completed": 426}, {"load_seq": 40, "arrived_at": "2026-10-10 06:10:00", "file": "appt_changes_20261009.csv", "august_completed": 463, "september_completed": 426}, {"load_seq": 41, "arrived_at": "2026-10-11 06:10:00", "file": "appt_changes_20261010.csv", "august_completed": 463, "september_completed": 426}, {"load_seq": 42, "arrived_at": "2026-10-12 06:10:00", "file": "appt_changes_20261011.csv", "august_completed": 463, "september_completed": 426}, {"load_seq": 43, "arrived_at": "2026-10-13 06:10:00", "file": "appt_changes_20261012.csv", "august_completed": 463, "september_completed": 426}, {"load_seq": 44, "arrived_at": "2026-10-16 06:10:00", "file": "appt_changes_20261015.csv", "august_completed": 463, "september_completed": 426}, {"load_seq": 45, "arrived_at": "2026-10-16 07:00:00", "file": "appt_changes_20261013.csv", "august_completed": 463, "september_completed": 427}, {"load_seq": 46, "arrived_at": "2026-10-16 07:05:00", "file": "appt_changes_20261014.csv", "august_completed": 463, "september_completed": 427}, {"load_seq": 47, "arrived_at": "2026-10-17 06:10:00", "file": "appt_changes_20261016.csv", "august_completed": 463, "september_completed": 427}, {"load_seq": 48, "arrived_at": "2026-10-18 06:10:00", "file": "appt_changes_20261017.csv", "august_completed": 463, "september_completed": 427}, {"load_seq": 49, "arrived_at": "2026-10-19 06:10:00", "file": "appt_changes_20261018.csv", "august_completed": 463, "september_completed": 427}, {"load_seq": 50, "arrived_at": "2026-10-20 06:10:00", "file": "appt_changes_20261019.csv", "august_completed": 463, "september_completed": 427}, {"load_seq": 51, "arrived_at": "2026-10-21 06:10:00", "file": "appt_changes_20261020.csv", "august_completed": 463, "september_completed": 427}, {"load_seq": 52, "arrived_at": "2026-10-22 06:10:00", "file": "appt_changes_20261021.csv", "august_completed": 463, "september_completed": 427}, {"load_seq": 53, "arrived_at": "2026-10-23 06:10:00", "file": "appt_changes_20261022.csv", "august_completed": 463, "september_completed": 427}, {"load_seq": 54, "arrived_at": "2026-10-24 06:10:00", "file": "appt_changes_20261023.csv", "august_completed": 463, "september_completed": 427}, {"load_seq": 55, "arrived_at": "2026-10-25 06:10:00", "file": "appt_changes_20261024.csv", "august_completed": 463, "september_completed": 427}], "gva": [{"target_month": "2026-01-01", "site_key": "S01", "goal": 55, "actual": 47, "attainment": 0.8545, "is_partial_month": 0}, {"target_month": "2026-01-01", "site_key": "S02", "goal": 70, "actual": 75, "attainment": 1.0714, "is_partial_month": 0}, {"target_month": "2026-01-01", "site_key": "S03", "goal": 50, "actual": 63, "attainment": 1.26, "is_partial_month": 0}, {"target_month": "2026-01-01", "site_key": "S04", "goal": 25, "actual": 25, "attainment": 1.0, "is_partial_month": 0}, {"target_month": "2026-01-01", "site_key": "S05", "goal": 50, "actual": 61, "attainment": 1.22, "is_partial_month": 0}, {"target_month": "2026-01-01", "site_key": "S06", "goal": 40, "actual": 55, "attainment": 1.375, "is_partial_month": 0}, {"target_month": "2026-01-01", "site_key": "S07", "goal": 50, "actual": 33, "attainment": 0.66, "is_partial_month": 0}, {"target_month": "2026-01-01", "site_key": "S08", "goal": 25, "actual": 55, "attainment": 2.2, "is_partial_month": 0}, {"target_month": "2026-02-01", "site_key": "S01", "goal": 60, "actual": 50, "attainment": 0.8333, "is_partial_month": 0}, {"target_month": "2026-02-01", "site_key": "S02", "goal": 75, "actual": 85, "attainment": 1.1333, "is_partial_month": 0}, {"target_month": "2026-02-01", "site_key": "S03", "goal": 50, "actual": 46, "attainment": 0.92, "is_partial_month": 0}, {"target_month": "2026-02-01", "site_key": "S04", "goal": 25, "actual": 25, "attainment": 1.0, "is_partial_month": 0}, {"target_month": "2026-02-01", "site_key": "S05", "goal": 50, "actual": 44, "attainment": 0.88, "is_partial_month": 0}, {"target_month": "2026-02-01", "site_key": "S06", "goal": 35, "actual": 44, "attainment": 1.2571, "is_partial_month": 0}, {"target_month": "2026-02-01", "site_key": "S07", "goal": 50, "actual": 37, "attainment": 0.74, "is_partial_month": 0}, {"target_month": "2026-02-01", "site_key": "S08", "goal": 30, "actual": 46, "attainment": 1.5333, "is_partial_month": 0}, {"target_month": "2026-03-01", "site_key": "S01", "goal": 55, "actual": 67, "attainment": 1.2182, "is_partial_month": 0}, {"target_month": "2026-03-01", "site_key": "S02", "goal": 80, "actual": 85, "attainment": 1.0625, "is_partial_month": 0}, {"target_month": "2026-03-01", "site_key": "S03", "goal": 50, "actual": 45, "attainment": 0.9, "is_partial_month": 0}, {"target_month": "2026-03-01", "site_key": "S04", "goal": 25, "actual": 18, "attainment": 0.72, "is_partial_month": 0}, {"target_month": "2026-03-01", "site_key": "S05", "goal": 55, "actual": 58, "attainment": 1.0545, "is_partial_month": 0}, {"target_month": "2026-03-01", "site_key": "S06", "goal": 40, "actual": 55, "attainment": 1.375, "is_partial_month": 0}, {"target_month": "2026-03-01", "site_key": "S07", "goal": 50, "actual": 45, "attainment": 0.9, "is_partial_month": 0}, {"target_month": "2026-03-01", "site_key": "S08", "goal": 40, "actual": 51, "attainment": 1.275, "is_partial_month": 0}, {"target_month": "2026-04-01", "site_key": "S01", "goal": 60, "actual": 75, "attainment": 1.25, "is_partial_month": 0}, {"target_month": "2026-04-01", "site_key": "S02", "goal": 75, "actual": 77, "attainment": 1.0267, "is_partial_month": 0}, {"target_month": "2026-04-01", "site_key": "S03", "goal": 55, "actual": 40, "attainment": 0.7273, "is_partial_month": 0}, {"target_month": "2026-04-01", "site_key": "S04", "goal": 30, "actual": 30, "attainment": 1.0, "is_partial_month": 0}, {"target_month": "2026-04-01", "site_key": "S05", "goal": 55, "actual": 61, "attainment": 1.1091, "is_partial_month": 0}, {"target_month": "2026-04-01", "site_key": "S06", "goal": 40, "actual": 66, "attainment": 1.65, "is_partial_month": 0}, {"target_month": "2026-04-01", "site_key": "S07", "goal": 50, "actual": 42, "attainment": 0.84, "is_partial_month": 0}, {"target_month": "2026-04-01", "site_key": "S08", "goal": 45, "actual": 59, "attainment": 1.3111, "is_partial_month": 0}, {"target_month": "2026-05-01", "site_key": "S01", "goal": 55, "actual": 66, "attainment": 1.2, "is_partial_month": 0}, {"target_month": "2026-05-01", "site_key": "S02", "goal": 75, "actual": 79, "attainment": 1.0533, "is_partial_month": 0}, {"target_month": "2026-05-01", "site_key": "S03", "goal": 50, "actual": 52, "attainment": 1.04, "is_partial_month": 0}, {"target_month": "2026-05-01", "site_key": "S04", "goal": 25, "actual": 16, "attainment": 0.64, "is_partial_month": 0}, {"target_month": "2026-05-01", "site_key": "S05", "goal": 55, "actual": 53, "attainment": 0.9636, "is_partial_month": 0}, {"target_month": "2026-05-01", "site_key": "S06", "goal": 35, "actual": 52, "attainment": 1.4857, "is_partial_month": 0}, {"target_month": "2026-05-01", "site_key": "S07", "goal": 50, "actual": 32, "attainment": 0.64, "is_partial_month": 0}, {"target_month": "2026-05-01", "site_key": "S08", "goal": 50, "actual": 71, "attainment": 1.42, "is_partial_month": 0}, {"target_month": "2026-06-01", "site_key": "S01", "goal": 60, "actual": 70, "attainment": 1.1667, "is_partial_month": 0}, {"target_month": "2026-06-01", "site_key": "S02", "goal": 75, "actual": 78, "attainment": 1.04, "is_partial_month": 0}, {"target_month": "2026-06-01", "site_key": "S03", "goal": 50, "actual": 45, "attainment": 0.9, "is_partial_month": 0}, {"target_month": "2026-06-01", "site_key": "S04", "goal": 30, "actual": 23, "attainment": 0.7667, "is_partial_month": 0}, {"target_month": "2026-06-01", "site_key": "S05", "goal": 55, "actual": 63, "attainment": 1.1455, "is_partial_month": 0}, {"target_month": "2026-06-01", "site_key": "S06", "goal": 35, "actual": 57, "attainment": 1.6286, "is_partial_month": 0}, {"target_month": "2026-06-01", "site_key": "S07", "goal": 50, "actual": 40, "attainment": 0.8, "is_partial_month": 0}, {"target_month": "2026-06-01", "site_key": "S08", "goal": 55, "actual": 67, "attainment": 1.2182, "is_partial_month": 0}, {"target_month": "2026-06-01", "site_key": "Unassigned", "goal": null, "actual": 2, "attainment": null, "is_partial_month": 0}, {"target_month": "2026-07-01", "site_key": "S01", "goal": 60, "actual": 76, "attainment": 1.2667, "is_partial_month": 0}, {"target_month": "2026-07-01", "site_key": "S02", "goal": 75, "actual": 72, "attainment": 0.96, "is_partial_month": 0}, {"target_month": "2026-07-01", "site_key": "S03", "goal": 55, "actual": 52, "attainment": 0.9455, "is_partial_month": 0}, {"target_month": "2026-07-01", "site_key": "S04", "goal": 25, "actual": 27, "attainment": 1.08, "is_partial_month": 0}, {"target_month": "2026-07-01", "site_key": "S05", "goal": 55, "actual": 53, "attainment": 0.9636, "is_partial_month": 0}, {"target_month": "2026-07-01", "site_key": "S06", "goal": 35, "actual": 59, "attainment": 1.6857, "is_partial_month": 0}, {"target_month": "2026-07-01", "site_key": "S07", "goal": 55, "actual": 33, "attainment": 0.6, "is_partial_month": 0}, {"target_month": "2026-07-01", "site_key": "S08", "goal": 60, "actual": 63, "attainment": 1.05, "is_partial_month": 0}, {"target_month": "2026-07-01", "site_key": "Unassigned", "goal": null, "actual": 1, "attainment": null, "is_partial_month": 0}, {"target_month": "2026-08-01", "site_key": "S01", "goal": 60, "actual": 95, "attainment": 1.5833, "is_partial_month": 0}, {"target_month": "2026-08-01", "site_key": "S02", "goal": 75, "actual": 81, "attainment": 1.08, "is_partial_month": 0}, {"target_month": "2026-08-01", "site_key": "S03", "goal": 55, "actual": 40, "attainment": 0.7273, "is_partial_month": 0}, {"target_month": "2026-08-01", "site_key": "S04", "goal": 30, "actual": 31, "attainment": 1.0333, "is_partial_month": 0}, {"target_month": "2026-08-01", "site_key": "S05", "goal": 55, "actual": 55, "attainment": 1.0, "is_partial_month": 0}, {"target_month": "2026-08-01", "site_key": "S06", "goal": 40, "actual": 67, "attainment": 1.675, "is_partial_month": 0}, {"target_month": "2026-08-01", "site_key": "S07", "goal": 55, "actual": 30, "attainment": 0.5455, "is_partial_month": 0}, {"target_month": "2026-08-01", "site_key": "S08", "goal": 70, "actual": 63, "attainment": 0.9, "is_partial_month": 0}, {"target_month": "2026-08-01", "site_key": "Unassigned", "goal": null, "actual": 1, "attainment": null, "is_partial_month": 0}, {"target_month": "2026-09-01", "site_key": "S01", "goal": 65, "actual": 81, "attainment": 1.2462, "is_partial_month": 0}, {"target_month": "2026-09-01", "site_key": "S02", "goal": 80, "actual": 65, "attainment": 0.8125, "is_partial_month": 0}, {"target_month": "2026-09-01", "site_key": "S03", "goal": 55, "actual": 47, "attainment": 0.8545, "is_partial_month": 0}, {"target_month": "2026-09-01", "site_key": "S04", "goal": 30, "actual": 34, "attainment": 1.1333, "is_partial_month": 0}, {"target_month": "2026-09-01", "site_key": "S05", "goal": 55, "actual": 51, "attainment": 0.9273, "is_partial_month": 0}, {"target_month": "2026-09-01", "site_key": "S06", "goal": 40, "actual": 60, "attainment": 1.5, "is_partial_month": 0}, {"target_month": "2026-09-01", "site_key": "S07", "goal": 55, "actual": 30, "attainment": 0.5455, "is_partial_month": 0}, {"target_month": "2026-09-01", "site_key": "S08", "goal": 75, "actual": 59, "attainment": 0.7867, "is_partial_month": 0}, {"target_month": "2026-10-01", "site_key": "S01", "goal": 65, "actual": 67, "attainment": 1.0308, "is_partial_month": 1}, {"target_month": "2026-10-01", "site_key": "S02", "goal": 80, "actual": 57, "attainment": 0.7125, "is_partial_month": 1}, {"target_month": "2026-10-01", "site_key": "S03", "goal": 55, "actual": 40, "attainment": 0.7273, "is_partial_month": 1}, {"target_month": "2026-10-01", "site_key": "S04", "goal": 30, "actual": 26, "attainment": 0.8667, "is_partial_month": 1}, {"target_month": "2026-10-01", "site_key": "S05", "goal": 55, "actual": 35, "attainment": 0.6364, "is_partial_month": 1}, {"target_month": "2026-10-01", "site_key": "S06", "goal": 40, "actual": 40, "attainment": 1.0, "is_partial_month": 1}, {"target_month": "2026-10-01", "site_key": "S07", "goal": 50, "actual": 25, "attainment": 0.5, "is_partial_month": 1}, {"target_month": "2026-10-01", "site_key": "S08", "goal": 80, "actual": 44, "attainment": 0.55, "is_partial_month": 1}], "monthly": [{"month": "2026-01-01", "goal": 365, "actual": 414, "partial": 0}, {"month": "2026-02-01", "goal": 375, "actual": 377, "partial": 0}, {"month": "2026-03-01", "goal": 395, "actual": 424, "partial": 0}, {"month": "2026-04-01", "goal": 410, "actual": 450, "partial": 0}, {"month": "2026-05-01", "goal": 395, "actual": 421, "partial": 0}, {"month": "2026-06-01", "goal": 410, "actual": 445, "partial": 0}, {"month": "2026-07-01", "goal": 420, "actual": 436, "partial": 0}, {"month": "2026-08-01", "goal": 440, "actual": 463, "partial": 0}, {"month": "2026-09-01", "goal": 455, "actual": 427, "partial": 0}, {"month": "2026-10-01", "goal": 455, "actual": 334, "partial": 1}], "restate": [{"month": "2026-08", "first_reported_at": "2026-09-01 02:00:00", "first_reported": 445, "final": 463, "change": 18}, {"month": "2026-09", "first_reported_at": "2026-10-01 06:10:00", "first_reported": 413, "final": 427, "change": 14}], "runs": [{"run": "1. Scheduled deliveries with incidents", "history_rows": 25729, "current_rows": 10246, "content_sha256_12": "1645c8cf17ef", "note": "The run published on this page"}, {"run": "2. Rerun from scratch", "history_rows": 25729, "current_rows": 10246, "content_sha256_12": "1645c8cf17ef", "note": "Audit, load sequence and content identical: True"}, {"run": "3. Rerun + reload every file again", "history_rows": 25729, "current_rows": 10246, "content_sha256_12": "1645c8cf17ef", "note": "0 rows inserted by the reload"}, {"run": "4. Clean date order, no incidents", "history_rows": 25729, "current_rows": 10246, "content_sha256_12": "1645c8cf17ef", "note": "Same final answer as the run with incidents"}, {"run": "5. All files in reverse order", "history_rows": 25729, "current_rows": 10246, "content_sha256_12": "1645c8cf17ef", "note": "Order of arrival does not change the result"}], "qa": [{"check": "Incremental result equals a full refresh", "status": "pass", "observed": "10,246/10,246 appointments match status and last update; history 25,729 rows = change log 25,729", "rule": "Incremental must reproduce the source as of the snapshot"}, {"check": "Re-delivered file changed nothing", "status": "pass", "observed": "appt_changes_20260915.csv arrived twice; second copy: 128 rows read, 0 inserted, 0 updated", "rule": "INSERT OR IGNORE on (appt_key, changed_at)"}, {"check": "Out-of-order file could not move appointments backwards", "status": "warn", "observed": "appt_changes_20261006.csv arrived after the next day's file: 3 older changes skipped, 0 applied", "rule": "Upsert only WHERE excluded.changed_at > current.changed_at"}, {"check": "Late files filled the outage gap", "status": "warn", "observed": "2 files held by the sender added 60 changes when they arrived on Oct 16; until then reports were missing them", "rule": "Load late files whenever they arrive; the key decides, not the arrival order"}, {"check": "Overlapping two-day windows deduplicated", "status": "pass", "observed": "2,428 rows ignored across 55 deliveries (yesterday re-sent in every file, plus the re-delivery)", "rule": "Overlap is cheap insurance when the key makes it harmless"}, {"check": "Rerun from scratch is identical", "status": "pass", "observed": "Content hash 1645c8cf17ef = 1645c8cf17ef; audit and load sequence identical: True", "rule": "Deterministic arrival times, no wall-clock values"}, {"check": "Reloading every file again changes nothing", "status": "pass", "observed": "0 rows inserted; content hash unchanged", "rule": "Idempotent load"}, {"check": "Arrival order does not change the result", "status": "pass", "observed": "5 runs (incidents, rerun, reload, clean order, reverse order) share content hash 1645c8cf17ef", "rule": "Newest changed_at wins regardless of delivery order"}, {"check": "Late corrections tracked and closed months restated", "status": "warn", "observed": "87 visit outcomes recorded 3+ days after the visit; 32 changes touched an already-closed month. September completed visits: first reported 413 on 2026-10-01, 427 by Oct 24 (+14)", "rule": "Report a month as provisional until late updates settle"}, {"check": "Goals vs actuals reconcile to the source", "status": "pass", "observed": "4,191 completed appointments Jan-Oct 2026 = 4,191 counted directly; 4 with a blank site shown as Unassigned (no goal)", "rule": "Actual = distinct appointments with current status Complete"}, {"check": "Partial month labelled", "status": "pass", "observed": "October 2026 runs through Oct 24 only; its attainment is marked partial", "rule": "Never compare a partial month with a full-month goal unlabelled"}]};</script>
+<script>/* Shared dashboard helpers - inlined into every project dashboard at build time.
+   Charts read colors from CSS variables, so light/dark themes stay in one place. */
+(function () {
+  // ?theme=light|dark forces a theme (used for README screenshots); otherwise follow the OS.
+  const forced = new URLSearchParams(location.search).get("theme");
+  if (forced === "light" || forced === "dark") document.documentElement.setAttribute("data-theme", forced);
+  const charts = [];
+  const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const fmt = new Intl.NumberFormat("en-US");
+
+  function colors() {
+    return {
+      ink: css("--ink"), ink2: css("--ink-2"), muted: css("--muted"), grid: css("--grid"), axis: css("--axis"),
+      surface: css("--surface"), s1: css("--series-1"), s2: css("--series-2"), s3: css("--series-3"),
+      gray: css("--series-gray"), good: css("--good"), warning: css("--warning"), critical: css("--critical"),
+      seq: [1, 2, 3, 4, 5, 6, 7].map((i) => css(`--seq-${i}`)),
+      ord: [1, 2, 3, 4, 5].map((i) => css(`--ord-${i}`)),
+    };
+  }
+
+  function layout(extra) {
+    const c = colors();
+    const axis = { gridcolor: c.grid, linecolor: c.axis, zeroline: false, tickfont: { color: c.muted, size: 11 },
+                   title: { font: { color: c.ink2, size: 12 } }, automargin: true };
+    const base = {
+      paper_bgcolor: "rgba(0,0,0,0)", plot_bgcolor: "rgba(0,0,0,0)",
+      font: { family: 'system-ui, -apple-system, "Segoe UI", sans-serif', color: c.ink, size: 12 },
+      margin: { l: 48, r: 18, t: 10, b: 40 }, hovermode: "x unified",
+      hoverlabel: { bgcolor: c.surface, bordercolor: c.axis, font: { color: c.ink } },
+      legend: { orientation: "h", x: 0, y: 1.12, font: { color: c.ink2, size: 12 } },
+      xaxis: Object.assign({}, axis, { showgrid: false, showline: true }),
+      yaxis: Object.assign({}, axis, { showline: false, rangemode: "tozero" }),
+      bargap: 0.35,
+    };
+    return deepMerge(base, extra || {});
+  }
+
+  function deepMerge(a, b) {
+    const out = Array.isArray(a) ? a.slice() : Object.assign({}, a);
+    for (const k of Object.keys(b)) {
+      if (b[k] && typeof b[k] === "object" && !Array.isArray(b[k]) && a[k] && typeof a[k] === "object") out[k] = deepMerge(a[k], b[k]);
+      else out[k] = b[k];
+    }
+    return out;
+  }
+
+  const config = { displayModeBar: false, responsive: true };
+
+  function register(fn) { charts.push(fn); }
+  function renderAll() { const c = colors(); charts.forEach((fn) => fn(c)); }
+
+  function table(el, columns, rows) {
+    const head = columns.map((c) => `<th class="${c.num ? "num" : ""}">${c.label}</th>`).join("");
+    const body = rows.map((r) => "<tr>" + columns.map((c) => {
+      let v = r[c.key];
+      if (c.num && typeof v === "number") v = c.pct ? (v * 100).toFixed(1) + "%" : (Number.isInteger(v) ? fmt.format(v) : v.toFixed(c.dp ?? 1));
+      return `<td class="${c.num ? "num" : ""}">${v ?? ""}</td>`;
+    }).join("") + "</tr>").join("");
+    el.innerHTML = `<div class="table-scroll"><table class="data"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+  }
+
+  function tiles(el, items) {
+    el.innerHTML = items.map((t) => {
+      let delta = "";
+      if (t.delta !== undefined && t.delta !== null) {
+        const up = t.delta >= 0;
+        const good = t.upIsGood === undefined ? null : (up === t.upIsGood);
+        const cls = good === null ? "" : (good ? "up" : "down");
+        const sign = up ? "+" : "−";
+        delta = `<p class="delta"><span class="${cls}">${sign}${Math.abs(t.delta).toFixed(1)}%</span> ${t.deltaLabel || ""}</p>`;
+      }
+      return `<div class="tile"><p class="label">${t.label}</p><p class="value">${t.value}</p>${delta}${t.note ? `<p class="note">${t.note}</p>` : ""}</div>`;
+    }).join("");
+  }
+
+  window.Dash = { register, renderAll, layout, config, table, tiles, colors, fmt };
+  document.addEventListener("DOMContentLoaded", renderAll);
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", renderAll);
+  new MutationObserver(renderAll).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+})();
+</script>
+<script>
+(function () {
+  const D = window.DATA, fmt = Dash.fmt;
+  document.getElementById("asof").textContent = D.meta.as_of;
+  document.getElementById("seed").textContent = D.meta.seed;
+  document.getElementById("seed2").textContent = D.meta.seed;
+  Dash.tiles(document.getElementById("tiles"), D.tiles);
+  const loads = D.audit.filter((a) => a.load_seq > 0);
+  const lbl = (a) => `${a.load_seq}. ${a.file_date.slice(5)}`;
+  const incident = (a) => a.note !== "Scheduled delivery";
+
+  Dash.register((c) => {
+    const x = loads.map(lbl);
+    const ann = loads.filter(incident).map((a) => ({ x: lbl(a), y: a.rows_in_file, yshift: 12, showarrow: false,
+      text: a.note.startsWith("Re-") ? "re-sent" : a.note.startsWith("Arrived") ? "out of order" : "outage",
+      font: { size: 10, color: c.critical } }));
+    Plotly.react("c-loads", [
+      { type: "bar", name: "New rows inserted", x, y: loads.map((a) => a.rows_inserted), marker: { color: c.s1 },
+        customdata: loads.map((a) => [a.file_name, a.arrived_at, a.note]),
+        hovertemplate: "%{customdata[0]}<br>arrived %{customdata[1]}<br>%{customdata[2]}<br>new: %{y}<extra></extra>" },
+      { type: "bar", name: "Already loaded (ignored)", x, y: loads.map((a) => a.duplicates_ignored),
+        marker: { color: loads.map((a) => (incident(a) ? c.critical : c.gray)) }, hovertemplate: "ignored: %{y}<extra></extra>" }],
+      Dash.layout({ barmode: "stack", hovermode: "closest", annotations: ann, bargap: 0.2,
+                    xaxis: { tickangle: -60, tickfont: { size: 9 } }, margin: { b: 70 } }), Dash.config);
+  });
+  Dash.table(document.getElementById("d-audit"), [
+    { key: "load_seq", label: "#", num: true }, { key: "file_name", label: "File" }, { key: "arrived_at", label: "Arrived" },
+    { key: "rows_in_file", label: "Rows", num: true }, { key: "rows_inserted", label: "Inserted", num: true },
+    { key: "duplicates_ignored", label: "Ignored", num: true }, { key: "appts_new", label: "New appts", num: true },
+    { key: "appts_updated", label: "Updated", num: true }, { key: "stale_rows_skipped", label: "Stale skipped", num: true },
+    { key: "late_updates", label: "Late", num: true }, { key: "restates_closed_month", label: "Closed month", num: true },
+    { key: "sha256_12", label: "SHA-256 (12)" }, { key: "note", label: "Note" }], D.audit);
+
+  Dash.register((c) => {
+    const x = D.trend.map((t) => t.arrived_at);
+    const mk = (name, key, color) => ({ type: "scatter", mode: "lines", line: { shape: "hv", width: 2, color }, name, x,
+      y: D.trend.map((t) => t[key]), hovertemplate: "%{y}<extra>" + name + "</extra>" });
+    Plotly.react("c-restate", [mk("August completed", "august_completed", c.s2), mk("September completed", "september_completed", c.s1)],
+      Dash.layout({ xaxis: { type: "date", tickformat: "%b %d" }, yaxis: { rangemode: "tozero" },
+        shapes: [{ type: "line", x0: "2026-10-01 06:10:00", x1: "2026-10-01 06:10:00", yref: "paper", y0: 0, y1: 1,
+                   line: { dash: "dot", width: 1.5, color: c.muted } }],
+        annotations: [{ x: "2026-10-01 06:10:00", yref: "paper", y: 0.06, xanchor: "left", text: " September closes",
+                        showarrow: false, font: { size: 11, color: c.ink2 } }] }), Dash.config);
+  });
+  Dash.table(document.getElementById("tbl-restate"), [{ key: "month", label: "Month" },
+    { key: "first_reported_at", label: "First reported" }, { key: "first_reported", label: "Then", num: true },
+    { key: "final", label: "Oct 24", num: true }, { key: "change", label: "Restated by", num: true }], D.restate);
+
+  Dash.table(document.getElementById("tbl-runs"), [{ key: "run", label: "Run" }, { key: "history_rows", label: "History", num: true },
+    { key: "current_rows", label: "Current", num: true }, { key: "content_sha256_12", label: "Content hash" }, { key: "note", label: "Note" }], D.runs);
+  const same = new Set(D.runs.map((r) => r.content_sha256_12)).size === 1;
+  document.getElementById("t-runs").textContent = same
+    ? `All ${D.runs.length} runs produce identical tables (${D.runs[0].content_sha256_12}), and the incremental result matches a full refresh of the source.`
+    : "Runs disagree - see QA.";
+
+  Dash.register((c) => {
+    const x = D.monthly.map((m) => m.month);
+    Plotly.react("c-monthly", [
+      { type: "bar", name: "Completed (actual)", x, y: D.monthly.map((m) => m.actual),
+        marker: { color: c.s1, opacity: D.monthly.map((m) => (m.partial ? 0.45 : 1)), cornerradius: 4 },
+        hovertemplate: "%{y:,}<extra>Actual</extra>" },
+      { type: "scatter", mode: "lines+markers", name: "Goal", x, y: D.monthly.map((m) => m.goal), line: { color: c.s2, width: 2 },
+        marker: { size: 6, color: c.s2 }, hovertemplate: "%{y:,}<extra>Goal</extra>" }],
+      Dash.layout({ xaxis: { tickformat: "%b", dtick: "M1", type: "date" } }), Dash.config);
+  });
+  const sep = D.gva.filter((r) => r.target_month === "2026-09-01");
+  Dash.register((c) => {
+    Plotly.react("c-sites", [
+      { type: "bar", name: "Actual", x: sep.map((r) => r.site_key), y: sep.map((r) => r.actual), marker: { color: c.s1 },
+        hovertemplate: "%{x}: %{y}<extra>Actual</extra>" },
+      { type: "bar", name: "Goal", x: sep.map((r) => r.site_key), y: sep.map((r) => r.goal), marker: { color: c.gray },
+        hovertemplate: "%{x}: %{y}<extra>Goal</extra>" }],
+      Dash.layout({ barmode: "group", bargap: 0.3 }), Dash.config);
+  });
+  Dash.table(document.getElementById("d-gva"), [{ key: "target_month", label: "Month" }, { key: "site_key", label: "Site" },
+    { key: "goal", label: "Goal", num: true }, { key: "actual", label: "Actual", num: true },
+    { key: "attainment", label: "Attainment", num: true, pct: true }, { key: "is_partial_month", label: "Partial", num: true }], D.gva);
+
+  const icon = { pass: "Pass", warn: "Warn", fail: "Fail" };
+  document.getElementById("qa").innerHTML = D.qa.map((x) =>
+    `<div class="qa-item"><span class="badge ${x.status}"><span class="dot"></span>${icon[x.status]}</span>
+      <div><b>${x.check}</b><div class="obs">${x.observed}</div><div class="obs">Rule: ${x.rule}</div></div></div>`).join("");
+})();
+</script>
+</body>
+</html>

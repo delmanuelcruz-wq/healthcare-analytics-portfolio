@@ -1,0 +1,50 @@
+window_label,umbrella_key,umbrella_name,sort_order,patients_served
+Q2 2026,PU01,Heronview Health (fictional),1,86
+Q2 2026,PU02,Saltgrass Mutual (fictional),2,64
+Q2 2026,PU03,Kestrel Shield Medicare Advantage (fictional),3,69
+Q2 2026,PU04,Brightfen Advantage (fictional),4,52
+Q2 2026,PU05,Sandmere Medicaid Plan (fictional),5,48
+Q2 2026,PU06,Cobaltine Commercial (fictional),6,43
+Q2 2026,PU07,Ospreyline Senior (fictional),7,47
+Q2 2026,PU08,Driftwell Health Alliance (fictional),8,44
+Q2 2026,PU09,Fernhollow Care (fictional),9,18
+Q2 2026,PU10,Quillmont Federal Medicare (fictional),10,33
+Q2 2026,PU99,Other / small plans (fictional),99,74
+Q3 2026,PU01,Heronview Health (fictional),1,109
+Q3 2026,PU02,Saltgrass Mutual (fictional),2,58
+Q3 2026,PU03,Kestrel Shield Medicare Advantage (fictional),3,54
+Q3 2026,PU04,Brightfen Advantage (fictional),4,64
+Q3 2026,PU05,Sandmere Medicaid Plan (fictional),5,40
+Q3 2026,PU06,Cobaltine Commercial (fictional),6,43
+Q3 2026,PU07,Ospreyline Senior (fictional),7,48
+Q3 2026,PU08,Driftwell Health Alliance (fictional),8,36
+Q3 2026,PU09,Fernhollow Care (fictional),9,20
+Q3 2026,PU10,Quillmont Federal Medicare (fictional),10,28
+Q3 2026,PU99,Other / small plans (fictional),99,71
+Q3 2026,UNMAPPED,Unmapped alias (pending review),100,2
+Q3 2026,NO_COVERAGE,No coverage on file at event,101,1
+"T12M to Sep 30, 2025",PU01,Heronview Health (fictional),1,149
+"T12M to Sep 30, 2025",PU02,Saltgrass Mutual (fictional),2,105
+"T12M to Sep 30, 2025",PU03,Kestrel Shield Medicare Advantage (fictional),3,92
+"T12M to Sep 30, 2025",PU04,Brightfen Advantage (fictional),4,67
+"T12M to Sep 30, 2025",PU05,Sandmere Medicaid Plan (fictional),5,56
+"T12M to Sep 30, 2025",PU06,Cobaltine Commercial (fictional),6,74
+"T12M to Sep 30, 2025",PU07,Ospreyline Senior (fictional),7,61
+"T12M to Sep 30, 2025",PU08,Driftwell Health Alliance (fictional),8,71
+"T12M to Sep 30, 2025",PU09,Fernhollow Care (fictional),9,42
+"T12M to Sep 30, 2025",PU10,Quillmont Federal Medicare (fictional),10,52
+"T12M to Sep 30, 2025",PU99,Other / small plans (fictional),99,93
+"T12M to Sep 30, 2025",UNMAPPED,Unmapped alias (pending review),100,2
+"T12M to Sep 30, 2026",PU01,Heronview Health (fictional),1,208
+"T12M to Sep 30, 2026",PU02,Saltgrass Mutual (fictional),2,147
+"T12M to Sep 30, 2026",PU03,Kestrel Shield Medicare Advantage (fictional),3,148
+"T12M to Sep 30, 2026",PU04,Brightfen Advantage (fictional),4,125
+"T12M to Sep 30, 2026",PU05,Sandmere Medicaid Plan (fictional),5,95
+"T12M to Sep 30, 2026",PU06,Cobaltine Commercial (fictional),6,95
+"T12M to Sep 30, 2026",PU07,Ospreyline Senior (fictional),7,106
+"T12M to Sep 30, 2026",PU08,Driftwell Health Alliance (fictional),8,101
+"T12M to Sep 30, 2026",PU09,Fernhollow Care (fictional),9,48
+"T12M to Sep 30, 2026",PU10,Quillmont Federal Medicare (fictional),10,70
+"T12M to Sep 30, 2026",PU99,Other / small plans (fictional),99,144
+"T12M to Sep 30, 2026",UNMAPPED,Unmapped alias (pending review),100,3
+"T12M to Sep 30, 2026",NO_COVERAGE,No coverage on file at event,101,1

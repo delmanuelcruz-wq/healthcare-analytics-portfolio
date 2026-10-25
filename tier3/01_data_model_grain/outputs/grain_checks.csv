@@ -1,0 +1,39 @@
+table,family,grain,primary_key,rows,distinct_keys,grain_holds
+counties,dimension,one row per fictional county,county_key,14,14,1
+postal_county_crosswalk,dimension,one row per ZIP x county allocation,"zip5, county_key",34,34,1
+sites,dimension,one row per infusion site,site_key,8,8,1
+specialties,dimension,one row per specialty,specialty_code,9,9,1
+therapies,dimension,one row per mock therapy,therapy_key,11,11,1
+payer_umbrellas,dimension,one row per payer umbrella,umbrella_key,11,11,1
+payer_plans,dimension,one row per raw plan name as it appears in source,plan_key,28,28,1
+payer_umbrella_map,dimension,one row per mapped plan,plan_key,26,26,1
+providers,dimension,one row per provider record (not per real person),provider_key,250,250,1
+provider_specialties,dimension,one row per provider x specialty,"provider_key, specialty_code",270,270,1
+patients,journey,one row per synthetic patient,patient_key,2502,2502,1
+payer_history,journey,one row per patient coverage interval,coverage_key,4303,4303,1
+referrals,journey,one row per referral event,referral_key,3861,3861,1
+orders,journey,one row per medication order series,order_key,3516,3516,1
+order_status_events,journey,one row per order stage transition,status_event_key,18897,18897,1
+authorizations,journey,one row per prior-authorization request,auth_key,3113,3113,1
+authorization_decisions,journey,one row per decision event,decision_key,3631,3631,1
+appointments,journey,one row per appointment,appt_key,10246,10246,1
+appointment_change_log,journey,one row per appointment status change,change_key,25729,25729,1
+administrations,journey,one row per administration line item (many per appointment allowed),admin_key,9424,9424,1
+inventory_transactions,operations,one row per inventory movement,inventory_event_key,3777,3777,1
+inventory_snapshots,operations,one row per site x therapy x week,snapshot_key,2715,2715,1
+purchase_orders,operations,one row per purchase order,po_key,333,333,1
+synthetic_staff,compliance,one row per fictional staff member,staff_key,44,44,1
+license_registry,compliance,one row per license record,license_record_key,45,45,1
+document_index,compliance,one row per filed license document,document_key,40,40,1
+site_licenses,compliance,one row per site license,site_license_key,16,16,1
+medical_director_assignment,compliance,one row per director x site relationship interval,assignment_key,10,10,1
+code_catalog,revenue,one row per mock billing code,mock_code,78,78,1
+mock_fee_schedule,revenue,one row per code x claim type x effective interval,fee_row_key,90,90,1
+lookup_requests,revenue,one row per code lookup request,request_key,61,61,1
+reporting_targets,operations,one row per site x month,"site_key, target_month",96,96,1
+submission_log,operations,one row per generated manufacturer file,batch_key,120,120,1
+prescriptions,pharmacy,one row per prescription shipped by a specialty pharmacy,rx_key,201,201,1
+rx_fills,pharmacy,one row per prescription fill,fill_key,452,452,1
+delivery_tickets,pharmacy,one row per pharmacy delivery ticket,ticket_key,446,446,1
+accounting_ledger,accounting,one row per general-ledger inventory line,gl_line_key,1749,1749,1
+exceptions_register,qa,one row per injected defect or designed edge case,exception_id,406,406,1

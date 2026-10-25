@@ -1,0 +1,11 @@
+check,status,observed,rule
+"Seven complete quarters, half-open boundaries",pass,7 quarters (2025 Q1 - 2026 Q3); 50 visits in the in-progress 2026 Q4 are excluded,Quarter = calendar quarter of the visit date; never compare a partial quarter
+"Headline counts distinct appointments, not line items",pass,"1,005 treated visits vs 1,080 administration line items over seven quarters (+7.5% if line IDs were counted)",COUNT(DISTINCT appt_key) on treated visits
+Line items reconcile to treated visits (the footnote),pass,"line items - waste - given lines on untreated visits - extra lines on the same visit = treated visits, 7/7 quarters",Every row between the two counts is explained
+Exact duplicate lines cannot inflate the trend,warn,1 in 2026 Q1; distinct-appointment counts are unaffected,Distinct appointment grain; duplicates routed to source cleanup
+Prepared-but-not-given lines excluded,pass,17 waste lines (medication held at a Complete visit) are not visits,administered_flag = 1 and meds_administered = 1
+Lines on cancelled or no-show visits excluded,pass,0 given line(s) on visits that were not treated,A cancelled visit cannot be a treatment
+Quarters bucketed on site-local time,pass,0 treated visit(s) would change quarter if bucketed on UTC,Use start_local for reporting periods
+Independent Python recomputation matches SQL,pass,7/7 quarters match,"Same rule, different implementation"
+Single-therapy scope,pass,44 add-on pre-medication lines on the same visits are not counted as THERAPY_B use,"Filter on the line's therapy, not the appointment's"
+QoQ and first-to-last arithmetic,pass,2025 Q1 89 -> 2026 Q3 183 = +105.6%; the workbook recomputes both with live formulas,change = new / old - 1

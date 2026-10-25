@@ -1,0 +1,13 @@
+visit_date,start_time,appt_key,patient_key,therapy_key,therapy_label,booking_status
+2026-10-26,09:30:00,AP009872,PT01200,THERAPY_A,Immune globulin infusion (mock),Scheduled
+2026-10-26,14:00:00,AP009893,PT02358,THERAPY_B,Anti-inflammatory biologic infusion (mock),Confirmed
+2026-10-26,16:00:00,AP009903,PT02405,THERAPY_B,Anti-inflammatory biologic infusion (mock),Scheduled
+2026-10-27,13:00:00,AP009914,PT02416,THERAPY_I,Complement-inhibitor infusion (mock),Confirmed
+2026-10-27,13:00:00,AP009916,PT02456,THERAPY_I,Complement-inhibitor infusion (mock),Confirmed
+2026-10-27,15:00:00,AP009920,PT02080,THERAPY_G,Anti-IgE injection (mock),Scheduled
+2026-10-27,15:30:00,AP009921,PT02257,THERAPY_F,Anti-IL injection (mock),Scheduled
+2026-10-28,08:30:00,AP009926,PT02252,THERAPY_I,Complement-inhibitor infusion (mock),Scheduled
+2026-10-28,12:00:00,AP009934,PT02275,THERAPY_F,Anti-IL injection (mock),Scheduled
+2026-10-29,11:00:00,AP009949,PT02145,THERAPY_B,Anti-inflammatory biologic infusion (mock),Scheduled
+2026-10-29,14:00:00,AP009953,PT02301,THERAPY_J,IL-6 blocker infusion (mock),Scheduled
+2026-10-30,09:30:00,AP009964,PT02110,THERAPY_J,IL-6 blocker infusion (mock),Scheduled

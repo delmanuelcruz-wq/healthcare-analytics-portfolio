@@ -1,0 +1,12 @@
+therapy_key,therapy_label,route,maintenance_interval_days,is_add_on_only,manufacturer_program,mock_billing_code,vials_per_carton
+THERAPY_A,Immune globulin infusion (mock),IV,28,0,,XJ101,
+THERAPY_B,Anti-inflammatory biologic infusion (mock),IV,56,0,,XJ102,
+THERAPY_C,Anti-CD20 infusion (mock),IV,182,0,,XJ103,
+THERAPY_D,Integrin-blocker infusion (mock),IV,28,0,PROGRAM_A,XJ104,10
+THERAPY_E,IV iron replacement (mock),IV,7,0,,XJ105,
+THERAPY_F,Anti-IL injection (mock),SC,28,0,PROGRAM_B,XJ106,10
+THERAPY_G,Anti-IgE injection (mock),SC,28,0,PROGRAM_B,XJ107,10
+THERAPY_H,Bone-health injection (mock),SC,182,0,,XQ201,
+THERAPY_I,Complement-inhibitor infusion (mock),IV,14,0,,XJ108,
+THERAPY_J,IL-6 blocker infusion (mock),IV,28,0,,XJ109,
+THERAPY_K,Pre-medication bundle (mock),IV,,1,,XJ110,

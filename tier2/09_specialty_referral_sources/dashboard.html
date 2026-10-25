@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Specialty Referral Sources</title>
+<meta name="description" content="Synthetic portfolio page: pulmonology and immunology referral-source leaderboard, trend and provider-county view.">
+<style>/* Shared dashboard styles - inlined into every project dashboard at build time. */
+:root {
+  color-scheme: light;
+  --page: #f9f9f7;
+  --surface: #fcfcfb;
+  --surface-2: #f3f2ee;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --muted: #6f6d68;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --border: rgba(11, 11, 11, 0.10);
+  --brand: #12344a;
+  --brand-ink: #ffffff;
+  --accent: #0f7c80;
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+  --series-gray: #a8a69f;
+  --seq-1: #cde2fb; --seq-2: #9ec5f4; --seq-3: #6da7ec; --seq-4: #3987e5; --seq-5: #256abf; --seq-6: #184f95; --seq-7: #0d366b;
+  --ord-1: #86b6ef; --ord-2: #5598e7; --ord-3: #2a78d6; --ord-4: #1c5cab; --ord-5: #104281;
+  --good: #0ca30c; --warning: #fab219; --serious: #ec835a; --critical: #d03b3b;
+  --good-ink: #006300;
+  --synthetic-bg: #fff4d6; --synthetic-ink: #5c4300;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --surface-2: #232321;
+    --ink: #f0efec; --ink-2: #c3c2b7; --muted: #9a988f; --grid: #2c2c2a; --axis: #383835;
+    --border: rgba(255, 255, 255, 0.10); --brand: #0f2a3b; --accent: #3fb0b3;
+    --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500; --series-gray: #6a6862;
+    --seq-1: #13304f; --seq-2: #184f95; --seq-3: #1c5cab; --seq-4: #256abf; --seq-5: #3987e5; --seq-6: #6da7ec; --seq-7: #b7d3f6;
+    --ord-1: #184f95; --ord-2: #1c5cab; --ord-3: #2a78d6; --ord-4: #5598e7; --ord-5: #86b6ef;
+    --good-ink: #0ca30c; --synthetic-bg: #3a2f10; --synthetic-ink: #ffd982;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #1a1a19; --surface-2: #232321;
+  --ink: #f0efec; --ink-2: #c3c2b7; --muted: #9a988f; --grid: #2c2c2a; --axis: #383835;
+  --border: rgba(255, 255, 255, 0.10); --brand: #0f2a3b; --accent: #3fb0b3;
+  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500; --series-gray: #6a6862;
+  --seq-1: #13304f; --seq-2: #184f95; --seq-3: #1c5cab; --seq-4: #256abf; --seq-5: #3987e5; --seq-6: #6da7ec; --seq-7: #b7d3f6;
+  --ord-1: #184f95; --ord-2: #1c5cab; --ord-3: #2a78d6; --ord-4: #5598e7; --ord-5: #86b6ef;
+  --good-ink: #0ca30c; --synthetic-bg: #3a2f10; --synthetic-ink: #ffd982;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--page); color: var(--ink);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.synthetic-bar {
+  background: var(--synthetic-bg); color: var(--synthetic-ink); text-align: center;
+  font-size: 13px; font-weight: 600; padding: 7px 16px; letter-spacing: .01em;
+}
+header.top { background: var(--brand); color: var(--brand-ink); }
+header.top .wrap { padding-top: 26px; padding-bottom: 24px; }
+header.top .eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; opacity: .75; margin: 0 0 6px; }
+header.top h1 { font-size: 28px; line-height: 1.2; margin: 0 0 8px; font-weight: 650; }
+header.top p { margin: 0; max-width: 860px; opacity: .88; }
+header.top .meta { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; opacity: .85; }
+.wrap { max-width: 1280px; margin: 0 auto; padding-left: 24px; padding-right: 24px; }
+main.wrap { padding-top: 24px; padding-bottom: 48px; }
+h2.section { font-size: 18px; margin: 34px 0 4px; font-weight: 650; }
+p.section-lede { margin: 0 0 14px; color: var(--ink-2); max-width: 900px; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr)); gap: 12px; }
+.tile { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px 12px; }
+.tile .label { font-size: 13px; color: var(--ink-2); margin: 0 0 4px; }
+.tile .value { font-size: 30px; font-weight: 600; line-height: 1.15; margin: 0; }
+.tile .delta { font-size: 12.5px; color: var(--muted); margin: 6px 0 0; }
+.tile .delta .up { color: var(--good-ink); font-weight: 600; }
+.tile .delta .down { color: var(--critical); font-weight: 600; }
+.tile .note { font-size: 12px; color: var(--muted); margin: 4px 0 0; }
+
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px 12px; min-width: 0; }
+.card.full { grid-column: 1 / -1; }
+.card h3 { font-size: 15.5px; margin: 0 0 2px; font-weight: 650; }
+.card .sub { font-size: 13px; color: var(--ink-2); margin: 0 0 8px; }
+.card .chart { width: 100%; height: 320px; }
+.card .chart.tall { height: 420px; }
+.chart-scroll { overflow-x: auto; }
+.chart-scroll > .chart { min-width: 720px; }
+.funnel { display: grid; gap: 12px; padding: 6px 0 4px; }
+.funnel-label { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--ink-2); margin-bottom: 4px; }
+.funnel-val { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.funnel-track { background: var(--surface-2); border-radius: 4px; height: 18px; }
+.funnel-bar { height: 18px; border-radius: 0 4px 4px 0; min-width: 2px; }
+.card .takeaway { font-size: 13px; color: var(--ink); background: var(--surface-2); border-radius: 8px; padding: 8px 10px; margin: 8px 0 4px; }
+details.data { margin-top: 6px; font-size: 13px; }
+details.data summary { cursor: pointer; color: var(--accent); font-weight: 600; padding: 4px 0; }
+.table-scroll { overflow-x: auto; max-height: 340px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; margin-top: 6px; }
+table.data { border-collapse: collapse; width: 100%; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+table.data th, table.data td { padding: 6px 10px; border-bottom: 1px solid var(--grid); text-align: left; white-space: nowrap; }
+table.data th { position: sticky; top: 0; background: var(--surface-2); color: var(--ink-2); font-weight: 600; }
+table.data td.num, table.data th.num { text-align: right; }
+
+.defs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 12px; }
+.def { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; font-size: 13.5px; }
+.def b { display: block; margin-bottom: 2px; }
+.def .check { color: var(--ink-2); font-size: 12.5px; margin-top: 4px; }
+
+.qa-list { display: grid; gap: 8px; }
+.qa-item { display: grid; grid-template-columns: 110px 1fr; gap: 12px; align-items: start; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 13.5px; }
+.badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 3px 10px 3px 8px; width: fit-content; }
+.badge .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.badge.pass { background: color-mix(in srgb, var(--good) 14%, transparent); color: var(--good-ink); }
+.badge.pass .dot { background: var(--good); }
+.badge.warn { background: color-mix(in srgb, var(--warning) 20%, transparent); color: var(--ink); }
+.badge.warn .dot { background: var(--warning); }
+.badge.fail { background: color-mix(in srgb, var(--critical) 14%, transparent); color: var(--critical); }
+.badge.fail .dot { background: var(--critical); }
+.qa-item .obs { color: var(--ink-2); font-size: 12.5px; margin-top: 2px; }
+
+.scope { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 12px; }
+.scope .def ul { margin: 6px 0 0; padding-left: 18px; }
+footer.foot { color: var(--muted); font-size: 12.5px; border-top: 1px solid var(--border); margin-top: 40px; padding-top: 16px; }
+
+@media (max-width: 860px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .wrap { padding-left: 16px; padding-right: 16px; }
+  header.top h1 { font-size: 23px; }
+  .qa-item { grid-template-columns: 1fr; gap: 6px; }
+  .card .chart { height: 280px; }
+}
+@media print { .synthetic-bar { -webkit-print-color-adjust: exact; print-color-adjust: exact; } details.data { display: none; } }
+
+.callout { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 10px;
+  padding: 12px 16px; font-size: 14px; margin: 16px 0 0; }
+.callout b { display: block; margin-bottom: 2px; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
+</head>
+<body>
+<div class="synthetic-bar">SYNTHETIC DEMONSTRATION - fictional organization and data. Not operational, medical or financial guidance.</div>
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Tier 2 · Workstream 09 · Coralline Infusion Network (fictional)</p>
+    <h1>Pulmonology and immunology referral sources</h1>
+    <p>Who sends us pulmonology and immunology/allergy patients, how that changed over 12 months, and where those practices are.
+       Each provider is counted once, even when they carry both specialties or have two records.</p>
+    <div class="meta"><span>Window Oct 1, 2025 - Sep 30, 2026 (12 full months)</span><span>Data as of <b id="asof"></b></span>
+      <span>Seed <span id="seed"></span></span></div>
+  </div>
+</header>
+<main class="wrap">
+  <div class="tiles" id="tiles"></div>
+  <div class="callout"><b>Location definition</b>Location = the county of the <u>referring provider's practice</u> (practice ZIP, primary
+    crosswalk row). It is not the patient's home county and not the infusion site's county. <span id="loc-note"></span></div>
+
+  <h2 class="section">Leaderboard</h2>
+  <p class="section-lede">Referral events in the window, duplicate faxes removed. Fictional practices; provider ids are synthetic.</p>
+  <div class="grid-2">
+    <section class="card">
+      <h3>Top 10 referral sources</h3>
+      <p class="sub">Bars split into new-patient referrals and renewals / new therapies.</p>
+      <div class="chart tall" id="c-top"></div>
+    </section>
+    <section class="card">
+      <h3>Referrals per month by specialty group</h3>
+      <p class="sub">Each provider sits in one group: their primary specialty, or "secondary" when PUL/IMM is not primary.</p>
+      <div class="chart tall" id="c-trend"></div>
+      <details class="data"><summary>Show data table</summary><div id="d-trend"></div></details>
+    </section>
+    <section class="card full">
+      <h3>Full leaderboard</h3>
+      <p class="sub">Every in-scope provider with at least one referral in the window.</p>
+      <div id="tbl-board"></div>
+    </section>
+  </div>
+
+  <h2 class="section">Where the referring practices are</h2>
+  <div class="grid-2">
+    <section class="card">
+      <h3>Referrals by provider county</h3>
+      <p class="sub">Darker segment = referrals from patients who live in the same county as the practice.</p>
+      <div class="chart tall" id="c-county"></div>
+    </section>
+    <section class="card">
+      <h3>Why the counting rules matter</h3>
+      <p class="sub">The same window counted three ways.</p>
+      <div id="tbl-audit"></div>
+      <p class="takeaway" id="t-audit"></p>
+      <h3 style="margin-top:14px">County table</h3>
+      <div id="tbl-county"></div>
+    </section>
+  </div>
+
+  <h2 class="section">Quality checks run on this build</h2>
+  <p class="section-lede">WARN means a real issue was found and handled - documented, excluded, or routed for cleanup.</p>
+  <div class="qa-list" id="qa"></div>
+
+  <h2 class="section">What is real and what is simulated</h2>
+  <div class="scope">
+    <div class="def"><b>On-the-job exposure (self-reported, general terms only)</b>
+      <ul><li>Completed a specialty referral-source reporting assignment with geographic and provider segmentation.</li>
+          <li>Delivery and use of that report were not verified.</li></ul></div>
+    <div class="def"><b>Independently built for this portfolio (synthetic)</b>
+      <ul><li>Every provider, practice, county and number on this page.</li>
+          <li>The deduplication rules, SQL, independent Python check, tests and this page.</li></ul></div>
+  </div>
+  <footer class="foot">Coralline Infusion Network is fictional. All data is synthetic, generated from seed <span id="seed2"></span>.
+    SYNTHETIC DEMONSTRATION - not operational, medical or financial guidance.</footer>
+</main>
+<script>window.DATA = {"meta": {"as_of": "October 24, 2026", "seed": "20261024"}, "tiles": [{"label": "In-scope referral providers", "value": "62", "note": "People carrying PUL or IMM, deduplicated"}, {"label": "Referring in the last 12 months", "value": "53", "note": "Providers with 1+ referral, Oct 2025 - Sep 2026"}, {"label": "Referrals, 12 months", "value": "560", "note": "337 for new patients; duplicate faxes excluded"}, {"label": "Top-10 share", "value": "53%", "note": "298 of 560 referrals"}, {"label": "Shortcut total", "value": "586", "note": "Bridge join, faxes kept: +5% vs the deduplicated count"}], "leaderboard": [{"rank": 1, "provider_id": "PRV0120", "fictional_practice": "Sandhill Allergy & Immunology", "specialty_group": "Immunology/Allergy", "county_name": "Tallow Creek County", "state_code": "GA", "record_count": 1, "referrals_12m": 47, "new_patient_referrals": 31, "renewal_or_new_therapy": 16, "distinct_patients": 37, "share_of_scope": 0.0839, "last_referral": "2026-09-11"}, {"rank": 2, "provider_id": "PRV0227", "fictional_practice": "Sandhill Pulmonary Care", "specialty_group": "Pulmonology", "county_name": "Gullwing County", "state_code": "SC", "record_count": 1, "referrals_12m": 46, "new_patient_referrals": 31, "renewal_or_new_therapy": 15, "distinct_patients": 36, "share_of_scope": 0.0821, "last_referral": "2026-09-16"}, {"rank": 3, "provider_id": "PRV0173", "fictional_practice": "Harbor Pulmonary Care of Gullwing", "specialty_group": "Pulmonology", "county_name": "Gullwing County", "state_code": "SC", "record_count": 1, "referrals_12m": 31, "new_patient_referrals": 19, "renewal_or_new_therapy": 12, "distinct_patients": 24, "share_of_scope": 0.0554, "last_referral": "2026-08-19"}, {"rank": 4, "provider_id": "PRV0230", "fictional_practice": "Sandhill Pulmonary Care", "specialty_group": "Pulmonology", "county_name": "Gullwing County", "state_code": "SC", "record_count": 2, "referrals_12m": 30, "new_patient_referrals": 16, "renewal_or_new_therapy": 14, "distinct_patients": 18, "share_of_scope": 0.0536, "last_referral": "2026-09-30"}, {"rank": 5, "provider_id": "PRV0232", "fictional_practice": "Harbor Pulmonary Care of Cypressmoor", "specialty_group": "Pulmonology", "county_name": "Cypressmoor County", "state_code": "GA", "record_count": 1, "referrals_12m": 27, "new_patient_referrals": 13, "renewal_or_new_therapy": 14, "distinct_patients": 19, "share_of_scope": 0.0482, "last_referral": "2026-09-30"}, {"rank": 6, "provider_id": "PRV0071", "fictional_practice": "Oakmoss Pulmonary Care", "specialty_group": "Pulmonology", "county_name": "Larkspur County", "state_code": "GA", "record_count": 1, "referrals_12m": 26, "new_patient_referrals": 15, "renewal_or_new_therapy": 11, "distinct_patients": 21, "share_of_scope": 0.0464, "last_referral": "2026-08-31"}, {"rank": 7, "provider_id": "PRV0061", "fictional_practice": "Seabreeze Pulmonary Care", "specialty_group": "Pulmonology", "county_name": "Sablecrest County", "state_code": "SC", "record_count": 2, "referrals_12m": 25, "new_patient_referrals": 13, "renewal_or_new_therapy": 12, "distinct_patients": 18, "share_of_scope": 0.0446, "last_referral": "2026-09-23"}, {"rank": 8, "provider_id": "PRV0218", "fictional_practice": "Magnolia Pulmonary Care of Brinemoor", "specialty_group": "Pulmonology", "county_name": "Brinemoor County", "state_code": "NC", "record_count": 1, "referrals_12m": 23, "new_patient_referrals": 17, "renewal_or_new_therapy": 6, "distinct_patients": 18, "share_of_scope": 0.0411, "last_referral": "2026-08-25"}, {"rank": 9, "provider_id": "PRV0145", "fictional_practice": "Bluestem Allergy & Immunology", "specialty_group": "Immunology/Allergy", "county_name": "Ospreyford County", "state_code": "NC", "record_count": 1, "referrals_12m": 23, "new_patient_referrals": 12, "renewal_or_new_therapy": 11, "distinct_patients": 16, "share_of_scope": 0.0411, "last_referral": "2026-09-18"}, {"rank": 10, "provider_id": "PRV0100", "fictional_practice": "Magnolia Pulmonary Care", "specialty_group": "Pulmonology", "county_name": "Palmetto Reach County", "state_code": "NC", "record_count": 1, "referrals_12m": 20, "new_patient_referrals": 17, "renewal_or_new_therapy": 3, "distinct_patients": 17, "share_of_scope": 0.0357, "last_referral": "2026-09-14"}, {"rank": 11, "provider_id": "PRV0109", "fictional_practice": "Oakmoss Pulmonary Care of Larkspur", "specialty_group": "Pulmonology", "county_name": "Larkspur County", "state_code": "GA", "record_count": 1, "referrals_12m": 19, "new_patient_referrals": 13, "renewal_or_new_therapy": 6, "distinct_patients": 14, "share_of_scope": 0.0339, "last_referral": "2026-09-28"}, {"rank": 12, "provider_id": "PRV0111", "fictional_practice": "Sandhill Rheumatology of Quarry", "specialty_group": "PUL/IMM as secondary specialty", "county_name": "Quarry Hill County", "state_code": "NC", "record_count": 1, "referrals_12m": 18, "new_patient_referrals": 13, "renewal_or_new_therapy": 5, "distinct_patients": 17, "share_of_scope": 0.0321, "last_referral": "2026-06-29"}, {"rank": 13, "provider_id": "PRV0078", "fictional_practice": "Harbor Pulmonary Care of Indigo", "specialty_group": "Pulmonology", "county_name": "Indigo Flats County", "state_code": "SC", "record_count": 1, "referrals_12m": 15, "new_patient_referrals": 6, "renewal_or_new_therapy": 9, "distinct_patients": 9, "share_of_scope": 0.0268, "last_referral": "2026-09-21"}, {"rank": 14, "provider_id": "PRV0079", "fictional_practice": "Harbor Pulmonary Care of Indigo", "specialty_group": "Pulmonology", "county_name": "Indigo Flats County", "state_code": "SC", "record_count": 1, "referrals_12m": 14, "new_patient_referrals": 1, "renewal_or_new_therapy": 13, "distinct_patients": 7, "share_of_scope": 0.025, "last_referral": "2026-06-11"}, {"rank": 15, "provider_id": "PRV0122", "fictional_practice": "Sandhill Allergy & Immunology", "specialty_group": "Immunology/Allergy", "county_name": "Tallow Creek County", "state_code": "GA", "record_count": 1, "referrals_12m": 13, "new_patient_referrals": 6, "renewal_or_new_therapy": 7, "distinct_patients": 9, "share_of_scope": 0.0232, "last_referral": "2026-09-22"}, {"rank": 16, "provider_id": "PRV0174", "fictional_practice": "Harbor Pulmonary Care of Gullwing", "specialty_group": "Pulmonology", "county_name": "Gullwing County", "state_code": "SC", "record_count": 1, "referrals_12m": 12, "new_patient_referrals": 5, "renewal_or_new_therapy": 7, "distinct_patients": 8, "share_of_scope": 0.0214, "last_referral": "2026-09-04"}, {"rank": 17, "provider_id": "PRV0062", "fictional_practice": "Seabreeze Pulmonary Care", "specialty_group": "Pulmonology", "county_name": "Sablecrest County", "state_code": "SC", "record_count": 1, "referrals_12m": 12, "new_patient_referrals": 5, "renewal_or_new_therapy": 7, "distinct_patients": 7, "share_of_scope": 0.0214, "last_referral": "2026-09-10"}, {"rank": 18, "provider_id": "PRV0009", "fictional_practice": "Tidal Pulmonary Care", "specialty_group": "Pulmonology", "county_name": "Palmetto Reach County", "state_code": "NC", "record_count": 1, "referrals_12m": 11, "new_patient_referrals": 6, "renewal_or_new_therapy": 5, "distinct_patients": 9, "share_of_scope": 0.0196, "last_referral": "2026-09-28"}, {"rank": 19, "provider_id": "PRV0229", "fictional_practice": "Sandhill Pulmonary Care", "specialty_group": "Pulmonology", "county_name": "Gullwing County", "state_code": "SC", "record_count": 1, "referrals_12m": 11, "new_patient_referrals": 8, "renewal_or_new_therapy": 3, "distinct_patients": 8, "share_of_scope": 0.0196, "last_referral": "2026-08-31"}, {"rank": 20, "provider_id": "PRV0098", "fictional_practice": "Seabreeze Dermatology", "specialty_group": "PUL/IMM as secondary specialty", "county_name": "Heronmouth County", "state_code": "SC", "record_count": 1, "referrals_12m": 9, "new_patient_referrals": 5, "renewal_or_new_therapy": 4, "distinct_patients": 7, "share_of_scope": 0.0161, "last_referral": "2026-05-04"}, {"rank": 21, "provider_id": "PRV0091", "fictional_practice": "Lowcountry Rheumatology of Indigo", "specialty_group": "PUL/IMM as secondary specialty", "county_name": "Indigo Flats County", "state_code": "SC", "record_count": 1, "referrals_12m": 8, "new_patient_referrals": 8, "renewal_or_new_therapy": 0, "distinct_patients": 8, "share_of_scope": 0.0143, "last_referral": "2026-08-24"}, {"rank": 22, "provider_id": "PRV0119", "fictional_practice": "Sandhill Allergy & Immunology", "specialty_group": "Immunology/Allergy", "county_name": "Tallow Creek County", "state_code": "GA", "record_count": 1, "referrals_12m": 8, "new_patient_referrals": 5, "renewal_or_new_therapy": 3, "distinct_patients": 5, "share_of_scope": 0.0143, "last_referral": "2026-07-24"}, {"rank": 23, "provider_id": "PRV0019", "fictional_practice": "Pinewood Allergy & Immunology", "specialty_group": "Immunology/Allergy", "county_name": "Gullwing County", "state_code": "SC", "record_count": 1, "referrals_12m": 7, "new_patient_referrals": 6, "renewal_or_new_therapy": 1, "distinct_patients": 6, "share_of_scope": 0.0125, "last_referral": "2026-08-07"}, {"rank": 23, "provider_id": "PRV0201", "fictional_practice": "Marshland Allergy & Immunology of Saltmeadow", "specialty_group": "Immunology/Allergy", "county_name": "Saltmeadow County", "state_code": "GA", "record_count": 1, "referrals_12m": 7, "new_patient_referrals": 4, "renewal_or_new_therapy": 3, "distinct_patients": 6, "share_of_scope": 0.0125, "last_referral": "2026-09-14"}, {"rank": 25, "provider_id": "PRV0215", "fictional_practice": "Magnolia Pulmonary Care of Brinemoor", "specialty_group": "Pulmonology", "county_name": "Brinemoor County", "state_code": "NC", "record_count": 1, "referrals_12m": 7, "new_patient_referrals": 2, "renewal_or_new_therapy": 5, "distinct_patients": 4, "share_of_scope": 0.0125, "last_referral": "2026-06-15"}, {"rank": 26, "provider_id": "PRV0101", "fictional_practice": "Magnolia Pulmonary Care", "specialty_group": "Pulmonology", "county_name": "Palmetto Reach County", "state_code": "NC", "record_count": 1, "referrals_12m": 6, "new_patient_referrals": 5, "renewal_or_new_therapy": 1, "distinct_patients": 6, "share_of_scope": 0.0107, "last_referral": "2026-08-18"}, {"rank": 26, "provider_id": "PRV0199", "fictional_practice": "Riverbend Pulmonary Care", "specialty_group": "Pulmonology", "county_name": "Sablecrest County", "state_code": "SC", "record_count": 1, "referrals_12m": 6, "new_patient_referrals": 6, "renewal_or_new_therapy": 0, "distinct_patients": 6, "share_of_scope": 0.0107, "last_referral": "2026-08-11"}, {"rank": 26, "provider_id": "PRV0228", "fictional_practice": "Sandhill Pulmonary Care", "specialty_group": "Pulmonology", "county_name": "Gullwing County", "state_code": "SC", "record_count": 1, "referrals_12m": 6, "new_patient_referrals": 6, "renewal_or_new_therapy": 0, "distinct_patients": 6, "share_of_scope": 0.0107, "last_referral": "2026-09-01"}, {"rank": 29, "provider_id": "PRV0148", "fictional_practice": "Bayline Allergy & Immunology", "specialty_group": "Immunology/Allergy", "county_name": "Indigo Flats County", "state_code": "SC", "record_count": 1, "referrals_12m": 6, "new_patient_referrals": 3, "renewal_or_new_therapy": 3, "distinct_patients": 4, "share_of_scope": 0.0107, "last_referral": "2026-06-29"}, {"rank": 30, "provider_id": "PRV0217", "fictional_practice": "Magnolia Pulmonary Care of Brinemoor", "specialty_group": "Pulmonology", "county_name": "Brinemoor County", "state_code": "NC", "record_count": 1, "referrals_12m": 6, "new_patient_referrals": 2, "renewal_or_new_therapy": 4, "distinct_patients": 3, "share_of_scope": 0.0107, "last_referral": "2026-07-01"}, {"rank": 31, "provider_id": "PRV0216", "fictional_practice": "Magnolia Pulmonary Care of Brinemoor", "specialty_group": "Pulmonology", "county_name": "Brinemoor County", "state_code": "NC", "record_count": 1, "referrals_12m": 5, "new_patient_referrals": 5, "renewal_or_new_therapy": 0, "distinct_patients": 5, "share_of_scope": 0.0089, "last_referral": "2026-08-25"}, {"rank": 32, "provider_id": "PRV0017", "fictional_practice": "Pinewood Allergy & Immunology", "specialty_group": "Immunology/Allergy", "county_name": "Gullwing County", "state_code": "SC", "record_count": 1, "referrals_12m": 4, "new_patient_referrals": 3, "renewal_or_new_therapy": 1, "distinct_patients": 4, "share_of_scope": 0.0071, "last_referral": "2026-09-21"}, {"rank": 32, "provider_id": "PRV0094", "fictional_practice": "Marshland Allergy & Immunology", "specialty_group": "Immunology/Allergy", "county_name": "Sablecrest County", "state_code": "SC", "record_count": 1, "referrals_12m": 4, "new_patient_referrals": 3, "renewal_or_new_therapy": 1, "distinct_patients": 4, "share_of_scope": 0.0071, "last_referral": "2026-06-29"}, {"rank": 34, "provider_id": "PRV0154", "fictional_practice": "Bayline Family Medicine", "specialty_group": "PUL/IMM as secondary specialty", "county_name": "Larkspur County", "state_code": "GA", "record_count": 1, "referrals_12m": 4, "new_patient_referrals": 2, "renewal_or_new_therapy": 2, "distinct_patients": 3, "share_of_scope": 0.0071, "last_referral": "2026-04-09"}, {"rank": 34, "provider_id": "PRV0200", "fictional_practice": "Marshland Allergy & Immunology of Saltmeadow", "specialty_group": "Immunology/Allergy", "county_name": "Saltmeadow County", "state_code": "GA", "record_count": 1, "referrals_12m": 4, "new_patient_referrals": 3, "renewal_or_new_therapy": 1, "distinct_patients": 3, "share_of_scope": 0.0071, "last_referral": "2026-09-14"}, {"rank": 36, "provider_id": "PRV0072", "fictional_practice": "Oakmoss Pulmonary Care", "specialty_group": "Pulmonology", "county_name": "Larkspur County", "state_code": "GA", "record_count": 1, "referrals_12m": 4, "new_patient_referrals": 2, "renewal_or_new_therapy": 2, "distinct_patients": 2, "share_of_scope": 0.0071, "last_referral": "2026-06-29"}, {"rank": 36, "provider_id": "PRV0147", "fictional_practice": "Magnolia Kidney Care", "specialty_group": "PUL/IMM as secondary specialty", "county_name": "Tallow Creek County", "state_code": "GA", "record_count": 1, "referrals_12m": 4, "new_patient_referrals": 2, "renewal_or_new_therapy": 2, "distinct_patients": 2, "share_of_scope": 0.0071, "last_referral": "2026-06-15"}, {"rank": 38, "provider_id": "PRV0102", "fictional_practice": "Magnolia Pulmonary Care", "specialty_group": "Pulmonology", "county_name": "Palmetto Reach County", "state_code": "NC", "record_count": 1, "referrals_12m": 3, "new_patient_referrals": 1, "renewal_or_new_therapy": 2, "distinct_patients": 3, "share_of_scope": 0.0054, "last_referral": "2026-08-07"}, {"rank": 38, "provider_id": "PRV0184", "fictional_practice": "Lowcountry Pulmonary Care", "specialty_group": "Pulmonology", "county_name": "Heronmouth County", "state_code": "SC", "record_count": 1, "referrals_12m": 3, "new_patient_referrals": 2, "renewal_or_new_therapy": 1, "distinct_patients": 3, "share_of_scope": 0.0054, "last_referral": "2026-08-31"}, {"rank": 38, "provider_id": "PRV0203", "fictional_practice": "Marshland Allergy & Immunology of Saltmeadow", "specialty_group": "Immunology/Allergy", "county_name": "Saltmeadow County", "state_code": "GA", "record_count": 1, "referrals_12m": 3, "new_patient_referrals": 3, "renewal_or_new_therapy": 0, "distinct_patients": 3, "share_of_scope": 0.0054, "last_referral": "2026-09-02"}, {"rank": 41, "provider_id": "PRV0121", "fictional_practice": "Sandhill Allergy & Immunology", "specialty_group": "Immunology/Allergy", "county_name": "Tallow Creek County", "state_code": "GA", "record_count": 1, "referrals_12m": 3, "new_patient_referrals": 2, "renewal_or_new_therapy": 1, "distinct_patients": 2, "share_of_scope": 0.0054, "last_referral": "2026-09-28"}, {"rank": 41, "provider_id": "PRV0172", "fictional_practice": "Harbor Pulmonary Care of Gullwing", "specialty_group": "Pulmonology", "county_name": "Gullwing County", "state_code": "SC", "record_count": 1, "referrals_12m": 3, "new_patient_referrals": 2, "renewal_or_new_therapy": 1, "distinct_patients": 2, "share_of_scope": 0.0054, "last_referral": "2026-06-29"}, {"rank": 43, "provider_id": "PRV0130", "fictional_practice": "Pinewood Digestive Health", "specialty_group": "PUL/IMM as secondary specialty", "county_name": "Saltmeadow County", "state_code": "GA", "record_count": 1, "referrals_12m": 3, "new_patient_referrals": 0, "renewal_or_new_therapy": 3, "distinct_patients": 1, "share_of_scope": 0.0054, "last_referral": "2026-07-27"}, {"rank": 44, "provider_id": "PRV0010", "fictional_practice": "Tidal Pulmonary Care", "specialty_group": "Pulmonology", "county_name": "Palmetto Reach County", "state_code": "NC", "record_count": 1, "referrals_12m": 2, "new_patient_referrals": 1, "renewal_or_new_therapy": 1, "distinct_patients": 2, "share_of_scope": 0.0036, "last_referral": "2026-07-24"}, {"rank": 44, "provider_id": "PRV0018", "fictional_practice": "Pinewood Allergy & Immunology", "specialty_group": "Immunology/Allergy", "county_name": "Gullwing County", "state_code": "SC", "record_count": 1, "referrals_12m": 2, "new_patient_referrals": 0, "renewal_or_new_therapy": 2, "distinct_patients": 2, "share_of_scope": 0.0036, "last_referral": "2025-10-15"}, {"rank": 44, "provider_id": "PRV0176", "fictional_practice": "Seabreeze Pulmonary Care of Tallow", "specialty_group": "Pulmonology", "county_name": "Tallow Creek County", "state_code": "GA", "record_count": 1, "referrals_12m": 2, "new_patient_referrals": 1, "renewal_or_new_therapy": 1, "distinct_patients": 2, "share_of_scope": 0.0036, "last_referral": "2026-07-13"}, {"rank": 44, "provider_id": "PRV0202", "fictional_practice": "Marshland Allergy & Immunology of Saltmeadow", "specialty_group": "Immunology/Allergy", "county_name": "Saltmeadow County", "state_code": "GA", "record_count": 1, "referrals_12m": 2, "new_patient_referrals": 2, "renewal_or_new_therapy": 0, "distinct_patients": 2, "share_of_scope": 0.0036, "last_referral": "2026-08-24"}, {"rank": 48, "provider_id": "PRV0012", "fictional_practice": "Harbor Pulmonary Care", "specialty_group": "Pulmonology", "county_name": "Cedar Landing County", "state_code": "NC", "record_count": 1, "referrals_12m": 1, "new_patient_referrals": 1, "renewal_or_new_therapy": 0, "distinct_patients": 1, "share_of_scope": 0.0018, "last_referral": "2026-09-23"}, {"rank": 48, "provider_id": "PRV0063", "fictional_practice": "Seabreeze Pulmonary Care", "specialty_group": "Pulmonology", "county_name": "Sablecrest County", "state_code": "SC", "record_count": 1, "referrals_12m": 1, "new_patient_referrals": 1, "renewal_or_new_therapy": 0, "distinct_patients": 1, "share_of_scope": 0.0018, "last_referral": "2025-10-10"}, {"rank": 48, "provider_id": "PRV0103", "fictional_practice": "Magnolia Pulmonary Care", "specialty_group": "Pulmonology", "county_name": "Palmetto Reach County", "state_code": "NC", "record_count": 1, "referrals_12m": 1, "new_patient_referrals": 0, "renewal_or_new_therapy": 1, "distinct_patients": 1, "share_of_scope": 0.0018, "last_referral": "2025-12-23"}, {"rank": 48, "provider_id": "PRV0129", "fictional_practice": "Seabreeze Digestive Health of Saltmeadow", "specialty_group": "PUL/IMM as secondary specialty", "county_name": "Saltmeadow County", "state_code": "GA", "record_count": 1, "referrals_12m": 1, "new_patient_referrals": 1, "renewal_or_new_therapy": 0, "distinct_patients": 1, "share_of_scope": 0.0018, "last_referral": "2026-08-24"}, {"rank": 48, "provider_id": "PRV0219", "fictional_practice": "Oakmoss Allergy & Immunology", "specialty_group": "Immunology/Allergy", "county_name": "Saltmeadow County", "state_code": "GA", "record_count": 1, "referrals_12m": 1, "new_patient_referrals": 1, "renewal_or_new_therapy": 0, "distinct_patients": 1, "share_of_scope": 0.0018, "last_referral": "2026-09-22"}, {"rank": 48, "provider_id": "PRV0220", "fictional_practice": "Oakmoss Allergy & Immunology", "specialty_group": "Immunology/Allergy", "county_name": "Saltmeadow County", "state_code": "GA", "record_count": 1, "referrals_12m": 1, "new_patient_referrals": 0, "renewal_or_new_therapy": 1, "distinct_patients": 1, "share_of_scope": 0.0018, "last_referral": "2025-11-21"}], "trend": [{"month_start": "2025-10-01", "specialty_group": "Immunology/Allergy", "referrals": 11, "new_patient_referrals": 6, "referring_providers": 5}, {"month_start": "2025-10-01", "specialty_group": "PUL/IMM as secondary specialty", "referrals": 1, "new_patient_referrals": 1, "referring_providers": 1}, {"month_start": "2025-10-01", "specialty_group": "Pulmonology", "referrals": 31, "new_patient_referrals": 19, "referring_providers": 16}, {"month_start": "2025-11-01", "specialty_group": "Immunology/Allergy", "referrals": 7, "new_patient_referrals": 4, "referring_providers": 3}, {"month_start": "2025-11-01", "specialty_group": "PUL/IMM as secondary specialty", "referrals": 2, "new_patient_referrals": 2, "referring_providers": 2}, {"month_start": "2025-11-01", "specialty_group": "Pulmonology", "referrals": 27, "new_patient_referrals": 15, "referring_providers": 14}, {"month_start": "2025-12-01", "specialty_group": "Immunology/Allergy", "referrals": 11, "new_patient_referrals": 7, "referring_providers": 5}, {"month_start": "2025-12-01", "specialty_group": "PUL/IMM as secondary specialty", "referrals": 4, "new_patient_referrals": 2, "referring_providers": 2}, {"month_start": "2025-12-01", "specialty_group": "Pulmonology", "referrals": 39, "new_patient_referrals": 21, "referring_providers": 19}, {"month_start": "2026-01-01", "specialty_group": "Immunology/Allergy", "referrals": 8, "new_patient_referrals": 3, "referring_providers": 6}, {"month_start": "2026-01-01", "specialty_group": "PUL/IMM as secondary specialty", "referrals": 6, "new_patient_referrals": 5, "referring_providers": 3}, {"month_start": "2026-01-01", "specialty_group": "Pulmonology", "referrals": 28, "new_patient_referrals": 16, "referring_providers": 12}, {"month_start": "2026-02-01", "specialty_group": "Immunology/Allergy", "referrals": 11, "new_patient_referrals": 8, "referring_providers": 6}, {"month_start": "2026-02-01", "specialty_group": "PUL/IMM as secondary specialty", "referrals": 3, "new_patient_referrals": 3, "referring_providers": 2}, {"month_start": "2026-02-01", "specialty_group": "Pulmonology", "referrals": 23, "new_patient_referrals": 13, "referring_providers": 16}, {"month_start": "2026-03-01", "specialty_group": "Immunology/Allergy", "referrals": 8, "new_patient_referrals": 3, "referring_providers": 6}, {"month_start": "2026-03-01", "specialty_group": "PUL/IMM as secondary specialty", "referrals": 9, "new_patient_referrals": 5, "referring_providers": 4}, {"month_start": "2026-03-01", "specialty_group": "Pulmonology", "referrals": 31, "new_patient_referrals": 23, "referring_providers": 16}, {"month_start": "2026-04-01", "specialty_group": "Immunology/Allergy", "referrals": 11, "new_patient_referrals": 7, "referring_providers": 7}, {"month_start": "2026-04-01", "specialty_group": "PUL/IMM as secondary specialty", "referrals": 9, "new_patient_referrals": 6, "referring_providers": 4}, {"month_start": "2026-04-01", "specialty_group": "Pulmonology", "referrals": 32, "new_patient_referrals": 18, "referring_providers": 18}, {"month_start": "2026-05-01", "specialty_group": "Immunology/Allergy", "referrals": 16, "new_patient_referrals": 11, "referring_providers": 7}, {"month_start": "2026-05-01", "specialty_group": "PUL/IMM as secondary specialty", "referrals": 4, "new_patient_referrals": 1, "referring_providers": 2}, {"month_start": "2026-05-01", "specialty_group": "Pulmonology", "referrals": 34, "new_patient_referrals": 21, "referring_providers": 19}, {"month_start": "2026-06-01", "specialty_group": "Immunology/Allergy", "referrals": 12, "new_patient_referrals": 9, "referring_providers": 8}, {"month_start": "2026-06-01", "specialty_group": "PUL/IMM as secondary specialty", "referrals": 2, "new_patient_referrals": 0, "referring_providers": 2}, {"month_start": "2026-06-01", "specialty_group": "Pulmonology", "referrals": 40, "new_patient_referrals": 22, "referring_providers": 17}, {"month_start": "2026-07-01", "specialty_group": "Immunology/Allergy", "referrals": 12, "new_patient_referrals": 8, "referring_providers": 6}, {"month_start": "2026-07-01", "specialty_group": "PUL/IMM as secondary specialty", "referrals": 5, "new_patient_referrals": 4, "referring_providers": 2}, {"month_start": "2026-07-01", "specialty_group": "Pulmonology", "referrals": 28, "new_patient_referrals": 16, "referring_providers": 18}, {"month_start": "2026-08-01", "specialty_group": "Immunology/Allergy", "referrals": 12, "new_patient_referrals": 10, "referring_providers": 7}, {"month_start": "2026-08-01", "specialty_group": "PUL/IMM as secondary specialty", "referrals": 2, "new_patient_referrals": 2, "referring_providers": 2}, {"month_start": "2026-08-01", "specialty_group": "Pulmonology", "referrals": 36, "new_patient_referrals": 22, "referring_providers": 19}, {"month_start": "2026-09-01", "specialty_group": "Immunology/Allergy", "referrals": 16, "new_patient_referrals": 8, "referring_providers": 9}, {"month_start": "2026-09-01", "specialty_group": "PUL/IMM as secondary specialty", "referrals": 0, "new_patient_referrals": 0, "referring_providers": 0}, {"month_start": "2026-09-01", "specialty_group": "Pulmonology", "referrals": 29, "new_patient_referrals": 16, "referring_providers": 12}], "county": [{"state_code": "SC", "county_name": "Gullwing County", "referrals_12m": 152, "referring_providers": 10, "new_patient_referrals": 96, "from_patients_in_other_counties": 39}, {"state_code": "GA", "county_name": "Tallow Creek County", "referrals_12m": 77, "referring_providers": 6, "new_patient_referrals": 47, "from_patients_in_other_counties": 27}, {"state_code": "GA", "county_name": "Larkspur County", "referrals_12m": 53, "referring_providers": 4, "new_patient_referrals": 32, "from_patients_in_other_counties": 20}, {"state_code": "SC", "county_name": "Sablecrest County", "referrals_12m": 48, "referring_providers": 5, "new_patient_referrals": 28, "from_patients_in_other_counties": 17}, {"state_code": "NC", "county_name": "Palmetto Reach County", "referrals_12m": 43, "referring_providers": 6, "new_patient_referrals": 30, "from_patients_in_other_counties": 13}, {"state_code": "SC", "county_name": "Indigo Flats County", "referrals_12m": 43, "referring_providers": 4, "new_patient_referrals": 18, "from_patients_in_other_counties": 16}, {"state_code": "NC", "county_name": "Brinemoor County", "referrals_12m": 41, "referring_providers": 4, "new_patient_referrals": 26, "from_patients_in_other_counties": 9}, {"state_code": "GA", "county_name": "Cypressmoor County", "referrals_12m": 27, "referring_providers": 1, "new_patient_referrals": 13, "from_patients_in_other_counties": 14}, {"state_code": "NC", "county_name": "Ospreyford County", "referrals_12m": 23, "referring_providers": 1, "new_patient_referrals": 12, "from_patients_in_other_counties": 11}, {"state_code": "GA", "county_name": "Saltmeadow County", "referrals_12m": 22, "referring_providers": 8, "new_patient_referrals": 14, "from_patients_in_other_counties": 7}, {"state_code": "NC", "county_name": "Quarry Hill County", "referrals_12m": 18, "referring_providers": 1, "new_patient_referrals": 13, "from_patients_in_other_counties": 8}, {"state_code": "SC", "county_name": "Heronmouth County", "referrals_12m": 12, "referring_providers": 2, "new_patient_referrals": 7, "from_patients_in_other_counties": 3}, {"state_code": "NC", "county_name": "Cedar Landing County", "referrals_12m": 1, "referring_providers": 1, "new_patient_referrals": 1, "from_patients_in_other_counties": 0}], "audit": [{"method": "Specialty-bridge join, all referral types (shortcut)", "provider_records_or_people": 55, "referrals": 586}, {"method": "Specialty-bridge join, duplicate faxes removed", "provider_records_or_people": 55, "referrals": 567}, {"method": "Deduplicated people, one specialty group each (used)", "provider_records_or_people": 53, "referrals": 560}], "qa": [{"check": "Multi-specialty providers counted once", "status": "pass", "observed": "Leaderboard total 560 = 560 distinct referral events. 1 provider(s) carry both specialties and 7 carry PUL/IMM only as a secondary specialty; the specialty-bridge join would report 567", "rule": "One row per provider person, one specialty group each (the primary specialty)"}, {"check": "Duplicate provider records merged", "status": "warn", "observed": "2 in-scope provider(s) have two records (PRV0061, PRV0230); 27 referrals logged on the duplicate record roll up to the person", "rule": "Group by source_identity_key"}, {"check": "Duplicate faxes excluded", "status": "warn", "observed": "19 duplicate-fax referral events from in-scope providers removed", "rule": "referral_type <> 'Duplicate'"}, {"check": "Every in-scope provider maps to exactly one county", "status": "pass", "observed": "0 unmapped of 62; split ZIP 00150 resolves to its primary county", "rule": "Crosswalk join restricted to is_primary = 1"}, {"check": "Trend and county views sum to the leaderboard", "status": "pass", "observed": "trend 560 = county 560 = leaderboard 560", "rule": "Every view reads the same scoped rows"}, {"check": "Trend is zero-filled for 12 months per group", "status": "pass", "observed": "Immunology/Allergy: 12 months, PUL/IMM as secondary specialty: 12 months, Pulmonology: 12 months", "rule": "A quiet month shows as 0, not as a gap"}, {"check": "Window is 12 full months", "status": "pass", "observed": "Oct 1, 2025 - Sep 30, 2026; 32 referrals from Oct 1-24, 2026 are excluded as a partial month", "rule": "Half-open window [2025-10-01, 2026-10-01)"}, {"check": "Location definition is explicit", "status": "pass", "observed": "184 of 560 referrals (33%) came from patients who live in a different county than the referring practice - patient-county maps would tell a different story", "rule": "Location = referring provider's practice county"}, {"check": "Independent Python recomputation matches SQL", "status": "pass", "observed": "53 providers on the leaderboard, 560 referrals; scope of 62 people matches: True", "rule": "Same rules, different implementation"}, {"check": "In-scope providers with no referral in the window", "status": "pass", "observed": "9 of 62 in-scope providers sent nothing in the window and are not ranked", "rule": "Leaderboard lists referring sources only"}]};</script>
+<script>/* Shared dashboard helpers - inlined into every project dashboard at build time.
+   Charts read colors from CSS variables, so light/dark themes stay in one place. */
+(function () {
+  // ?theme=light|dark forces a theme (used for README screenshots); otherwise follow the OS.
+  const forced = new URLSearchParams(location.search).get("theme");
+  if (forced === "light" || forced === "dark") document.documentElement.setAttribute("data-theme", forced);
+  const charts = [];
+  const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const fmt = new Intl.NumberFormat("en-US");
+
+  function colors() {
+    return {
+      ink: css("--ink"), ink2: css("--ink-2"), muted: css("--muted"), grid: css("--grid"), axis: css("--axis"),
+      surface: css("--surface"), s1: css("--series-1"), s2: css("--series-2"), s3: css("--series-3"),
+      gray: css("--series-gray"), good: css("--good"), warning: css("--warning"), critical: css("--critical"),
+      seq: [1, 2, 3, 4, 5, 6, 7].map((i) => css(`--seq-${i}`)),
+      ord: [1, 2, 3, 4, 5].map((i) => css(`--ord-${i}`)),
+    };
+  }
+
+  function layout(extra) {
+    const c = colors();
+    const axis = { gridcolor: c.grid, linecolor: c.axis, zeroline: false, tickfont: { color: c.muted, size: 11 },
+                   title: { font: { color: c.ink2, size: 12 } }, automargin: true };
+    const base = {
+      paper_bgcolor: "rgba(0,0,0,0)", plot_bgcolor: "rgba(0,0,0,0)",
+      font: { family: 'system-ui, -apple-system, "Segoe UI", sans-serif', color: c.ink, size: 12 },
+      margin: { l: 48, r: 18, t: 10, b: 40 }, hovermode: "x unified",
+      hoverlabel: { bgcolor: c.surface, bordercolor: c.axis, font: { color: c.ink } },
+      legend: { orientation: "h", x: 0, y: 1.12, font: { color: c.ink2, size: 12 } },
+      xaxis: Object.assign({}, axis, { showgrid: false, showline: true }),
+      yaxis: Object.assign({}, axis, { showline: false, rangemode: "tozero" }),
+      bargap: 0.35,
+    };
+    return deepMerge(base, extra || {});
+  }
+
+  function deepMerge(a, b) {
+    const out = Array.isArray(a) ? a.slice() : Object.assign({}, a);
+    for (const k of Object.keys(b)) {
+      if (b[k] && typeof b[k] === "object" && !Array.isArray(b[k]) && a[k] && typeof a[k] === "object") out[k] = deepMerge(a[k], b[k]);
+      else out[k] = b[k];
+    }
+    return out;
+  }
+
+  const config = { displayModeBar: false, responsive: true };
+
+  function register(fn) { charts.push(fn); }
+  function renderAll() { const c = colors(); charts.forEach((fn) => fn(c)); }
+
+  function table(el, columns, rows) {
+    const head = columns.map((c) => `<th class="${c.num ? "num" : ""}">${c.label}</th>`).join("");
+    const body = rows.map((r) => "<tr>" + columns.map((c) => {
+      let v = r[c.key];
+      if (c.num && typeof v === "number") v = c.pct ? (v * 100).toFixed(1) + "%" : (Number.isInteger(v) ? fmt.format(v) : v.toFixed(c.dp ?? 1));
+      return `<td class="${c.num ? "num" : ""}">${v ?? ""}</td>`;
+    }).join("") + "</tr>").join("");
+    el.innerHTML = `<div class="table-scroll"><table class="data"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+  }
+
+  function tiles(el, items) {
+    el.innerHTML = items.map((t) => {
+      let delta = "";
+      if (t.delta !== undefined && t.delta !== null) {
+        const up = t.delta >= 0;
+        const good = t.upIsGood === undefined ? null : (up === t.upIsGood);
+        const cls = good === null ? "" : (good ? "up" : "down");
+        const sign = up ? "+" : "−";
+        delta = `<p class="delta"><span class="${cls}">${sign}${Math.abs(t.delta).toFixed(1)}%</span> ${t.deltaLabel || ""}</p>`;
+      }
+      return `<div class="tile"><p class="label">${t.label}</p><p class="value">${t.value}</p>${delta}${t.note ? `<p class="note">${t.note}</p>` : ""}</div>`;
+    }).join("");
+  }
+
+  window.Dash = { register, renderAll, layout, config, table, tiles, colors, fmt };
+  document.addEventListener("DOMContentLoaded", renderAll);
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", renderAll);
+  new MutationObserver(renderAll).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+})();
+</script>
+<script>
+(function () {
+  const D = window.DATA, fmt = Dash.fmt;
+  document.getElementById("asof").textContent = D.meta.as_of;
+  document.getElementById("seed").textContent = D.meta.seed;
+  document.getElementById("seed2").textContent = D.meta.seed;
+  Dash.tiles(document.getElementById("tiles"), D.tiles);
+  const tot = D.county.reduce((a, r) => a + r.referrals_12m, 0);
+  const other = D.county.reduce((a, r) => a + r.from_patients_in_other_counties, 0);
+  document.getElementById("loc-note").textContent =
+    `${Math.round(other / tot * 100)}% of these referrals came from patients living in a different county than the practice.`;
+
+  const top = D.leaderboard.slice(0, 10).reverse();
+  const name = (r) => `${r.provider_id} · ${r.fictional_practice}`;
+  Dash.register((c) => {
+    Plotly.react("c-top", [
+      { type: "bar", orientation: "h", name: "New patient", y: top.map(name), x: top.map((r) => r.new_patient_referrals),
+        marker: { color: c.s1 }, hovertemplate: "%{x}<extra>New patient</extra>" },
+      { type: "bar", orientation: "h", name: "Renewal / new therapy", y: top.map(name), x: top.map((r) => r.renewal_or_new_therapy),
+        marker: { color: c.s2 }, hovertemplate: "%{x}<extra>Renewal / new therapy</extra>" }],
+      Dash.layout({ barmode: "stack", hovermode: "y unified", margin: { l: 10 }, xaxis: { showgrid: true, showline: false },
+                    yaxis: { showgrid: false } }), Dash.config);
+  });
+
+  const groups = [...new Set(D.trend.map((r) => r.specialty_group))];
+  const months = [...new Set(D.trend.map((r) => r.month_start))];
+  Dash.register((c) => {
+    const colors = [c.s1, c.s2, c.s3];
+    Plotly.react("c-trend", groups.map((g, i) => ({
+      type: "bar", name: g, x: months, y: months.map((m) => D.trend.find((r) => r.month_start === m && r.specialty_group === g).referrals),
+      marker: { color: colors[i % 3] }, hovertemplate: "%{y}<extra>" + g + "</extra>" })),
+      Dash.layout({ barmode: "stack", xaxis: { tickformat: "%b %y", dtick: "M1", type: "date" }, legend: { y: 1.16 } }), Dash.config);
+  });
+  Dash.table(document.getElementById("d-trend"), [{ key: "month_start", label: "Month" }, { key: "specialty_group", label: "Group" },
+    { key: "referrals", label: "Referrals", num: true }, { key: "new_patient_referrals", label: "New patient", num: true },
+    { key: "referring_providers", label: "Providers", num: true }], D.trend);
+
+  Dash.table(document.getElementById("tbl-board"), [
+    { key: "rank", label: "#", num: true }, { key: "provider_id", label: "Provider" }, { key: "fictional_practice", label: "Practice" },
+    { key: "specialty_group", label: "Group" }, { key: "county_name", label: "Provider county" }, { key: "state_code", label: "State" },
+    { key: "referrals_12m", label: "Referrals", num: true }, { key: "new_patient_referrals", label: "New patient", num: true },
+    { key: "distinct_patients", label: "Patients", num: true }, { key: "share_of_scope", label: "Share", num: true, pct: true },
+    { key: "last_referral", label: "Last referral" }, { key: "record_count", label: "Records", num: true }], D.leaderboard);
+
+  const cty = D.county.slice().reverse();
+  Dash.register((c) => {
+    const label = (r) => `${r.county_name} (${r.state_code})`;
+    Plotly.react("c-county", [
+      { type: "bar", orientation: "h", name: "Patient in same county", y: cty.map(label),
+        x: cty.map((r) => r.referrals_12m - r.from_patients_in_other_counties), marker: { color: c.s1 },
+        hovertemplate: "%{x}<extra>Same county</extra>" },
+      { type: "bar", orientation: "h", name: "Patient in another county", y: cty.map(label),
+        x: cty.map((r) => r.from_patients_in_other_counties), marker: { color: c.ord[0] },
+        hovertemplate: "%{x}<extra>Other county</extra>" }],
+      Dash.layout({ barmode: "stack", hovermode: "y unified", margin: { l: 10 }, xaxis: { showgrid: true, showline: false },
+                    yaxis: { showgrid: false } }), Dash.config);
+  });
+  Dash.table(document.getElementById("tbl-county"), [{ key: "county_name", label: "Provider county" }, { key: "state_code", label: "State" },
+    { key: "referrals_12m", label: "Referrals", num: true }, { key: "referring_providers", label: "Providers", num: true },
+    { key: "new_patient_referrals", label: "New patient", num: true },
+    { key: "from_patients_in_other_counties", label: "Patients from other counties", num: true }], D.county);
+  Dash.table(document.getElementById("tbl-audit"), [{ key: "method", label: "Method" },
+    { key: "provider_records_or_people", label: "Providers", num: true }, { key: "referrals", label: "Referrals", num: true }], D.audit);
+  const used = D.audit[D.audit.length - 1], bad = D.audit[0];
+  document.getElementById("t-audit").textContent =
+    `The shortcut reports ${fmt.format(bad.referrals)} referrals from ${bad.provider_records_or_people} provider records; the deduplicated answer is ${fmt.format(used.referrals)} from ${used.provider_records_or_people} people.`;
+
+  const icon = { pass: "Pass", warn: "Warn", fail: "Fail" };
+  document.getElementById("qa").innerHTML = D.qa.map((x) =>
+    `<div class="qa-item"><span class="badge ${x.status}"><span class="dot"></span>${icon[x.status]}</span>
+      <div><b>${x.check}</b><div class="obs">${x.observed}</div><div class="obs">Rule: ${x.rule}</div></div></div>`).join("");
+})();
+</script>
+</body>
+</html>

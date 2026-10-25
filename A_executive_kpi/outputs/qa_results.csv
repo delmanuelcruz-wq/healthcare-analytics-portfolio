@@ -1,0 +1,16 @@
+check,status,observed,rule
+Patients count is a unique-patient count,pass,"2,502 rows = 2,502 distinct patient keys",COUNT(*) must equal COUNT(DISTINCT patient_key)
+New referred patients kept separate from order series and referral events,pass,"Jan 2025-Oct 2026: 2,067 new patients vs 3,010 order series (+46%) vs 3,296 referral events",Patient created date measures new business; order series include renewals and therapy changes
+"First treatment derived from events, not the first-appointment flag",warn,"Derived: 1,929 patients ever started; flag method finds 1,692 (237 missed, 12.3%); 5 patients carry the flag twice","Flag sits on the first BOOKED appointment, which may have been cancelled, missed or held"
+"Treated visits counted as distinct appointments, not line items",pass,"9,424 administration lines vs 8,642 treated visits; 638 visits carry 2+ given lines (split lots, add-on pre-medication, duplicates)",COUNT(DISTINCT appt_key) on qualifying visits
+Completed visits where no medication was given are excluded,pass,315 Complete appointments had medication held,status = Complete AND meds_administered = 1
+Administration lines on cancelled appointments,warn,3 line(s) found and excluded; routed to source-data cleanup,A cancelled visit cannot be a treatment
+Duplicate administration lines cannot inflate visit counts,pass,10 exact duplicate line(s) present; distinct-appointment logic is unaffected,Distinct appointment grain
+Referral providers deduplicated by stable identity,pass,250 provider records -> 247 people (3 duplicate records merged),Group by source_identity_key; keep the earliest record's attributes
+Specialty cut does not double-count multi-specialty providers,pass,"Heatmap total 2,030 = 2,030 referrals in window (joining the specialty bridge would give 2,176)",Use primary specialty only
+Every provider maps to exactly one county (split ZIP handled),pass,0 unmapped; ZIP 00150 straddles two counties and resolves to its primary county,Crosswalk join restricted to is_primary = 1
+Provider status partitions are complete and exclusive,pass,153 active + 71 dormant + 23 never referred = 247 on file,Never-referred providers are not dormant
+Rolling-90 status reproduces in independent Python with no future data,pass,22/22 month-end snapshots match,Only referrals <= as_of
+Late-arriving visit updates,warn,8 past visits still show Scheduled/Confirmed at the snapshot; the last two weeks will rise as updates land,Refresh daily even if leadership reviews weekly
+Months bucketed on site-local time,pass,3 treated visit(s) would shift month if bucketed in UTC,Use start_local for reporting months
+Partial month labelled,pass,October 2026 contains data through Oct 24 only and is marked partial,Never compare a partial month with full months without a label

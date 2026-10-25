@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Healthcare Analytics Portfolio</title>
+<meta name="description" content="Synthetic healthcare data and analytics portfolio: case studies and micro-cases built on one fictional infusion network.">
+<style>/*__SHARED_CSS__*/
+.projects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 16px; }
+.project { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
+.project img { width: 100%; height: 190px; object-fit: cover; object-position: top; border-bottom: 1px solid var(--border); background: var(--surface-2); }
+.project .body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.project h3 { margin: 0; font-size: 16px; }
+.project p { margin: 0; font-size: 13.5px; color: var(--ink-2); }
+.project .skills { font-size: 12px; color: var(--muted); }
+.project .links { margin-top: auto; display: flex; gap: 14px; font-size: 13.5px; font-weight: 600; }
+.project a, .def a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="synthetic-bar">SYNTHETIC DEMONSTRATION - a fictional organization and 100% generated data. Not operational, medical or financial guidance.</div>
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Del Cruz · Healthcare data and analytics portfolio</p>
+    <h1>Twelve case studies, one fictional infusion network</h1>
+    <p>Each project rebuilds a real skill area from my healthcare analytics work as an independent, public-safe project.
+       Every record is generated from a fixed seed, every metric is tested, and each project says plainly what was real work and what was built for this portfolio.</p>
+    <div class="meta"><span>Snapshot October 24, 2026</span><span>SQLite · Python · Excel · Plotly</span><span>Seed 20261024</span></div>
+  </div>
+</header>
+<main class="wrap">
+  <div class="projects">
+    <article class="project"><img src="A_executive_kpi/dashboard.png" alt="Executive KPI dashboard screenshot">
+      <div class="body"><h3>A · Referral-to-treatment executive KPIs</h3>
+        <p>New patients, real treatment starts, completed visits, the booked schedule and rolling-90-day referral sources - each next to its tempting wrong version.</p>
+        <p class="skills">KPI design · event-derived logic · rolling windows · QA</p>
+        <div class="links"><a href="A_executive_kpi/dashboard.html">Dashboard</a><a href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/tree/main/A_executive_kpi">Case study</a></div></div></article>
+    <article class="project"><img src="B_payer_scorecard/dashboard.png" alt="Payer scorecard screenshot">
+      <div class="body"><h3>B · Ten-payer quarterly scorecard</h3>
+        <p>Cohort-correct authorization rates, insurance-at-event attribution, alias grouping and business-day lead times, with every definition fix quantified.</p>
+        <p class="skills">Cohorts · effective-dated joins · Excel formulas · revision log</p>
+        <div class="links"><a href="B_payer_scorecard/dashboard.html">Dashboard</a><a href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/tree/main/B_payer_scorecard">Case study</a></div></div></article>
+    <article class="project"><img src="C_manufacturer_etl_qa/dashboard.png" alt="Submission console screenshot">
+      <div class="body"><h3>C · Manufacturer ETL and submission QA</h3>
+        <p>Weekly inventory, dispense and status files with control totals, a status rules engine, and a console that re-checks every logged submission.</p>
+        <p class="skills">ETL · reconciliation · rules engines · audit controls</p>
+        <div class="links"><a href="C_manufacturer_etl_qa/dashboard.html">Console</a><a href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/tree/main/C_manufacturer_etl_qa">Case study</a></div></div></article>
+    <article class="project"><img src="D_license_compliance_hub/dashboard.png" alt="License compliance hub screenshot">
+      <div class="body"><h3>D · Multi-state license compliance hub</h3>
+        <p>Renewal buckets computed from dates, document audits, medical-director coverage over time, and a per-site compliance matrix.</p>
+        <p class="skills">Compliance data · interval logic · Excel tracker · list views</p>
+        <div class="links"><a href="D_license_compliance_hub/dashboard.html">Hub</a><a href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/tree/main/D_license_compliance_hub">Case study</a></div></div></article>
+  </div>
+
+  <h2 class="section">Tier 2 · shorter case studies</h2>
+  <div class="projects">
+    <article class="project"><img src="tier2/16_cfo_quarterly_trend/dashboard.png" alt="Seven-quarter therapy trend screenshot">
+      <div class="body"><h3>16 · Seven-quarter therapy trend</h3>
+        <p>A finance one-pager: treated visits per quarter, QoQ and first-to-last change, and a footnote that reconciles visits to line items.</p>
+        <p class="skills">Metric grain · executive summary · Excel with live formulas</p>
+        <div class="links"><a href="tier2/16_cfo_quarterly_trend/dashboard.html">Dashboard</a><a href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/tree/main/tier2/16_cfo_quarterly_trend">Case study</a></div></div></article>
+    <article class="project"><img src="tier2/09_specialty_referral_sources/dashboard.png" alt="Referral sources screenshot">
+      <div class="body"><h3>09 · Pulmonology / immunology referral sources</h3>
+        <p>Leaderboard, 12-month trend and provider-county view with each provider counted once and the location definition on the page.</p>
+        <p class="skills">Deduplication · segmentation · geography definitions</p>
+        <div class="links"><a href="tier2/09_specialty_referral_sources/dashboard.html">Dashboard</a><a href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/tree/main/tier2/09_specialty_referral_sources">Case study</a></div></div></article>
+    <article class="project"><img src="tier2/10_fee_schedule_lookup/dashboard.png" alt="Fee-schedule lookup screenshot">
+      <div class="body"><h3>10 · Fee-schedule lookup tracker</h3>
+        <p>Code + claim type + effective-date matching into six exclusive buckets, with $0.00 kept as zero-pay. Every amount synthetic.</p>
+        <p class="skills">Effective-dated lookups · exception tracking · Excel</p>
+        <div class="links"><a href="tier2/10_fee_schedule_lookup/dashboard.html">Dashboard</a><a href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/tree/main/tier2/10_fee_schedule_lookup">Case study</a></div></div></article>
+    <article class="project"><img src="tier2/19_incremental_refresh/dashboard.png" alt="Incremental refresh screenshot">
+      <div class="body"><h3>19 · Incremental refresh demo</h3>
+        <p>Daily change files with an idempotent upsert and audit table; re-sent, late and out-of-order files; goals vs actuals. A personal project.</p>
+        <p class="skills">Data pipelines · idempotency · audit trails</p>
+        <div class="links"><a href="tier2/19_incremental_refresh/dashboard.html">Dashboard</a><a href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/tree/main/tier2/19_incremental_refresh">Case study</a></div></div></article>
+  </div>
+
+  <h2 class="section">Tier 3 · technical micro-cases</h2>
+  <div class="defs">
+    <div class="def"><b><a href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/tree/main/tier3/01_data_model_grain">01 · Data-model grain guide</a></b>A generated grain guide and ERD for 38 tables, with seven measured fan-out traps.</div>
+    <div class="def"><b><a href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/tree/main/tier3/07_service_desk_tickets">07 · Ad hoc request desk</a></b>Five fictional tickets, the clarifying question behind each, SQL answers and a response log.</div>
+    <div class="def"><b><a href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/tree/main/tier3/08_field_lineage_escalation">08 · BI field-lineage escalation</a></b>Blank fields traced to a join, a null-coverage audit, and the issue ticket that splits model from source problems.</div>
+    <div class="def"><b><a href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/tree/main/tier3/20_inventory_accounting_recon">20 · Inventory vs accounting</a></b>Month-end differences explained vial by vial: timing that reverses vs real issues that persist. A learning case.</div>
+  </div>
+
+  <h2 class="section">How it is built</h2>
+  <div class="defs">
+    <div class="def"><b>One synthetic universe</b>38 interoperable tables from a standard-library Python generator. Same seed, byte-identical files.</div>
+    <div class="def"><b>Planted problems, graded QA</b>Duplicates, late updates, unmapped payer aliases, backward status moves, missing documents - each logged in a ground-truth register that the tests grade against.</div>
+    <div class="def"><b>Honest scope</b>Each case study separates on-the-job exposure from independent work. No employer data, names or results are used or implied.</div>
+  </div>
+  <footer class="foot">Coralline Infusion Network is fictional. SYNTHETIC DEMONSTRATION - not operational, medical or financial guidance.</footer>
+</main>
+<script>/*__DATA__*/</script>
+<script>/*__SHARED_JS__*/</script>
+</body>
+</html>

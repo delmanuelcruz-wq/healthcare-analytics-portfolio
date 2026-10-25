@@ -1,0 +1,5 @@
+# Keep LF everywhere so the synthetic CSVs match foundation/data/CHECKSUMS.sha256 on every OS.
+* text=auto eol=lf
+*.png binary
+*.xlsx binary
+*.sqlite binary

@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Referral-to-Treatment KPIs</title>
+<meta name="description" content="Synthetic portfolio dashboard: referral-to-treatment executive KPIs for a fictional multi-site infusion network.">
+<style>/*__SHARED_CSS__*/</style>
+<script src="__PLOTLY_CDN__"></script>
+</head>
+<body>
+<div class="synthetic-bar">SYNTHETIC DEMONSTRATION - fictional organization and data. Not operational, medical or financial guidance.</div>
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Portfolio project A · Coralline Infusion Network (fictional)</p>
+    <h1>Referral-to-treatment executive KPIs</h1>
+    <p>Business results for a sales and operations leadership review: new referred patients, first treatment starts,
+       completed treatment visits, the booked schedule, and which referral sources are active or going quiet.</p>
+    <div class="meta"><span>Data as of <b id="asof"></b> (October is partial)</span><span>Seed <span id="seed"></span></span>
+      <span>Built with SQLite + Python + Plotly</span></div>
+  </div>
+</header>
+<main class="wrap">
+  <div class="tiles" id="tiles"></div>
+
+  <h2 class="section">Intake and starts</h2>
+  <p class="section-lede">Three numbers all get called "new business". Only one measures new patients, and the quick flag-based
+     count of first treatments misses real starts.</p>
+  <div class="grid-2">
+    <section class="card">
+      <h3>New referred patients vs order series vs referral events</h3>
+      <p class="sub">Monthly. Hollow markers = October, a partial month.</p>
+      <div class="chart" id="c-intake"></div>
+      <p class="takeaway" id="t-intake"></p>
+      <details class="data"><summary>Show data table</summary><div id="d-intake"></div></details>
+    </section>
+    <section class="card">
+      <h3>New treatment starts: derived vs first-appointment flag</h3>
+      <p class="sub">Derived = month of each patient's first visit that was Complete with medication given.</p>
+      <div class="chart" id="c-starts"></div>
+      <p class="takeaway" id="t-starts"></p>
+      <details class="data"><summary>Show data table</summary><div id="d-starts"></div></details>
+    </section>
+  </div>
+
+  <h2 class="section">Treatment volume and the schedule</h2>
+  <p class="section-lede">A treated visit is one appointment, however many medication lines it carries.</p>
+  <div class="grid-2">
+    <section class="card">
+      <h3>Completed treatment visits vs administration line items</h3>
+      <p class="sub">Bars: distinct treated appointments. Line: what counting line-item IDs would report.</p>
+      <div class="chart" id="c-visits"></div>
+      <p class="takeaway" id="t-visits"></p>
+      <details class="data"><summary>Show data table</summary><div id="d-visits"></div></details>
+    </section>
+    <section class="card">
+      <h3>Booked treatment visits after the snapshot</h3>
+      <p class="sub">By week. This is the schedule as it stands - a pipeline, not a forecast.</p>
+      <div class="chart" id="c-book"></div>
+      <p class="takeaway" id="t-book"></p>
+      <details class="data"><summary>Show data table</summary><div id="d-book"></div></details>
+    </section>
+  </div>
+
+  <h2 class="section">Referral network</h2>
+  <p class="section-lede">Active = at least one referral in the trailing 90 days. Dormant = referred before, none in that window.
+     Geography is the referring provider's county, not the patient's or the site's.</p>
+  <div class="grid-2">
+    <section class="card">
+      <h3>Referral providers by rolling-90-day status</h3>
+      <p class="sub">Month-end snapshots, plus the Oct 24 snapshot. Deduplicated to one row per provider.</p>
+      <div class="chart" id="c-prov"></div>
+      <p class="takeaway" id="t-prov"></p>
+      <details class="data"><summary>Show data table</summary><div id="d-prov"></div></details>
+    </section>
+    <section class="card">
+      <h3>Q2 2026 new-patient cohort: referral to treatment</h3>
+      <p class="sub">Patients created Apr-Jun 2026, followed to Oct 24. Share of cohort reaching each step.</p>
+      <div class="funnel" id="c-funnel" role="list"></div>
+      <p class="takeaway" id="t-funnel"></p>
+      <details class="data"><summary>Show data table</summary><div id="d-funnel"></div></details>
+    </section>
+    <section class="card full">
+      <h3>Referrals in the last 12 months by provider county and specialty</h3>
+      <p class="sub">Referral events, primary specialty only (multi-specialty providers are not double-counted).</p>
+      <div class="chart-scroll"><div class="chart tall" id="c-heat"></div></div>
+      <details class="data"><summary>Show data table</summary><div id="d-heat"></div></details>
+    </section>
+    <section class="card full">
+      <h3>Most active referral sources</h3>
+      <p class="sub">Referrals in the trailing 90 days. Fictional practices.</p>
+      <div id="tbl-active"></div>
+    </section>
+    <section class="card full">
+      <h3>Dormant sources worth a call</h3>
+      <p class="sub">No referral in 90 days, ranked by historical volume.</p>
+      <div id="tbl-dormant"></div>
+    </section>
+  </div>
+
+  <h2 class="section">Metric definitions</h2>
+  <div class="defs">
+    <div class="def"><b>New referred patients</b>Distinct patients whose record was created in the period. Business proxy for new referral intake.
+      <div class="check">Not order series (renewals, therapy changes) and not referral events (duplicates, re-referrals).</div></div>
+    <div class="def"><b>New treatment starts</b>Distinct patients whose first qualifying visit (Complete, medication administered, at least one given line) falls in the period.
+      <div class="check">Derived from events; the system's first-appointment flag is shown only for comparison.</div></div>
+    <div class="def"><b>Completed treatment visits</b>Distinct appointments that were Complete with medication administered.
+      <div class="check">Split lots, add-on lines and duplicate lines never multiply a visit.</div></div>
+    <div class="def"><b>Booked visits</b>Distinct appointments after the snapshot with status Scheduled or Confirmed.
+      <div class="check">Pipeline only. Most visits beyond about three weeks are not booked yet.</div></div>
+    <div class="def"><b>Active / dormant providers</b>Active: 1+ referral in (as-of - 90 days, as-of]. Dormant: earlier referral, none in that window.
+      <div class="check">Never-referred providers are counted separately. Calendar quarters are not a substitute for a rolling window.</div></div>
+    <div class="def"><b>Provider county</b>County of the referring provider's practice ZIP via the primary crosswalk row.
+      <div class="check">Not the patient's home county and not the infusion site's county.</div></div>
+  </div>
+
+  <h2 class="section">Quality checks run on this build</h2>
+  <p class="section-lede">WARN means a real issue was found and handled - documented, excluded, or routed for cleanup.</p>
+  <div class="qa-list" id="qa"></div>
+
+  <h2 class="section">What is real and what is simulated</h2>
+  <div class="scope">
+    <div class="def"><b>On-the-job exposure (real, described only in general terms)</b>
+      <ul><li>Translated leadership asks into separate KPIs with an analytics manager.</li>
+          <li>Built and saved two draft monthly trend reports (patients created; first treated new patients) in a BI tool.</li>
+          <li>Captured the rolling-90-day provider definitions and the provider-county rule.</li></ul></div>
+    <div class="def"><b>Independently built for this portfolio (synthetic)</b>
+      <ul><li>Every number, chart and table on this page.</li>
+          <li>Completed-visit, booked-pipeline, provider-status, county and funnel extensions.</li>
+          <li>The data model, SQL, QA suite and this dashboard. Not a production deployment.</li></ul></div>
+  </div>
+  <footer class="foot">Coralline Infusion Network is fictional. All data is synthetic, generated from seed <span id="seed2"></span>.
+    No patient, provider, payer or employer data was used. SYNTHETIC DEMONSTRATION - not operational, medical or financial guidance.</footer>
+</main>
+<script>/*__DATA__*/</script>
+<script>/*__SHARED_JS__*/</script>
+<script>
+(function () {
+  const D = window.DATA, fmt = Dash.fmt;
+  const months = D.monthly.map((r) => r.month_start);
+  const label = (iso) => new Date(iso + "T00:00:00").toLocaleString("en-US", { month: "short", year: "numeric" });
+  const partial = D.monthly.map((r) => r.is_partial_month === 1);
+  document.getElementById("asof").textContent = D.meta.as_of;
+  document.getElementById("seed").textContent = D.meta.seed;
+  document.getElementById("seed2").textContent = D.meta.seed;
+  Dash.tiles(document.getElementById("tiles"), D.tiles);
+
+  const full = D.monthly.filter((r) => !r.is_partial_month);
+  const sum = (rows, k) => rows.reduce((a, r) => a + r[k], 0);
+  const last = full[full.length - 1];
+
+  function line(name, ys, color, opts) {
+    return Object.assign({
+      type: "scatter", mode: "lines+markers", name, x: months, y: ys,
+      line: { color, width: 2, shape: "linear" },
+      marker: { size: partial.map((p) => (p ? 9 : 5)), color: partial.map((p) => (p ? "rgba(0,0,0,0)" : color)),
+                line: { color, width: partial.map((p) => (p ? 2 : 0)) } },
+      hovertemplate: "%{y:,}<extra>" + name + "</extra>",
+    }, opts || {});
+  }
+  const monthAxis = { xaxis: { tickformat: "%b %y", dtick: "M3", ticklabelmode: "period" } };
+
+  // 1. Intake definitions
+  Dash.register((c) => {
+    Plotly.react("c-intake", [
+      line("Referral events", D.monthly.map((r) => r.referral_events), c.s1),
+      line("New order series", D.monthly.map((r) => r.new_order_series), c.s2),
+      line("New referred patients", D.monthly.map((r) => r.new_referred_patients), c.s3),
+    ], Dash.layout(monthAxis), Dash.config);
+  });
+  const np = sum(full, "new_referred_patients"), no = sum(full, "new_order_series");
+  document.getElementById("t-intake").textContent =
+    `Order series ran ${Math.round((no - np) / np * 100)}% above new patients over 21 full months: renewals and therapy changes create new series for existing patients.`;
+  Dash.table(document.getElementById("d-intake"), [
+    { key: "month", label: "Month" }, { key: "new_referred_patients", label: "New referred patients", num: true },
+    { key: "new_order_series", label: "New order series", num: true }, { key: "referral_events", label: "Referral events", num: true }],
+    D.monthly.map((r) => Object.assign({ month: label(r.month_start) + (r.is_partial_month ? " (partial)" : "") }, r)));
+
+  // 2. Starts: derived vs flag
+  Dash.register((c) => {
+    Plotly.react("c-starts", [
+      line("Derived from treated visits", D.monthly.map((r) => r.new_treatment_starts), c.s1, { fill: "none" }),
+      line("First-appointment flag method", D.monthly.map((r) => r.new_treatment_starts_flag_method), c.s2),
+    ], Dash.layout(monthAxis), Dash.config);
+  });
+  const ds = sum(full, "new_treatment_starts"), fs = sum(full, "new_treatment_starts_flag_method");
+  document.getElementById("t-starts").textContent =
+    `The flag method missed ${ds - fs} of ${fmt.format(ds)} starts (${((ds - fs) / ds * 100).toFixed(1)}%): their first booked visit was cancelled, missed, or held.`;
+  Dash.table(document.getElementById("d-starts"), [
+    { key: "month", label: "Month" }, { key: "new_treatment_starts", label: "Derived", num: true },
+    { key: "new_treatment_starts_flag_method", label: "Flag method", num: true }, { key: "gap", label: "Missed by flag", num: true }],
+    D.monthly.map((r) => Object.assign({ month: label(r.month_start) + (r.is_partial_month ? " (partial)" : ""),
+      gap: r.new_treatment_starts - r.new_treatment_starts_flag_method }, r)));
+
+  // 3. Visits vs lines
+  Dash.register((c) => {
+    Plotly.react("c-visits", [
+      { type: "bar", name: "Completed treatment visits", x: months, y: D.monthly.map((r) => r.completed_treatment_visits),
+        marker: { color: c.s1, opacity: partial.map((p) => (p ? 0.45 : 1)), cornerradius: 4 },
+        hovertemplate: "%{y:,}<extra>Treated visits</extra>" },
+      line("Administration line items", D.monthly.map((r) => r.administration_line_items), c.s2),
+    ], Dash.layout(Object.assign({ bargap: 0.45 }, monthAxis)), Dash.config);
+  });
+  const tv = sum(full, "completed_treatment_visits"), li = sum(full, "administration_line_items");
+  document.getElementById("t-visits").textContent =
+    `${fmt.format(last.completed_treatment_visits)} treated visits in ${label(last.month_start)}. Counting line items would overstate volume by ${((li - tv) / tv * 100).toFixed(1)}%.`;
+  Dash.table(document.getElementById("d-visits"), [
+    { key: "month", label: "Month" }, { key: "completed_treatment_visits", label: "Treated visits", num: true },
+    { key: "administration_line_items", label: "Line items", num: true }, { key: "complete_status_appointments", label: "Status = Complete", num: true }],
+    D.monthly.map((r) => Object.assign({ month: label(r.month_start) + (r.is_partial_month ? " (partial)" : "") }, r)));
+
+  // 4. Bookings
+  Dash.register((c) => {
+    Plotly.react("c-book", [{
+      type: "bar", name: "Booked visits", x: D.bookings.map((b) => b.week_start), y: D.bookings.map((b) => b.booked_visits),
+      marker: { color: c.s1, cornerradius: 4 }, text: D.bookings.map((b) => b.booked_visits), textposition: "outside",
+      textfont: { color: c.ink2, size: 11 }, cliponaxis: false,
+      hovertemplate: "Week of %{x|%b %d}: %{y:,} booked<extra></extra>" }],
+      Dash.layout({ showlegend: false, hovermode: "closest", xaxis: { tickformat: "%b %d", type: "date" } }), Dash.config);
+  });
+  const b0 = D.bookings[0] ? D.bookings[0].booked_visits : 0, btot = sum(D.bookings, "booked_visits");
+  document.getElementById("t-book").textContent =
+    `${fmt.format(btot)} visits are booked after Oct 24; ${b0} of them next week. The drop-off is booking lead time, not falling demand.`;
+  Dash.table(document.getElementById("d-book"), [
+    { key: "week_start", label: "Week of" }, { key: "booked_visits", label: "Booked", num: true },
+    { key: "confirmed_visits", label: "Confirmed", num: true }, { key: "booked_patients", label: "Patients", num: true }], D.bookings);
+
+  // 5. Provider status
+  Dash.register((c) => {
+    const x = D.provider_monthly.map((r) => r.as_of);
+    const mk = (name, key, color) => ({ type: "scatter", mode: "lines+markers", name, x, y: D.provider_monthly.map((r) => r[key]),
+      line: { color, width: 2 }, marker: { size: 5, color }, hovertemplate: "%{y}<extra>" + name + "</extra>" });
+    Plotly.react("c-prov", [mk("Active (90 days)", "active_providers", c.s1), mk("Dormant", "dormant_providers", c.s2),
+      mk("Never referred", "never_referred_providers", c.s3)],
+      Dash.layout({ xaxis: { tickformat: "%b %y", dtick: "M3" } }), Dash.config);
+  });
+  const ps = D.provider_monthly[D.provider_monthly.length - 1], p0 = D.provider_monthly[0];
+  document.getElementById("t-prov").textContent =
+    `${ps.active_providers} active and ${ps.dormant_providers} dormant sources on Oct 24 (vs ${p0.active_providers} and ${p0.dormant_providers} in Jan 2025). The dormant pool keeps growing as the network ages - a re-engagement list, not a failure metric.`;
+  Dash.table(document.getElementById("d-prov"), [
+    { key: "as_of", label: "As of" }, { key: "active_providers", label: "Active", num: true },
+    { key: "newly_active_providers", label: "Newly active", num: true }, { key: "dormant_providers", label: "Dormant", num: true },
+    { key: "never_referred_providers", label: "Never referred", num: true }], D.provider_monthly);
+
+  // 6. Funnel - plain HTML bars (ordinal ramp, darkest = first step) so labels never collide on phones
+  const steps = ["--ord-5", "--ord-4", "--ord-3", "--ord-3", "--ord-2", "--ord-1"];
+  document.getElementById("c-funnel").innerHTML = D.funnel.map((s, i) => {
+    const pct = (s.pct_of_cohort * 100);
+    return `<div class="funnel-row" role="listitem" title="${s.stage}: ${s.patients} patients (${pct.toFixed(1)}%)">
+      <div class="funnel-label"><span>${s.stage}</span><span class="funnel-val">${pct.toFixed(0)}% · ${s.patients}</span></div>
+      <div class="funnel-track"><div class="funnel-bar" style="width:${pct}%;background:var(${steps[i]})"></div></div></div>`;
+  }).join("");
+  const leadTxt = D.lead.map((l) => `${l.step}: ${l.median_days ?? "n/a"} days`).join(" · ");
+  document.getElementById("t-funnel").textContent = `Median calendar days - ${leadTxt}.`;
+  Dash.table(document.getElementById("d-funnel"), [
+    { key: "stage", label: "Step" }, { key: "patients", label: "Patients", num: true },
+    { key: "pct_of_cohort", label: "Share of cohort", num: true, pct: true }], D.funnel);
+
+  // 7. Heatmap
+  Dash.register((c) => {
+    Plotly.react("c-heat", [{
+      type: "heatmap", x: D.heat.x, y: D.heat.y, z: D.heat.z, xgap: 2, ygap: 2,
+      colorscale: [[0, c.seq[0]], [0.17, c.seq[1]], [0.33, c.seq[2]], [0.5, c.seq[3]], [0.67, c.seq[4]], [0.83, c.seq[5]], [1, c.seq[6]]],
+      colorbar: { title: { text: "Referrals", font: { color: c.ink2, size: 11 } }, tickfont: { color: c.muted }, thickness: 12, outlinewidth: 0 },
+      hovertemplate: "%{y}<br>%{x}: %{z} referrals<extra></extra>" }],
+      Dash.layout({ hovermode: "closest", margin: { l: 210, b: 70 }, xaxis: { showline: false, tickangle: -25 },
+                    yaxis: { autorange: "reversed", rangemode: "normal" } }), Dash.config);
+  });
+  const heatRows = [];
+  D.heat.y.forEach((county, i) => D.heat.x.forEach((sp, j) => { if (D.heat.z[i][j]) heatRows.push({ county, specialty: sp, referrals: D.heat.z[i][j] }); }));
+  Dash.table(document.getElementById("d-heat"), [{ key: "county", label: "Provider county" }, { key: "specialty", label: "Specialty" },
+    { key: "referrals", label: "Referrals (12 mo)", num: true }], heatRows);
+
+  // 8. Provider tables (page is already labelled fictional; drop the suffix to keep rows readable)
+  const tidy = (rows) => rows.map((r) => Object.assign({}, r, { fictional_practice: r.fictional_practice.replace(" (fictional)", "") }));
+  D.top_active = tidy(D.top_active); D.dormant = tidy(D.dormant);
+  Dash.table(document.getElementById("tbl-active"), [
+    { key: "provider_id", label: "Provider" }, { key: "fictional_practice", label: "Practice" }, { key: "specialty_label", label: "Specialty" },
+    { key: "county_name", label: "County" }, { key: "state_code", label: "State" }, { key: "referrals_90d", label: "Referrals, last 90 days", num: true },
+    { key: "referrals_prior_90d", label: "Prior 90 days", num: true }, { key: "last_referral", label: "Last referral" }], D.top_active);
+  Dash.table(document.getElementById("tbl-dormant"), [
+    { key: "provider_id", label: "Provider" }, { key: "fictional_practice", label: "Practice" }, { key: "specialty_label", label: "Specialty" },
+    { key: "county_name", label: "County" }, { key: "last_referral", label: "Last referral" }, { key: "days_since_last_referral", label: "Days quiet", num: true },
+    { key: "referrals_all_time", label: "Referrals, all time", num: true }], D.dormant);
+
+  // 9. QA
+  const icon = { pass: "Pass", warn: "Warn", fail: "Fail" };
+  document.getElementById("qa").innerHTML = D.qa.map((q) =>
+    `<div class="qa-item"><span class="badge ${q.status}"><span class="dot"></span>${icon[q.status]}</span>
+      <div><b>${q.check}</b><div class="obs">${q.observed}</div><div class="obs">Rule: ${q.rule}</div></div></div>`).join("");
+})();
+</script>
+</body>
+</html>

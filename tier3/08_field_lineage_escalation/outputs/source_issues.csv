@@ -1,0 +1,10 @@
+issue,ticket_key,fill_ref,detail,owner
+Fill reference resolves to no fill,DT00089,RXO073-R1,Typed reference matches no prescription fill even after parsing,Pharmacy feed
+Shipped to a different site than the visit,DT00100,RX0083,"Ticket site S05, visit site S03",Pharmacy feed / site
+Fill reference resolves to no fill,DT00211,RXO114-R1,Typed reference matches no prescription fill even after parsing,Pharmacy feed
+Delivered without a delivered time,DT00278,RX0048-R2,"Status Delivered, timestamp blank in the feed",Pharmacy feed
+Shipped to a different site than the visit,DT00294,RX0127-R2,"Ticket site S04, visit site S05",Pharmacy feed / site
+Fill reference resolves to no fill,DT00314,RX0086-2R,Typed reference matches no prescription fill even after parsing,Pharmacy feed
+Delivered without a delivered time,DT00328,RX0115-R1,"Status Delivered, timestamp blank in the feed",Pharmacy feed
+Delivered without a delivered time,DT00334,RX0077-R2,"Status Delivered, timestamp blank in the feed",Pharmacy feed
+Delivered without a delivered time,DT00376,RX0174,"Status Delivered, timestamp blank in the feed",Pharmacy feed

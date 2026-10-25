@@ -1,0 +1,5 @@
+license_record_key,staff_label,credential_class,state_code,expiry_date,register_says_on_file,gap
+LIC011,RN-011 (fictional),RN,GA,2026-11-03,1,"Register says on file, but the document library has nothing"
+LIC025,RN-025 (fictional),RN,SC,2027-11-22,0,Register shows no document
+LIC005,RN-005 (fictional),RN,SC,2028-03-04,1,"Register says on file, but the document library has nothing"
+LIC008,RN-008 (fictional),RN,SC,2028-08-19,0,Register shows no document

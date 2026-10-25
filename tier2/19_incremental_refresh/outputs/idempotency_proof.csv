@@ -1,0 +1,6 @@
+run,history_rows,current_rows,content_sha256_12,note
+1. Scheduled deliveries with incidents,25729,10246,1645c8cf17ef,The run published on this page
+2. Rerun from scratch,25729,10246,1645c8cf17ef,"Audit, load sequence and content identical: True"
+3. Rerun + reload every file again,25729,10246,1645c8cf17ef,0 rows inserted by the reload
+"4. Clean date order, no incidents",25729,10246,1645c8cf17ef,Same final answer as the run with incidents
+5. All files in reverse order,25729,10246,1645c8cf17ef,Order of arrival does not change the result

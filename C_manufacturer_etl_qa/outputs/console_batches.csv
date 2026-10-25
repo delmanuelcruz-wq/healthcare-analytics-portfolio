@@ -1,0 +1,121 @@
+batch_key,program_key,file_type,reporting_week,overall,diagnosis,logged_rows,recomputed_rows,recomputed_rows_now,control_count,ack_state,generated_at,sent_at,acknowledged_at,issues
+SB0001,PROGRAM_A,DISPENSE,2026-05-04,green,,10,10,10,10,Accepted,2026-05-13 10:12:00,2026-05-13 11:12:00,2026-05-15 13:12:00,
+SB0002,PROGRAM_A,INVENTORY,2026-05-04,green,,8,8,,8,Accepted,2026-05-13 10:12:00,2026-05-13 12:12:00,2026-05-15 13:12:00,
+SB0003,PROGRAM_B,DISPENSE,2026-05-04,green,,19,19,19,19,Accepted,2026-05-13 10:12:00,2026-05-13 13:12:00,2026-05-16 18:12:00,
+SB0004,PROGRAM_B,INVENTORY,2026-05-04,green,,16,16,,16,Accepted,2026-05-13 10:12:00,2026-05-13 11:12:00,2026-05-16 11:12:00,
+SB0005,PROGRAM_B,STATUS,2026-05-04,green,,38,38,,38,Accepted,2026-05-13 10:12:00,2026-05-13 13:12:00,2026-05-14 14:12:00,
+SB0006,PROGRAM_A,DISPENSE,2026-05-11,red,DUPLICATE_ROWS_IN_FILE,12,10,11,12,Accepted,2026-05-19 11:19:00,2026-05-19 12:19:00,2026-05-20 13:19:00,Logged vs recomputed: 2 more rows than distinct records - duplicates left in the file; Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate
+SB0007,PROGRAM_A,INVENTORY,2026-05-11,green,,8,8,,8,Accepted,2026-05-19 11:19:00,2026-05-19 12:19:00,2026-05-21 17:19:00,
+SB0008,PROGRAM_B,DISPENSE,2026-05-11,green,,29,29,29,29,Accepted,2026-05-19 11:19:00,2026-05-20 14:19:00,2026-05-22 15:19:00,
+SB0009,PROGRAM_B,INVENTORY,2026-05-11,green,,16,16,,16,Accepted,2026-05-19 11:19:00,2026-05-19 14:19:00,2026-05-21 19:19:00,
+SB0010,PROGRAM_B,STATUS,2026-05-11,green,,44,44,,44,Accepted,2026-05-19 11:19:00,2026-05-19 15:19:00,2026-05-22 19:19:00,
+SB0011,PROGRAM_A,DISPENSE,2026-05-18,green,,6,6,6,6,Accepted,2026-05-26 09:55:00,2026-05-26 13:55:00,2026-05-29 18:55:00,
+SB0012,PROGRAM_A,INVENTORY,2026-05-18,green,,8,8,,8,Accepted,2026-05-26 09:55:00,2026-05-26 11:55:00,2026-05-27 11:55:00,
+SB0013,PROGRAM_B,DISPENSE,2026-05-18,yellow,,19,19,22,19,Accepted,2026-05-26 09:55:00,2026-05-26 12:55:00,2026-05-28 16:55:00,Late updates since send: 3 visit(s) completed in the source after the file was built - restatement candidate
+SB0014,PROGRAM_B,INVENTORY,2026-05-18,green,,16,16,,16,Accepted,2026-05-26 09:55:00,2026-05-26 10:55:00,2026-05-27 12:55:00,
+SB0015,PROGRAM_B,STATUS,2026-05-18,green,,55,55,,55,Accepted,2026-05-26 09:55:00,2026-05-26 11:55:00,2026-05-29 16:55:00,
+SB0016,PROGRAM_A,DISPENSE,2026-05-25,yellow,,10,10,11,10,Accepted,2026-06-03 11:15:00,2026-06-03 14:15:00,2026-06-04 19:15:00,Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate
+SB0017,PROGRAM_A,INVENTORY,2026-05-25,green,,8,8,,8,Accepted,2026-06-03 11:15:00,2026-06-03 12:15:00,2026-06-06 13:15:00,
+SB0018,PROGRAM_B,DISPENSE,2026-05-25,yellow,,23,23,25,23,Accepted,2026-06-03 11:15:00,2026-06-03 15:15:00,2026-06-05 20:15:00,Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate
+SB0019,PROGRAM_B,INVENTORY,2026-05-25,green,,16,16,,16,Accepted,2026-06-03 11:15:00,2026-06-03 12:15:00,2026-06-06 14:15:00,
+SB0020,PROGRAM_B,STATUS,2026-05-25,yellow,,46,46,,46,Accepted,2026-06-03 11:15:00,2026-06-03 14:15:00,2026-06-04 14:15:00,Status rules: 1 event(s) routed for review
+SB0021,PROGRAM_A,DISPENSE,2026-06-01,yellow,,5,5,7,5,Accepted,2026-06-09 09:06:00,2026-06-09 11:06:00,2026-06-12 14:06:00,Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate
+SB0022,PROGRAM_A,INVENTORY,2026-06-01,green,,8,8,,8,Accepted,2026-06-09 09:06:00,2026-06-09 13:06:00,2026-06-11 16:06:00,
+SB0023,PROGRAM_B,DISPENSE,2026-06-01,yellow,,22,22,24,22,Accepted,2026-06-09 09:06:00,2026-06-09 11:06:00,2026-06-11 11:06:00,Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate
+SB0024,PROGRAM_B,INVENTORY,2026-06-01,yellow,,16,16,,16,Accepted,2026-06-09 09:06:00,2026-06-09 10:06:00,2026-06-11 11:06:00,Inventory bridge: 1 site-product cell(s) do not reconcile: S07-THERAPY_G-2026-06-01
+SB0025,PROGRAM_B,STATUS,2026-06-01,red,,52,52,,52,Pending,2026-06-09 09:06:00,2026-06-09 13:06:00,,Acknowledgment: No acknowledgment after 98 business day(s) - escalate
+SB0026,PROGRAM_A,DISPENSE,2026-06-08,yellow,,8,8,10,8,Accepted,2026-06-16 10:18:00,2026-06-16 11:18:00,2026-06-17 14:18:00,Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate
+SB0027,PROGRAM_A,INVENTORY,2026-06-08,green,,8,8,,8,Accepted,2026-06-16 10:18:00,2026-06-16 12:18:00,2026-06-18 17:18:00,
+SB0028,PROGRAM_B,DISPENSE,2026-06-08,red,,22,22,24,23,Accepted,2026-06-16 10:18:00,2026-06-16 13:18:00,2026-06-18 15:18:00,Control count: Control count includes the header row (off by one); Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate; Mandatory fields: 1 row(s) missing site_id - corrected extract flags them before resubmission
+SB0029,PROGRAM_B,INVENTORY,2026-06-08,green,,16,16,,16,Accepted,2026-06-16 10:18:00,2026-06-16 14:18:00,2026-06-17 15:18:00,
+SB0030,PROGRAM_B,STATUS,2026-06-08,green,,45,45,,45,Accepted,2026-06-16 10:18:00,2026-06-16 11:18:00,2026-06-17 17:18:00,
+SB0031,PROGRAM_A,DISPENSE,2026-06-15,green,,8,8,8,8,Accepted,2026-06-24 09:59:00,2026-06-24 10:59:00,2026-06-25 10:59:00,
+SB0032,PROGRAM_A,INVENTORY,2026-06-15,green,,8,8,,8,Accepted,2026-06-24 09:59:00,2026-06-24 12:59:00,2026-06-26 18:59:00,
+SB0033,PROGRAM_B,DISPENSE,2026-06-15,yellow,,23,23,24,23,Accepted,2026-06-24 09:59:00,2026-06-24 11:59:00,2026-06-27 14:59:00,Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate
+SB0034,PROGRAM_B,INVENTORY,2026-06-15,yellow,,16,16,,16,Accepted,2026-06-24 09:59:00,2026-06-24 10:59:00,2026-06-25 13:59:00,Inventory bridge: 1 site-product cell(s) do not reconcile: S04-THERAPY_F-2026-06-15
+SB0035,PROGRAM_B,STATUS,2026-06-15,green,,66,66,,66,Accepted,2026-06-24 09:59:00,2026-06-24 10:59:00,2026-06-25 14:59:00,
+SB0036,PROGRAM_A,DISPENSE,2026-06-22,yellow,,7,7,7,7,Accepted,2026-06-30 11:43:00,2026-06-30 12:43:00,2026-07-03 15:43:00,Mandatory fields: 1 row(s) missing site_id - corrected extract flags them before resubmission
+SB0037,PROGRAM_A,INVENTORY,2026-06-22,green,,8,8,,8,Accepted,2026-06-30 11:43:00,2026-06-30 13:43:00,2026-07-01 18:43:00,
+SB0038,PROGRAM_B,DISPENSE,2026-06-22,yellow,,26,26,27,26,Accepted,2026-06-30 11:43:00,2026-06-30 12:43:00,2026-07-02 18:43:00,Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate
+SB0039,PROGRAM_B,INVENTORY,2026-06-22,green,,16,16,,16,Accepted,2026-06-30 11:43:00,2026-06-30 14:43:00,2026-07-02 19:43:00,
+SB0040,PROGRAM_B,STATUS,2026-06-22,red,,47,47,,47,Accepted,2026-06-30 11:43:00,2026-06-30 14:43:00,2026-07-03 17:43:00,Status rules: 1 event(s) need escalation before reporting
+SB0041,PROGRAM_A,DISPENSE,2026-06-29,yellow,,8,8,9,8,Accepted,2026-07-08 11:13:00,2026-07-08 12:13:00,2026-07-09 16:13:00,Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate; Mandatory fields: 1 row(s) missing site_id - corrected extract flags them before resubmission
+SB0042,PROGRAM_A,INVENTORY,2026-06-29,green,,8,8,,8,Accepted,2026-07-08 11:13:00,2026-07-08 12:13:00,2026-07-10 14:13:00,
+SB0043,PROGRAM_B,DISPENSE,2026-06-29,yellow,,27,27,30,27,Accepted,2026-07-08 11:13:00,2026-07-08 15:13:00,2026-07-10 16:13:00,Late updates since send: 3 visit(s) completed in the source after the file was built - restatement candidate
+SB0044,PROGRAM_B,INVENTORY,2026-06-29,red,,16,16,,17,Rejected,2026-07-08 11:13:00,2026-07-08 15:13:00,2026-07-11 15:13:00,Control count: Control count includes the header row (off by one); Acknowledgment: Rejected by the manufacturer
+SB0045,PROGRAM_B,STATUS,2026-06-29,green,,47,47,,47,Accepted,2026-07-08 11:13:00,2026-07-08 12:13:00,2026-07-11 12:13:00,
+SB0046,PROGRAM_A,DISPENSE,2026-07-06,green,,9,9,9,9,Accepted,2026-07-14 10:40:00,2026-07-14 13:40:00,2026-07-16 16:40:00,
+SB0047,PROGRAM_A,INVENTORY,2026-07-06,green,,8,8,,8,Accepted,2026-07-14 10:40:00,2026-07-14 11:40:00,2026-07-16 11:40:00,
+SB0048,PROGRAM_B,DISPENSE,2026-07-06,yellow,,22,22,24,22,Accepted,2026-07-14 10:40:00,2026-07-14 12:40:00,2026-07-17 17:40:00,Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate
+SB0049,PROGRAM_B,INVENTORY,2026-07-06,green,,16,16,,16,Accepted,2026-07-14 10:40:00,2026-07-14 12:40:00,2026-07-16 13:40:00,
+SB0050,PROGRAM_B,STATUS,2026-07-06,green,,65,65,,65,Accepted,2026-07-14 10:40:00,2026-07-14 12:40:00,2026-07-16 13:40:00,
+SB0051,PROGRAM_A,DISPENSE,2026-07-13,green,,9,9,9,9,Accepted,2026-07-21 09:34:00,2026-07-21 10:34:00,2026-07-24 16:34:00,
+SB0052,PROGRAM_A,INVENTORY,2026-07-13,yellow,,8,8,,8,Accepted,2026-07-21 09:34:00,2026-07-21 10:34:00,2026-07-24 11:34:00,Inventory bridge: 1 site-product cell(s) do not reconcile: S05-THERAPY_D-2026-07-13
+SB0053,PROGRAM_B,DISPENSE,2026-07-13,yellow,,21,21,23,21,Accepted,2026-07-21 09:34:00,2026-07-21 13:34:00,2026-07-23 17:34:00,Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate
+SB0054,PROGRAM_B,INVENTORY,2026-07-13,green,,16,16,,16,Accepted,2026-07-21 09:34:00,2026-07-21 13:34:00,2026-07-24 16:34:00,
+SB0055,PROGRAM_B,STATUS,2026-07-13,green,,53,53,,53,Accepted,2026-07-21 09:34:00,2026-07-21 10:34:00,2026-07-24 11:34:00,
+SB0056,PROGRAM_A,DISPENSE,2026-07-20,green,,8,8,8,8,Accepted,2026-07-28 09:31:00,2026-07-28 13:31:00,2026-07-29 17:31:00,
+SB0057,PROGRAM_A,INVENTORY,2026-07-20,green,,8,8,,8,Accepted,2026-07-28 09:31:00,2026-07-28 12:31:00,2026-07-31 12:31:00,
+SB0058,PROGRAM_B,DISPENSE,2026-07-20,yellow,,20,20,24,20,Accepted,2026-07-28 09:31:00,2026-07-28 13:31:00,2026-07-31 18:31:00,Late updates since send: 4 visit(s) completed in the source after the file was built - restatement candidate
+SB0059,PROGRAM_B,INVENTORY,2026-07-20,green,,16,16,,16,Accepted,2026-07-28 09:31:00,2026-07-28 11:31:00,2026-07-29 17:31:00,
+SB0060,PROGRAM_B,STATUS,2026-07-20,green,,50,50,,50,Accepted,2026-07-28 09:31:00,2026-07-28 12:31:00,2026-07-29 18:31:00,
+SB0061,PROGRAM_A,DISPENSE,2026-07-27,yellow,,9,9,11,9,Accepted,2026-08-05 11:44:00,2026-08-05 12:44:00,2026-08-08 15:44:00,Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate
+SB0062,PROGRAM_A,INVENTORY,2026-07-27,green,,8,8,,8,Accepted,2026-08-05 11:44:00,2026-08-05 14:44:00,2026-08-06 20:44:00,
+SB0063,PROGRAM_B,DISPENSE,2026-07-27,yellow,,27,27,31,27,Accepted,2026-08-05 11:44:00,2026-08-05 14:44:00,2026-08-08 16:44:00,Late updates since send: 4 visit(s) completed in the source after the file was built - restatement candidate
+SB0064,PROGRAM_B,INVENTORY,2026-07-27,green,,16,16,,16,Accepted,2026-08-05 11:44:00,2026-08-05 13:44:00,2026-08-07 17:44:00,
+SB0065,PROGRAM_B,STATUS,2026-07-27,green,,37,37,,37,Accepted,2026-08-05 11:44:00,2026-08-05 14:44:00,2026-08-08 16:44:00,
+SB0066,PROGRAM_A,DISPENSE,2026-08-03,green,,10,10,10,10,Accepted,2026-08-11 11:53:00,2026-08-11 12:53:00,2026-08-12 16:53:00,
+SB0067,PROGRAM_A,INVENTORY,2026-08-03,green,,8,8,,8,Accepted,2026-08-11 11:53:00,2026-08-11 12:53:00,2026-08-12 13:53:00,
+SB0068,PROGRAM_B,DISPENSE,2026-08-03,yellow,,22,22,23,22,Accepted,2026-08-11 11:53:00,2026-08-11 15:53:00,2026-08-13 17:53:00,Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate; Mandatory fields: 1 row(s) missing site_id - corrected extract flags them before resubmission
+SB0069,PROGRAM_B,INVENTORY,2026-08-03,green,,16,16,,16,Accepted,2026-08-11 11:53:00,2026-08-11 14:53:00,2026-08-12 17:53:00,
+SB0070,PROGRAM_B,STATUS,2026-08-03,green,,55,55,,55,Accepted,2026-08-11 11:53:00,2026-08-11 13:53:00,2026-08-12 14:53:00,
+SB0071,PROGRAM_A,DISPENSE,2026-08-10,green,,7,7,7,7,Accepted,2026-08-18 09:49:00,2026-08-18 12:49:00,2026-08-19 12:49:00,
+SB0072,PROGRAM_A,INVENTORY,2026-08-10,green,,8,8,,8,Accepted,2026-08-18 09:49:00,2026-08-18 13:49:00,2026-08-19 14:49:00,
+SB0073,PROGRAM_B,DISPENSE,2026-08-10,yellow,,23,23,25,23,Accepted,2026-08-18 09:49:00,2026-08-18 11:49:00,2026-08-19 15:49:00,Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate
+SB0074,PROGRAM_B,INVENTORY,2026-08-10,green,,16,16,,16,Accepted,2026-08-18 09:49:00,2026-08-18 10:49:00,2026-08-21 14:49:00,
+SB0075,PROGRAM_B,STATUS,2026-08-10,yellow,,49,49,,49,Accepted,2026-08-18 09:49:00,2026-08-18 11:49:00,2026-08-20 14:49:00,Status rules: 2 event(s) routed for review
+SB0076,PROGRAM_A,DISPENSE,2026-08-17,yellow,,11,11,12,11,Accepted,2026-08-26 10:59:00,2026-08-26 12:59:00,2026-08-27 17:59:00,Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate
+SB0077,PROGRAM_A,INVENTORY,2026-08-17,green,,8,8,,8,Accepted,2026-08-26 10:59:00,2026-08-26 11:59:00,2026-08-27 14:59:00,
+SB0078,PROGRAM_B,DISPENSE,2026-08-17,yellow,,25,25,26,25,Accepted,2026-08-26 10:59:00,2026-08-26 14:59:00,2026-08-27 19:59:00,Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate
+SB0079,PROGRAM_B,INVENTORY,2026-08-17,green,,16,16,,16,Accepted,2026-08-26 10:59:00,2026-08-26 13:59:00,2026-08-28 16:59:00,
+SB0080,PROGRAM_B,STATUS,2026-08-17,green,,40,40,,40,Accepted,2026-08-26 10:59:00,2026-08-26 14:59:00,2026-08-27 16:59:00,
+SB0081,PROGRAM_A,DISPENSE,2026-08-24,green,,9,9,9,9,Accepted,2026-09-01 10:00:00,2026-09-01 11:00:00,2026-09-04 16:00:00,
+SB0082,PROGRAM_A,INVENTORY,2026-08-24,green,,8,8,,8,Accepted,2026-09-01 10:00:00,2026-09-01 14:00:00,2026-09-02 15:00:00,
+SB0083,PROGRAM_B,DISPENSE,2026-08-24,yellow,,27,27,32,27,Accepted,2026-09-01 10:00:00,2026-09-01 13:00:00,2026-09-04 16:00:00,Late updates since send: 5 visit(s) completed in the source after the file was built - restatement candidate
+SB0084,PROGRAM_B,INVENTORY,2026-08-24,green,,16,16,,16,Accepted,2026-09-01 10:00:00,2026-09-01 14:00:00,2026-09-03 18:00:00,
+SB0085,PROGRAM_B,STATUS,2026-08-24,green,,58,58,,58,Accepted,2026-09-01 10:00:00,2026-09-01 11:00:00,2026-09-04 13:00:00,
+SB0086,PROGRAM_A,DISPENSE,2026-08-31,green,,8,8,8,8,Accepted,2026-09-09 10:07:00,2026-09-09 14:07:00,2026-09-10 17:07:00,
+SB0087,PROGRAM_A,INVENTORY,2026-08-31,green,,8,8,,8,Accepted,2026-09-09 10:07:00,2026-09-09 14:07:00,2026-09-12 18:07:00,
+SB0088,PROGRAM_B,DISPENSE,2026-08-31,yellow,,24,24,26,24,Accepted,2026-09-09 10:07:00,2026-09-09 12:07:00,2026-09-11 12:07:00,Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate
+SB0089,PROGRAM_B,INVENTORY,2026-08-31,green,,16,16,,16,Accepted,2026-09-09 10:07:00,2026-09-10 12:07:00,2026-09-11 17:07:00,
+SB0090,PROGRAM_B,STATUS,2026-08-31,red,,44,44,,44,Accepted,2026-09-09 10:07:00,2026-09-09 12:07:00,2026-09-11 18:07:00,Status rules: 1 event(s) need escalation before reporting
+SB0091,PROGRAM_A,DISPENSE,2026-09-07,green,,9,9,9,9,Accepted,2026-09-15 11:11:00,2026-09-15 15:11:00,2026-09-16 17:11:00,
+SB0092,PROGRAM_A,INVENTORY,2026-09-07,green,,8,8,,8,Accepted,2026-09-15 11:11:00,2026-09-15 15:11:00,2026-09-18 20:11:00,
+SB0093,PROGRAM_B,DISPENSE,2026-09-07,red,WRONG_REPORTING_WEEK,24,18,22,24,Accepted,2026-09-15 11:11:00,2026-09-15 13:11:00,2026-09-18 13:11:00,Logged vs recomputed: Counts match the PREVIOUS week (2026-08-31) - file built from the wrong date range; Late updates since send: 4 visit(s) completed in the source after the file was built - restatement candidate
+SB0094,PROGRAM_B,INVENTORY,2026-09-07,green,,16,16,,16,Accepted,2026-09-15 11:11:00,2026-09-15 14:11:00,2026-09-18 15:11:00,
+SB0095,PROGRAM_B,STATUS,2026-09-07,red,,35,35,,35,Accepted,2026-09-15 11:11:00,2026-09-15 13:11:00,2026-09-18 14:11:00,Status rules: 1 event(s) need escalation before reporting
+SB0096,PROGRAM_A,DISPENSE,2026-09-14,red,,11,11,11,11,Rejected,2026-09-23 09:48:00,2026-09-23 10:48:00,2026-09-24 15:48:00,Acknowledgment: Rejected by the manufacturer
+SB0097,PROGRAM_A,INVENTORY,2026-09-14,green,,8,8,,8,Accepted,2026-09-23 09:48:00,2026-09-23 12:48:00,2026-09-24 14:48:00,
+SB0098,PROGRAM_B,DISPENSE,2026-09-14,yellow,,26,26,27,26,Accepted,2026-09-23 09:48:00,2026-09-23 11:48:00,2026-09-25 12:48:00,Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate
+SB0099,PROGRAM_B,INVENTORY,2026-09-14,green,,16,16,,16,Accepted,2026-09-23 09:48:00,2026-09-23 12:48:00,2026-09-24 16:48:00,
+SB0100,PROGRAM_B,STATUS,2026-09-14,green,,48,48,,48,Accepted,2026-09-23 09:48:00,2026-09-23 10:48:00,2026-09-25 13:48:00,
+SB0101,PROGRAM_A,DISPENSE,2026-09-21,green,,14,14,14,14,Accepted,2026-09-30 11:45:00,2026-09-30 14:45:00,2026-10-03 19:45:00,
+SB0102,PROGRAM_A,INVENTORY,2026-09-21,green,,8,8,,8,Accepted,2026-09-30 11:45:00,2026-09-30 12:45:00,2026-10-02 18:45:00,
+SB0103,PROGRAM_B,DISPENSE,2026-09-21,yellow,,23,23,26,23,Accepted,2026-09-30 11:45:00,2026-09-30 14:45:00,2026-10-01 18:45:00,Late updates since send: 3 visit(s) completed in the source after the file was built - restatement candidate
+SB0104,PROGRAM_B,INVENTORY,2026-09-21,green,,16,16,,16,Accepted,2026-09-30 11:45:00,2026-09-30 15:45:00,2026-10-03 20:45:00,
+SB0105,PROGRAM_B,STATUS,2026-09-21,green,,36,36,,36,Accepted,2026-09-30 11:45:00,2026-09-30 15:45:00,2026-10-01 20:45:00,
+SB0106,PROGRAM_A,DISPENSE,2026-09-28,yellow,,8,8,9,8,Accepted,2026-10-07 09:50:00,2026-10-07 10:50:00,2026-10-10 10:50:00,Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate
+SB0107,PROGRAM_A,INVENTORY,2026-09-28,green,,8,8,,8,Accepted,2026-10-07 09:50:00,2026-10-07 11:50:00,2026-10-08 11:50:00,
+SB0108,PROGRAM_B,DISPENSE,2026-09-28,yellow,,33,33,34,33,Accepted,2026-10-07 09:50:00,2026-10-07 10:50:00,2026-10-09 16:50:00,Late updates since send: 1 visit(s) completed in the source after the file was built - restatement candidate
+SB0109,PROGRAM_B,INVENTORY,2026-09-28,green,,16,16,,16,Accepted,2026-10-07 09:50:00,2026-10-07 13:50:00,2026-10-08 18:50:00,
+SB0110,PROGRAM_B,STATUS,2026-09-28,green,,55,55,,55,Accepted,2026-10-07 09:50:00,2026-10-07 12:50:00,2026-10-09 15:50:00,
+SB0111,PROGRAM_A,DISPENSE,2026-10-05,green,,9,9,9,9,Accepted,2026-10-14 11:03:00,2026-10-14 13:03:00,2026-10-17 18:03:00,
+SB0112,PROGRAM_A,INVENTORY,2026-10-05,green,,8,8,,8,Accepted,2026-10-14 11:03:00,2026-10-14 14:03:00,2026-10-17 19:03:00,
+SB0113,PROGRAM_B,DISPENSE,2026-10-05,yellow,,24,24,26,24,Accepted,2026-10-14 11:03:00,2026-10-14 14:03:00,2026-10-16 19:03:00,Late updates since send: 2 visit(s) completed in the source after the file was built - restatement candidate
+SB0114,PROGRAM_B,INVENTORY,2026-10-05,green,,16,16,,16,Accepted,2026-10-14 11:03:00,2026-10-14 15:03:00,2026-10-16 19:03:00,
+SB0115,PROGRAM_B,STATUS,2026-10-05,green,,53,53,,53,Accepted,2026-10-14 11:03:00,2026-10-14 13:03:00,2026-10-17 14:03:00,
+SB0116,PROGRAM_A,DISPENSE,2026-10-12,green,,10,10,10,10,Accepted,2026-10-21 10:33:00,2026-10-21 13:33:00,2026-10-22 16:33:00,
+SB0117,PROGRAM_A,INVENTORY,2026-10-12,green,,8,8,,8,Accepted,2026-10-21 10:33:00,2026-10-21 11:33:00,2026-10-24 12:33:00,
+SB0118,PROGRAM_B,DISPENSE,2026-10-12,green,,21,21,21,21,Accepted,2026-10-21 10:33:00,2026-10-21 13:33:00,2026-10-24 14:33:00,
+SB0119,PROGRAM_B,INVENTORY,2026-10-12,green,,16,16,,16,Accepted,2026-10-21 10:33:00,2026-10-21 12:33:00,2026-10-23 17:33:00,
+SB0120,PROGRAM_B,STATUS,2026-10-12,yellow,,41,41,,41,Accepted,2026-10-21 10:33:00,2026-10-21 14:33:00,2026-10-23 14:33:00,Status rules: 1 event(s) routed for review

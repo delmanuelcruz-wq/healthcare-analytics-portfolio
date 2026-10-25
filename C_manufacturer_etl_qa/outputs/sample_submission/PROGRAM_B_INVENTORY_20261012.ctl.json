@@ -1,0 +1,10 @@
+{
+  "file_name": "PROGRAM_B_INVENTORY_20261012.csv",
+  "program": "PROGRAM_B",
+  "file_type": "INVENTORY",
+  "reporting_week": "2026-10-12",
+  "record_count": 16,
+  "header_rows": 1,
+  "sha256": "0ada93a057765a7d407be7ab8b718c43e92d74077814b795bcdafb5540a0e341",
+  "destination": "mock://manufacturer-b/inbound"
+}

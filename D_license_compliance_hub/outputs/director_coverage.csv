@@ -1,0 +1,11 @@
+assignment_key,site_key,site_name,opened_date,director_staff_key,director_label,relationship_start,relationship_end,is_primary,is_current,director_license_expiry,director_license_docs
+MDA001,S01,Saltmeadow Infusion Suite (fictional),2019-03-04,STF041,MD-041 (fictional),2019-03-04,,1,1,2027-02-02,1
+MDA002,S02,Cypressmoor Infusion Suite (fictional),2020-06-01,STF042,MD-042 (fictional),2020-06-01,,1,1,2026-11-19,1
+MDA003,S03,Larkspur Infusion Suite (fictional),2022-01-10,STF041,MD-041 (fictional),2022-01-10,2025-06-30,1,0,2027-02-02,1
+MDA004,S03,Larkspur Infusion Suite (fictional),2022-01-10,STF043,MD-043 (fictional),2025-07-01,,1,1,2027-01-06,1
+MDA005,S04,Heronmouth Infusion Suite (fictional),2018-09-17,STF042,MD-042 (fictional),2018-09-17,,1,1,2026-11-19,1
+MDA006,S05,Sablecrest Infusion Suite (fictional),2021-04-05,STF044,MD-044 (fictional),2021-04-05,2026-09-30,1,0,2027-01-30,1
+MDA007,S06,Gullwing Infusion Suite (fictional),2023-02-06,STF043,MD-043 (fictional),2023-02-06,,1,1,2027-01-06,1
+MDA008,S07,Brinemoor Infusion Suite (fictional),2019-11-04,STF044,MD-044 (fictional),2019-11-04,,1,1,2027-01-30,1
+MDA010,S08,Cedar Landing Infusion Suite (fictional),2025-09-15,STF041,MD-041 (fictional),2025-09-01,2025-12-31,1,0,2027-02-02,1
+MDA009,S08,Cedar Landing Infusion Suite (fictional),2025-09-15,STF043,MD-043 (fictional),2025-09-15,,1,1,2027-01-06,1

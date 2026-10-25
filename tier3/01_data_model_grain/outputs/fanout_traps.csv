@@ -1,0 +1,8 @@
+trap,base,base_rows,naive_rows,correct_rows,naive_multiplier,rule
+Counting patients after joining referrals,patients,2502,3861,2502,1.54,"One patient has many referrals - count DISTINCT patient_key, or aggregate referrals first"
+Counting treated visits after joining administration lines,treated visits,8642,9294,8642,1.08,"Split lots, add-on lines and duplicates give a visit several lines - use EXISTS, not JOIN"
+Provider specialty through the bridge table,provider records,250,270,250,1.08,Some providers carry two specialties - filter is_primary = 1 (or use providers.primary_specialty)
+ZIP to county through the crosswalk,ZIP codes,33,34,33,1.03,"ZIP 00150 straddles two counties - keep the primary-county row. No provider practices there today, so a provider join without the filter looks fine until one does (a latent bug)"
+Payer for a visit without the effective date,treated visits,8642,15163,8638,1.75,Coverage is effective-dated - join on the interval that covers the event date
+Authorization outcome from the decision events,authorization requests,3113,3631,3113,1.17,Decision events include interim 'Pended' rows and duplicates - read the final outcome on the request
+Counting new patients from order series,patients with an order,2324,3516,2324,1.51,Renewals and therapy changes create new order series for existing patients

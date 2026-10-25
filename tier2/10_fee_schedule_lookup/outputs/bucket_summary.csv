@@ -1,0 +1,7 @@
+bucket,requests,share
+Matched,33,0.541
+Zero-pay ($0.00),6,0.0984
+No match,8,0.1311
+Wrong claim type,9,0.1475
+Out of date range,4,0.0656
+Duplicate request,1,0.0164

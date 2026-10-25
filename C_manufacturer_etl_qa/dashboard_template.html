@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manufacturer Submission Console</title>
+<meta name="description" content="Synthetic portfolio dashboard: weekly manufacturer data-agreement extracts, status rules engine and submission QA console.">
+<style>/*__SHARED_CSS__*/
+.pipeline { display: flex; flex-wrap: wrap; gap: 8px; align-items: stretch; }
+.step { flex: 1 1 120px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 12.5px; }
+.step b { display: block; font-size: 13px; margin-bottom: 2px; }
+.step .tag { display: inline-block; margin-top: 6px; font-size: 11px; font-weight: 700; color: var(--ink-2); background: var(--surface-2); border-radius: 999px; padding: 2px 8px; }
+.console { overflow-x: auto; }
+.console table { border-collapse: separate; border-spacing: 3px; font-size: 11.5px; }
+.console th { color: var(--muted); font-weight: 600; white-space: nowrap; padding: 0 2px; }
+.console th.row { text-align: left; color: var(--ink); padding-right: 10px; }
+.cell { width: 26px; height: 26px; border-radius: 6px; text-align: center; vertical-align: middle; font-weight: 800; font-size: 13px; cursor: default; }
+.cell.green { background: color-mix(in srgb, var(--good) 22%, transparent); color: var(--good-ink); }
+.cell.yellow { background: color-mix(in srgb, var(--warning) 45%, transparent); color: var(--ink); }
+.cell.red { background: var(--critical); color: #fff; }
+.legend-row { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12.5px; color: var(--ink-2); margin: 8px 0 0; }
+.legend-row .cell { display: inline-block; width: 20px; height: 20px; line-height: 20px; margin-right: 6px; font-size: 11px; }
+table.wrap td { white-space: normal; min-width: 110px; vertical-align: top; }
+</style>
+<script src="__PLOTLY_CDN__"></script>
+</head>
+<body>
+<div class="synthetic-bar">SYNTHETIC DEMONSTRATION - fictional programs, products and data; mock destinations only. Not operational, medical or financial guidance.</div>
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Portfolio project C · Coralline Infusion Network (fictional)</p>
+    <h1>Manufacturer data-agreement ETL and submission console</h1>
+    <p>Weekly inventory, dispense and status files for two fictional manufacturer programs - built, reconciled, controlled
+       and audited. Every logged submission is re-checked against a fresh recomputation.</p>
+    <div class="meta"><span>Data as of <b id="asof"></b></span><span>24 reporting weeks to <span id="latest"></span></span><span>Seed <span id="seed"></span></span></div>
+  </div>
+</header>
+<main class="wrap">
+  <div class="tiles" id="tiles"></div>
+
+  <h2 class="section">Pipeline</h2>
+  <p class="section-lede">A file existing on disk proves only the first five steps. Delivery and acceptance are tracked separately.</p>
+  <div class="pipeline">
+    <div class="step"><b>1 · Export</b>Source pulls by product and reporting window<span class="tag">SQL on warehouse</span></div>
+    <div class="step"><b>2 · Stage</b>Raw lines, ledger, snapshots, status history<span class="tag">temp tables</span></div>
+    <div class="step"><b>3 · Clean</b>Dedupe lines, drop non-treated visits, convert units<span class="tag">SQL + Python</span></div>
+    <div class="step"><b>4 · Build files</b>Inventory bridge, dispense, status codes<span class="tag">CSV</span></div>
+    <div class="step"><b>5 · Control</b>Record count (no header) + SHA-256<span class="tag">.ctl.json</span></div>
+    <div class="step"><b>6 · Format / QA</b>Mandatory fields, parity, rules engine<span class="tag">console</span></div>
+    <div class="step"><b>7 · Transfer</b>Attempts and retries<span class="tag">mock:// only</span></div>
+    <div class="step"><b>8 · Acknowledge</b>Accepted, rejected, pending<span class="tag">simulated log</span></div>
+  </div>
+
+  <h2 class="section">Submission console</h2>
+  <p class="section-lede">One square per file per week. Hover a square for its batch and findings. The worst test decides the color.</p>
+  <section class="card full">
+    <div class="console" id="console"></div>
+    <div class="legend-row"><span><span class="cell green">✓</span>All checks passed</span>
+      <span><span class="cell yellow">!</span>Needs attention (late updates, review items, awaiting acknowledgment)</span>
+      <span><span class="cell red">✕</span>Wrong or rejected - fix and resubmit</span></div>
+    <details class="data" open><summary>Batches needing attention</summary><div id="issues"></div></details>
+  </section>
+
+  <h2 class="section">Reconciliation and timing</h2>
+  <div class="grid-2">
+    <section class="card">
+      <h3>Inventory bridge, one site-product-week</h3>
+      <p class="sub" id="bridge-sub"></p>
+      <div class="chart" id="c-bridge"></div>
+      <p class="takeaway">Every site-product-week runs this bridge. Cells where the system count disagrees with the ledger are flagged, not forced to match.</p>
+    </section>
+    <section class="card">
+      <h3>When should dispense files be generated?</h3>
+      <p class="sub">Share of treated visits whose completion was recorded within N business days of week end.</p>
+      <div class="chart" id="c-cut"></div>
+      <p class="takeaway" id="t-cut"></p>
+      <details class="data"><summary>Show data table</summary><div id="d-cut"></div></details>
+    </section>
+    <section class="card">
+      <h3>Why injection numbers need history</h3>
+      <p class="sub">Program B dispense rows by dose number. A week-only extract sees every patient as dose #1.</p>
+      <div class="chart" id="c-ord"></div>
+      <details class="data"><summary>Show data table</summary><div id="d-ord"></div></details>
+    </section>
+    <section class="card">
+      <h3>Sample package: week of <span id="pkg-week"></span></h3>
+      <p class="sub">Files and control records written for the latest week (record counts exclude the header).</p>
+      <div id="pkg"></div>
+    </section>
+  </div>
+
+  <h2 class="section">Status exception tracker</h2>
+  <p class="section-lede">Every order-status change is routed to Verified, Review or Escalate. "Archived" is never read as "stopped".
+     Approved corrections are listed for audit.</p>
+  <section class="card full"><div id="cases"></div></section>
+
+  <h2 class="section">Quality checks run on this build</h2>
+  <div class="qa-list" id="qa"></div>
+
+  <h2 class="section">What is real and what is simulated</h2>
+  <div class="scope">
+    <div class="def"><b>On-the-job exposure (described in general terms only)</b>
+      <ul><li>Guided, hands-on weekly inventory and dispense extracts: BI filters by product and window, spreadsheet staging, Power Query refreshes, cleaned values-only outputs.</li>
+          <li>Multi-pull workflows for a second program, including the history needed for injection sequence.</li>
+          <li>Reviewed status exceptions case by case, and drafted a QA and handoff checklist covering scope, windows, control counts and escalation.</li>
+          <li>Transfer and manufacturer acceptance were not independently verified.</li></ul></div>
+    <div class="def"><b>Independently built for this portfolio (synthetic)</b>
+      <ul><li>The SQL pipeline, rules engine, control files and console on fabricated data.</li>
+          <li>Fictional programs and products; no real file layouts, endpoints or acknowledgments.</li>
+          <li>Not a claim of SFTP ownership or production delivery.</li></ul></div>
+  </div>
+  <footer class="foot">All programs, products, sites and patients are fictional (seed <span id="seed2"></span>). Destinations are mock:// URIs.
+    SYNTHETIC DEMONSTRATION - not operational, medical or financial guidance.</footer>
+</main>
+<script>/*__DATA__*/</script>
+<script>/*__SHARED_JS__*/</script>
+<script>
+(function () {
+  const D = window.DATA, fmt = Dash.fmt;
+  document.getElementById("asof").textContent = D.meta.as_of;
+  document.getElementById("latest").textContent = D.meta.latest;
+  document.getElementById("pkg-week").textContent = D.meta.latest;
+  document.getElementById("seed").textContent = D.meta.seed;
+  document.getElementById("seed2").textContent = D.meta.seed;
+  Dash.tiles(document.getElementById("tiles"), D.tiles);
+  const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+  const sym = { green: "✓", yellow: "!", red: "✕" };
+  const wk = (w) => { const d = new Date(w + "T00:00:00"); return `${d.getMonth() + 1}/${d.getDate()}`; };
+
+  // Console grid
+  document.getElementById("console").innerHTML = `<table><thead><tr><th class="row">File</th>${D.weeks.map((w) => `<th>${wk(w)}</th>`).join("")}</tr></thead><tbody>${
+    D.rows.map((row) => `<tr><th class="row">${row}</th>${D.weeks.map((w) => {
+      const c = (D.grid[row] || {})[w];
+      if (!c) return "<td></td>";
+      return `<td class="cell ${c.s}" title="${esc(c.b)} · week of ${w}\n${esc(c.i)}" aria-label="${esc(c.b)} ${c.s}">${sym[c.s]}</td>`;
+    }).join("")}</tr>`).join("")}</tbody></table>`;
+  const badge = { green: "pass", yellow: "warn", red: "fail" };
+  const label = { green: "Green", yellow: "Yellow", red: "Red" };
+  const rank = { red: 0, yellow: 1, green: 2 };
+  const issues = D.issues.slice().sort((a, b) => rank[a.overall] - rank[b.overall] || a.reporting_week.localeCompare(b.reporting_week));
+  document.getElementById("issues").innerHTML = `<div class="table-scroll"><table class="data wrap"><thead><tr><th>Status</th><th>Batch</th>
+    <th>File</th><th>Week</th><th class="num">Logged rows</th><th class="num">Recomputed</th><th>Findings</th></tr></thead><tbody>${
+    issues.map((r) => `<tr><td><span class="badge ${badge[r.overall]}"><span class="dot"></span>${label[r.overall]}</span></td><td>${r.batch_key}</td>
+      <td>${r.program_key} ${r.file_type}</td><td>${r.reporting_week}</td><td class="num">${r.logged_rows}</td>
+      <td class="num">${r.recomputed_rows}</td><td>${esc(r.issues)}</td></tr>`).join("")}</tbody></table></div>`;
+
+  // Bridge waterfall
+  const b = D.bridge_example;
+  document.getElementById("bridge-sub").textContent = `${b.program_key} · ${b.therapy_key} at ${b.site_key}, week of ${b.week_start}. Vials.`;
+  Dash.register((c) => {
+    const steps = [["Opening", b.opening_qty, "absolute"], ["Received", b.receipts, "relative"], ["Returned", b.returns_in, "relative"],
+      ["Administered", -b.administered, "relative"], ["Waste / expired", -b.waste_expired, "relative"], ["Count adj.", b.count_adjustments, "relative"],
+      ["Closing", b.system_closing_qty, "total"]];
+    Plotly.react("c-bridge", [{ type: "waterfall", x: steps.map((s) => s[0]), y: steps.map((s) => s[1]), measure: steps.map((s) => s[2]),
+      text: steps.map((s) => (s[2] === "relative" && s[1] > 0 ? "+" : "") + s[1]), textposition: "outside", textfont: { color: c.ink2 },
+      increasing: { marker: { color: c.s1 } }, decreasing: { marker: { color: c.s2 } }, totals: { marker: { color: c.gray } },
+      connector: { line: { color: c.axis, width: 1 } }, cliponaxis: false, hovertemplate: "%{x}: %{y}<extra></extra>" }],
+      Dash.layout({ showlegend: false, hovermode: "closest", margin: { t: 24 } }), Dash.config);
+  });
+
+  // Cut-off sensitivity
+  Dash.register((c) => {
+    const s = D.sensitivity;
+    Plotly.react("c-cut", [{ type: "scatter", mode: "lines+markers", x: s.map((r) => r.business_days_after_week_end),
+      y: s.map((r) => r.share_of_visits_captured * 100), line: { color: c.s1, width: 2 }, marker: { size: 7, color: c.s1 },
+      hovertemplate: "Day %{x}: %{y:.1f}% captured<extra></extra>" }],
+      Dash.layout({ showlegend: false, hovermode: "closest", xaxis: { title: { text: "Business days after week end" }, dtick: 1 },
+        yaxis: { ticksuffix: "%", range: [80, 100.5], rangemode: "normal" },
+        shapes: [{ type: "rect", x0: 1.5, x1: 3.5, y0: 80, y1: 100.5, fillcolor: c.warning, opacity: 0.12, line: { width: 0 } }],
+        annotations: [{ x: 2.5, y: 81.5, text: "current build days", showarrow: false, font: { color: c.ink2, size: 11 } }] }), Dash.config);
+  });
+  const cap = (k) => (D.sensitivity.find((r) => r.business_days_after_week_end === k).share_of_visits_captured * 100).toFixed(1);
+  document.getElementById("t-cut").textContent =
+    `Files built 2-3 business days after week end capture ${cap(2)}-${cap(3)}% of visits; waiting 5 days captures ${cap(5)}% and 8 days ${cap(8)}%. Recommendation: build on day 5 and restate the rest.`;
+  Dash.table(document.getElementById("d-cut"), [{ key: "business_days_after_week_end", label: "Business days after week end", num: true },
+    { key: "share_of_visits_captured", label: "Visits captured", num: true, pct: true }], D.sensitivity);
+
+  // Ordinals
+  Dash.register((c) => {
+    const x = ["Dose 1", "2", "3", "4", "5", "6+"];
+    Plotly.react("c-ord", [
+      { type: "bar", name: "Week-only extract", x, y: [D.ordinal.total, 0, 0, 0, 0, 0], marker: { color: c.s2, cornerradius: 3 } },
+      { type: "bar", name: "Full history (correct)", x, y: D.ordinal.full, marker: { color: c.s1, cornerradius: 3 } }],
+      Dash.layout({ barmode: "group", bargap: 0.3, hovermode: "x unified", legend: { y: 1.12 }, xaxis: { type: "category" } }), Dash.config);
+  });
+  Dash.table(document.getElementById("d-ord"), [{ key: "dose", label: "Dose number" }, { key: "full", label: "Full history", num: true },
+    { key: "week", label: "Week-only", num: true }], ["1", "2", "3", "4", "5", "6+"].map((d, i) => ({ dose: d, full: D.ordinal.full[i], week: i ? 0 : D.ordinal.total })));
+
+  // Sample package
+  Dash.table(document.getElementById("pkg"), [{ key: "file_name", label: "File" }, { key: "record_count", label: "Records", num: true },
+    { key: "sha", label: "SHA-256 (first 12)" }, { key: "destination", label: "Destination" }],
+    D.sample.map((m) => Object.assign({ sha: m.sha256.slice(0, 12) }, m)));
+
+  // Cases
+  const disp = { Escalate: "fail", Review: "warn", Verified: "pass" };
+  document.getElementById("cases").innerHTML = `<div class="table-scroll" style="max-height:520px"><table class="data wrap"><thead><tr><th>Case</th><th>Disposition</th>
+    <th>Order token</th><th>Program</th><th>Transition</th><th>Event</th><th class="num">Doses before</th><th class="num">Doses after archive</th><th>Rule</th><th>Action</th></tr></thead><tbody>${
+    D.cases.map((r) => `<tr><td>${r.case_key}</td><td><span class="badge ${disp[r.disposition]}"><span class="dot"></span>${r.disposition}</span></td>
+      <td>${r.order_token}</td><td>${r.program_key}</td><td>${esc(r.transition)}</td><td>${r.event_at.slice(0, 10)}</td>
+      <td class="num">${r.doses_before_event}</td><td class="num">${r.doses_after_archive}</td><td>${esc(r.rule)}</td><td>${esc(r.recommended_action)}</td></tr>`).join("")}</tbody></table></div>`;
+
+  // QA
+  const icon = { pass: "Pass", warn: "Warn", fail: "Fail" };
+  document.getElementById("qa").innerHTML = D.qa.map((q) =>
+    `<div class="qa-item"><span class="badge ${q.status}"><span class="dot"></span>${icon[q.status]}</span>
+      <div><b>${q.check}</b><div class="obs">${esc(q.observed)}</div><div class="obs">Rule: ${esc(q.rule)}</div></div></div>`).join("");
+})();
+</script>
+</body>
+</html>

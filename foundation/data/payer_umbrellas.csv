@@ -1,0 +1,12 @@
+umbrella_key,umbrella_name,segment,is_top10
+PU01,Heronview Health (fictional),Commercial,1
+PU02,Saltgrass Mutual (fictional),Commercial,1
+PU03,Kestrel Shield Medicare Advantage (fictional),Medicare Advantage,1
+PU04,Brightfen Advantage (fictional),Medicare Advantage,1
+PU05,Sandmere Medicaid Plan (fictional),Medicaid managed care,1
+PU06,Cobaltine Commercial (fictional),Commercial,1
+PU07,Ospreyline Senior (fictional),Medicare Advantage,1
+PU08,Driftwell Health Alliance (fictional),Commercial / marketplace,1
+PU09,Fernhollow Care (fictional),Medicaid managed care,1
+PU10,Quillmont Federal Medicare (fictional),Traditional Medicare,1
+PU99,Other / small plans (fictional),Mixed,0

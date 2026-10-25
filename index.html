@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Healthcare Analytics Portfolio</title>
+<meta name="description" content="Synthetic healthcare data and analytics portfolio: case studies and micro-cases built on one fictional infusion network.">
+<style>/* Shared dashboard styles - inlined into every project dashboard at build time. */
+:root {
+  color-scheme: light;
+  --page: #f9f9f7;
+  --surface: #fcfcfb;
+  --surface-2: #f3f2ee;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --muted: #6f6d68;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --border: rgba(11, 11, 11, 0.10);
+  --brand: #12344a;
+  --brand-ink: #ffffff;
+  --accent: #0f7c80;
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+  --series-gray: #a8a69f;
+  --seq-1: #cde2fb; --seq-2: #9ec5f4; --seq-3: #6da7ec; --seq-4: #3987e5; --seq-5: #256abf; --seq-6: #184f95; --seq-7: #0d366b;
+  --ord-1: #86b6ef; --ord-2: #5598e7; --ord-3: #2a78d6; --ord-4: #1c5cab; --ord-5: #104281;
+  --good: #0ca30c; --warning: #fab219; --serious: #ec835a; --critical: #d03b3b;
+  --good-ink: #006300;
+  --synthetic-bg: #fff4d6; --synthetic-ink: #5c4300;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --surface-2: #232321;
+    --ink: #f0efec; --ink-2: #c3c2b7; --muted: #9a988f; --grid: #2c2c2a; --axis: #383835;
+    --border: rgba(255, 255, 255, 0.10); --brand: #0f2a3b; --accent: #3fb0b3;
+    --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500; --series-gray: #6a6862;
+    --seq-1: #13304f; --seq-2: #184f95; --seq-3: #1c5cab; --seq-4: #256abf; --seq-5: #3987e5; --seq-6: #6da7ec; --seq-7: #b7d3f6;
+    --ord-1: #184f95; --ord-2: #1c5cab; --ord-3: #2a78d6; --ord-4: #5598e7; --ord-5: #86b6ef;
+    --good-ink: #0ca30c; --synthetic-bg: #3a2f10; --synthetic-ink: #ffd982;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #1a1a19; --surface-2: #232321;
+  --ink: #f0efec; --ink-2: #c3c2b7; --muted: #9a988f; --grid: #2c2c2a; --axis: #383835;
+  --border: rgba(255, 255, 255, 0.10); --brand: #0f2a3b; --accent: #3fb0b3;
+  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500; --series-gray: #6a6862;
+  --seq-1: #13304f; --seq-2: #184f95; --seq-3: #1c5cab; --seq-4: #256abf; --seq-5: #3987e5; --seq-6: #6da7ec; --seq-7: #b7d3f6;
+  --ord-1: #184f95; --ord-2: #1c5cab; --ord-3: #2a78d6; --ord-4: #5598e7; --ord-5: #86b6ef;
+  --good-ink: #0ca30c; --synthetic-bg: #3a2f10; --synthetic-ink: #ffd982;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--page); color: var(--ink);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.synthetic-bar {
+  background: var(--synthetic-bg); color: var(--synthetic-ink); text-align: center;
+  font-size: 13px; font-weight: 600; padding: 7px 16px; letter-spacing: .01em;
+}
+header.top { background: var(--brand); color: var(--brand-ink); }
+header.top .wrap { padding-top: 26px; padding-bottom: 24px; }
+header.top .eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; opacity: .75; margin: 0 0 6px; }
+header.top h1 { font-size: 28px; line-height: 1.2; margin: 0 0 8px; font-weight: 650; }
+header.top p { margin: 0; max-width: 860px; opacity: .88; }
+header.top .meta { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; opacity: .85; }
+.wrap { max-width: 1280px; margin: 0 auto; padding-left: 24px; padding-right: 24px; }
+main.wrap { padding-top: 24px; padding-bottom: 48px; }
+h2.section { font-size: 18px; margin: 34px 0 4px; font-weight: 650; }
+p.section-lede { margin: 0 0 14px; color: var(--ink-2); max-width: 900px; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr)); gap: 12px; }
+.tile { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px 12px; }
+.tile .label { font-size: 13px; color: var(--ink-2); margin: 0 0 4px; }
+.tile .value { font-size: 30px; font-weight: 600; line-height: 1.15; margin: 0; }
+.tile .delta { font-size: 12.5px; color: var(--muted); margin: 6px 0 0; }
+.tile .delta .up { color: var(--good-ink); font-weight: 600; }
+.tile .delta .down { color: var(--critical); font-weight: 600; }
+.tile .note { font-size: 12px; color: var(--muted); margin: 4px 0 0; }
+
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px 12px; min-width: 0; }
+.card.full { grid-column: 1 / -1; }
+.card h3 { font-size: 15.5px; margin: 0 0 2px; font-weight: 650; }
+.card .sub { font-size: 13px; color: var(--ink-2); margin: 0 0 8px; }
+.card .chart { width: 100%; height: 320px; }
+.card .chart.tall { height: 420px; }
+.chart-scroll { overflow-x: auto; }
+.chart-scroll > .chart { min-width: 720px; }
+.funnel { display: grid; gap: 12px; padding: 6px 0 4px; }
+.funnel-label { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--ink-2); margin-bottom: 4px; }
+.funnel-val { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.funnel-track { background: var(--surface-2); border-radius: 4px; height: 18px; }
+.funnel-bar { height: 18px; border-radius: 0 4px 4px 0; min-width: 2px; }
+.card .takeaway { font-size: 13px; color: var(--ink); background: var(--surface-2); border-radius: 8px; padding: 8px 10px; margin: 8px 0 4px; }
+details.data { margin-top: 6px; font-size: 13px; }
+details.data summary { cursor: pointer; color: var(--accent); font-weight: 600; padding: 4px 0; }
+.table-scroll { overflow-x: auto; max-height: 340px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; margin-top: 6px; }
+table.data { border-collapse: collapse; width: 100%; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+table.data th, table.data td { padding: 6px 10px; border-bottom: 1px solid var(--grid); text-align: left; white-space: nowrap; }
+table.data th { position: sticky; top: 0; background: var(--surface-2); color: var(--ink-2); font-weight: 600; }
+table.data td.num, table.data th.num { text-align: right; }
+
+.defs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 12px; }
+.def { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; font-size: 13.5px; }
+.def b { display: block; margin-bottom: 2px; }
+.def .check { color: var(--ink-2); font-size: 12.5px; margin-top: 4px; }
+
+.qa-list { display: grid; gap: 8px; }
+.qa-item { display: grid; grid-template-columns: 110px 1fr; gap: 12px; align-items: start; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 13.5px; }
+.badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 3px 10px 3px 8px; width: fit-content; }
+.badge .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.badge.pass { background: color-mix(in srgb, var(--good) 14%, transparent); color: var(--good-ink); }
+.badge.pass .dot { background: var(--good); }
+.badge.warn { background: color-mix(in srgb, var(--warning) 20%, transparent); color: var(--ink); }
+.badge.warn .dot { background: var(--warning); }
+.badge.fail { background: color-mix(in srgb, var(--critical) 14%, transparent); color: var(--critical); }
+.badge.fail .dot { background: var(--critical); }
+.qa-item .obs { color: var(--ink-2); font-size: 12.5px; margin-top: 2px; }
+
+.scope { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 12px; }
+.scope .def ul { margin: 6px 0 0; padding-left: 18px; }
+footer.foot { color: var(--muted); font-size: 12.5px; border-top: 1px solid var(--border); margin-top: 40px; padding-top: 16px; }
+
+@media (max-width: 860px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .wrap { padding-left: 16px; padding-right: 16px; }
+  header.top h1 { font-size: 23px; }
+  .qa-item { grid-template-columns: 1fr; gap: 6px; }
+  .card .chart { height: 280px; }
+}
+@media print { .synthetic-bar { -webkit-print-color-adjust: exact; print-color-adjust: exact; } details.data { display: none; } }
+
+.projects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 16px; }
+.project { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
+.project img { width: 100%; height: 190px; object-fit: cover; object-position: top; border-bottom: 1px solid var(--border); background: var(--surface-2); }
+.project .body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.project h3 { margin: 0; font-size: 16px; }
+.project p { margin: 0; font-size: 13.5px; color: var(--ink-2); }
+.project .skills { font-size: 12px; color: var(--muted); }
+.project .links { margin-top: auto; display: flex; gap: 14px; font-size: 13.5px; font-weight: 600; }
+.project a, .def a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="synthetic-bar">SYNTHETIC DEMONSTRATION - a fictional organization and 100% generated data. Not operational, medical or financial guidance.</div>
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Del Cruz · Healthcare data and analytics portfolio</p>
+    <h1>Twelve case studies, one fictional infusion network</h1>
+    <p>Each project rebuilds a real skill area from my healthcare analytics work as an independent, public-safe project.
+       Every record is generated from a fixed seed, every metric is tested, and each project says plainly what was real work and what was built for this portfolio.</p>
+    <div class="meta"><span>Snapshot October 24, 2026</span><span>SQLite · Python · Excel · Plotly</span><span>Seed 20261024</span></div>
+  </div>
+</header>
+<main class="wrap">
+  <div class="projects">
+    <article class="project"><img src="A_executive_kpi/dashboard.png" alt="Executive KPI dashboard screenshot">
+      <div class="body"><h3>A · Referral-to-treatment executive KPIs</h3>
+        <p>New patients, real treatment starts, completed visits, the booked schedule and rolling-90-day referral sources - each next to its tempting wrong version.</p>
+        <p class="skills">KPI design · event-derived logic · rolling windows · QA</p>
+        <div class="links"><a href="A_executive_kpi/dashboard.html">Dashboard</a><a href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/tree/main/A_executive_kpi">Case study</a></div></div></article>
+    <article class="project"><img src="B_payer_scorecard/dashboard.png" alt="Payer scorecard screenshot">
+      <div class="body"><h3>B · Ten-payer quarterly scorecard</h3>
+        <p>Cohort-correct authorization rates, insurance-at-event attribution, alias grouping and business-day lead times, with every definition fix quantified.</p>
+        <p class="skills">Cohorts · effective-dated joins · Excel formulas · revision log</p>
+        <div class="links"><a href="B_payer_scorecard/dashboard.html">Dashboard</a><a href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/tree/main/B_payer_scorecard">Case study</a></div></div></article>
+    <article class="project"><img src="C_manufacturer_etl_qa/dashboard.png" alt="Submission console screenshot">
+      <div class="body"><h3>C · Manufacturer ETL and submission QA</h3>
+        <p>Weekly inventory, dispense and status files with control totals, a status rules engine, and a console that re-checks every logged submission.</p>
+        <p class="skills">ETL · reconciliation · rules engines · audit controls</p>
+        <div class="links"><a href="C_manufacturer_etl_qa/dashboard.html">Console</a><a href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/tree/main/C_manufacturer_etl_qa">Case study</a></div></div></article>
+    <article class="project"><img src="D_license_compliance_hub/dashboard.png" alt="License compliance hub screenshot">
+      <div class="body"><h3>D · Multi-state license compliance hub</h3>
+        <p>Renewal buckets computed from dates, document audits, medical-director coverage over time, and a per-site compliance matrix.</p>
+        <p class="skills">Compliance data · interval logic · Excel tracker · list views</p>
+        <div class="links"><a href="D_license_compliance_hub/dashboard.html">Hub</a><a href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/tree/main/D_license_compliance_hub">Case study</a></div></div></article>
+  </div>
+
+  <h2 class="section">Tier 2 · shorter case studies</h2>
+  <div class="projects">
+    <article class="project"><img src="tier2/16_cfo_quarterly_trend/dashboard.png" alt="Seven-quarter therapy trend screenshot">
+      <div class="body"><h3>16 · Seven-quarter therapy trend</h3>
+        <p>A finance one-pager: treated visits per quarter, QoQ and first-to-last change, and a footnote that reconciles visits to line items.</p>
+        <p class="skills">Metric grain · executive summary · Excel with live formulas</p>
+        <div class="links"><a href="tier2/16_cfo_quarterly_trend/dashboard.html">Dashboard</a><a href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/tree/main/tier2/16_cfo_quarterly_trend">Case study</a></div></div></article>
+    <article class="project"><img src="tier2/09_specialty_referral_sources/dashboard.png" alt="Referral sources screenshot">
+      <div class="body"><h3>09 · Pulmonology / immunology referral sources</h3>
+        <p>Leaderboard, 12-month trend and provider-county view with each provider counted once and the location definition on the page.</p>
+        <p class="skills">Deduplication · segmentation · geography definitions</p>
+        <div class="links"><a href="tier2/09_specialty_referral_sources/dashboard.html">Dashboard</a><a href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/tree/main/tier2/09_specialty_referral_sources">Case study</a></div></div></article>
+    <article class="project"><img src="tier2/10_fee_schedule_lookup/dashboard.png" alt="Fee-schedule lookup screenshot">
+      <div class="body"><h3>10 · Fee-schedule lookup tracker</h3>
+        <p>Code + claim type + effective-date matching into six exclusive buckets, with $0.00 kept as zero-pay. Every amount synthetic.</p>
+        <p class="skills">Effective-dated lookups · exception tracking · Excel</p>
+        <div class="links"><a href="tier2/10_fee_schedule_lookup/dashboard.html">Dashboard</a><a href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/tree/main/tier2/10_fee_schedule_lookup">Case study</a></div></div></article>
+    <article class="project"><img src="tier2/19_incremental_refresh/dashboard.png" alt="Incremental refresh screenshot">
+      <div class="body"><h3>19 · Incremental refresh demo</h3>
+        <p>Daily change files with an idempotent upsert and audit table; re-sent, late and out-of-order files; goals vs actuals. A personal project.</p>
+        <p class="skills">Data pipelines · idempotency · audit trails</p>
+        <div class="links"><a href="tier2/19_incremental_refresh/dashboard.html">Dashboard</a><a href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/tree/main/tier2/19_incremental_refresh">Case study</a></div></div></article>
+  </div>
+
+  <h2 class="section">Tier 3 · technical micro-cases</h2>
+  <div class="defs">
+    <div class="def"><b><a href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/tree/main/tier3/01_data_model_grain">01 · Data-model grain guide</a></b>A generated grain guide and ERD for 38 tables, with seven measured fan-out traps.</div>
+    <div class="def"><b><a href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/tree/main/tier3/07_service_desk_tickets">07 · Ad hoc request desk</a></b>Five fictional tickets, the clarifying question behind each, SQL answers and a response log.</div>
+    <div class="def"><b><a href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/tree/main/tier3/08_field_lineage_escalation">08 · BI field-lineage escalation</a></b>Blank fields traced to a join, a null-coverage audit, and the issue ticket that splits model from source problems.</div>
+    <div class="def"><b><a href="https://github.com/delmanuelcruz-wq/healthcare-analytics-portfolio/tree/main/tier3/20_inventory_accounting_recon">20 · Inventory vs accounting</a></b>Month-end differences explained vial by vial: timing that reverses vs real issues that persist. A learning case.</div>
+  </div>
+
+  <h2 class="section">How it is built</h2>
+  <div class="defs">
+    <div class="def"><b>One synthetic universe</b>38 interoperable tables from a standard-library Python generator. Same seed, byte-identical files.</div>
+    <div class="def"><b>Planted problems, graded QA</b>Duplicates, late updates, unmapped payer aliases, backward status moves, missing documents - each logged in a ground-truth register that the tests grade against.</div>
+    <div class="def"><b>Honest scope</b>Each case study separates on-the-job exposure from independent work. No employer data, names or results are used or implied.</div>
+  </div>
+  <footer class="foot">Coralline Infusion Network is fictional. SYNTHETIC DEMONSTRATION - not operational, medical or financial guidance.</footer>
+</main>
+<script>window.DATA = {};</script>
+<script>/* Shared dashboard helpers - inlined into every project dashboard at build time.
+   Charts read colors from CSS variables, so light/dark themes stay in one place. */
+(function () {
+  // ?theme=light|dark forces a theme (used for README screenshots); otherwise follow the OS.
+  const forced = new URLSearchParams(location.search).get("theme");
+  if (forced === "light" || forced === "dark") document.documentElement.setAttribute("data-theme", forced);
+  const charts = [];
+  const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const fmt = new Intl.NumberFormat("en-US");
+
+  function colors() {
+    return {
+      ink: css("--ink"), ink2: css("--ink-2"), muted: css("--muted"), grid: css("--grid"), axis: css("--axis"),
+      surface: css("--surface"), s1: css("--series-1"), s2: css("--series-2"), s3: css("--series-3"),
+      gray: css("--series-gray"), good: css("--good"), warning: css("--warning"), critical: css("--critical"),
+      seq: [1, 2, 3, 4, 5, 6, 7].map((i) => css(`--seq-${i}`)),
+      ord: [1, 2, 3, 4, 5].map((i) => css(`--ord-${i}`)),
+    };
+  }
+
+  function layout(extra) {
+    const c = colors();
+    const axis = { gridcolor: c.grid, linecolor: c.axis, zeroline: false, tickfont: { color: c.muted, size: 11 },
+                   title: { font: { color: c.ink2, size: 12 } }, automargin: true };
+    const base = {
+      paper_bgcolor: "rgba(0,0,0,0)", plot_bgcolor: "rgba(0,0,0,0)",
+      font: { family: 'system-ui, -apple-system, "Segoe UI", sans-serif', color: c.ink, size: 12 },
+      margin: { l: 48, r: 18, t: 10, b: 40 }, hovermode: "x unified",
+      hoverlabel: { bgcolor: c.surface, bordercolor: c.axis, font: { color: c.ink } },
+      legend: { orientation: "h", x: 0, y: 1.12, font: { color: c.ink2, size: 12 } },
+      xaxis: Object.assign({}, axis, { showgrid: false, showline: true }),
+      yaxis: Object.assign({}, axis, { showline: false, rangemode: "tozero" }),
+      bargap: 0.35,
+    };
+    return deepMerge(base, extra || {});
+  }
+
+  function deepMerge(a, b) {
+    const out = Array.isArray(a) ? a.slice() : Object.assign({}, a);
+    for (const k of Object.keys(b)) {
+      if (b[k] && typeof b[k] === "object" && !Array.isArray(b[k]) && a[k] && typeof a[k] === "object") out[k] = deepMerge(a[k], b[k]);
+      else out[k] = b[k];
+    }
+    return out;
+  }
+
+  const config = { displayModeBar: false, responsive: true };
+
+  function register(fn) { charts.push(fn); }
+  function renderAll() { const c = colors(); charts.forEach((fn) => fn(c)); }
+
+  function table(el, columns, rows) {
+    const head = columns.map((c) => `<th class="${c.num ? "num" : ""}">${c.label}</th>`).join("");
+    const body = rows.map((r) => "<tr>" + columns.map((c) => {
+      let v = r[c.key];
+      if (c.num && typeof v === "number") v = c.pct ? (v * 100).toFixed(1) + "%" : (Number.isInteger(v) ? fmt.format(v) : v.toFixed(c.dp ?? 1));
+      return `<td class="${c.num ? "num" : ""}">${v ?? ""}</td>`;
+    }).join("") + "</tr>").join("");
+    el.innerHTML = `<div class="table-scroll"><table class="data"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+  }
+
+  function tiles(el, items) {
+    el.innerHTML = items.map((t) => {
+      let delta = "";
+      if (t.delta !== undefined && t.delta !== null) {
+        const up = t.delta >= 0;
+        const good = t.upIsGood === undefined ? null : (up === t.upIsGood);
+        const cls = good === null ? "" : (good ? "up" : "down");
+        const sign = up ? "+" : "−";
+        delta = `<p class="delta"><span class="${cls}">${sign}${Math.abs(t.delta).toFixed(1)}%</span> ${t.deltaLabel || ""}</p>`;
+      }
+      return `<div class="tile"><p class="label">${t.label}</p><p class="value">${t.value}</p>${delta}${t.note ? `<p class="note">${t.note}</p>` : ""}</div>`;
+    }).join("");
+  }
+
+  window.Dash = { register, renderAll, layout, config, table, tiles, colors, fmt };
+  document.addEventListener("DOMContentLoaded", renderAll);
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", renderAll);
+  new MutationObserver(renderAll).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+})();
+</script>
+</body>
+</html>

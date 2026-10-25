@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Referral-to-Treatment KPIs</title>
+<meta name="description" content="Synthetic portfolio dashboard: referral-to-treatment executive KPIs for a fictional multi-site infusion network.">
+<style>/* Shared dashboard styles - inlined into every project dashboard at build time. */
+:root {
+  color-scheme: light;
+  --page: #f9f9f7;
+  --surface: #fcfcfb;
+  --surface-2: #f3f2ee;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --muted: #6f6d68;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --border: rgba(11, 11, 11, 0.10);
+  --brand: #12344a;
+  --brand-ink: #ffffff;
+  --accent: #0f7c80;
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+  --series-gray: #a8a69f;
+  --seq-1: #cde2fb; --seq-2: #9ec5f4; --seq-3: #6da7ec; --seq-4: #3987e5; --seq-5: #256abf; --seq-6: #184f95; --seq-7: #0d366b;
+  --ord-1: #86b6ef; --ord-2: #5598e7; --ord-3: #2a78d6; --ord-4: #1c5cab; --ord-5: #104281;
+  --good: #0ca30c; --warning: #fab219; --serious: #ec835a; --critical: #d03b3b;
+  --good-ink: #006300;
+  --synthetic-bg: #fff4d6; --synthetic-ink: #5c4300;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --surface-2: #232321;
+    --ink: #f0efec; --ink-2: #c3c2b7; --muted: #9a988f; --grid: #2c2c2a; --axis: #383835;
+    --border: rgba(255, 255, 255, 0.10); --brand: #0f2a3b; --accent: #3fb0b3;
+    --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500; --series-gray: #6a6862;
+    --seq-1: #13304f; --seq-2: #184f95; --seq-3: #1c5cab; --seq-4: #256abf; --seq-5: #3987e5; --seq-6: #6da7ec; --seq-7: #b7d3f6;
+    --ord-1: #184f95; --ord-2: #1c5cab; --ord-3: #2a78d6; --ord-4: #5598e7; --ord-5: #86b6ef;
+    --good-ink: #0ca30c; --synthetic-bg: #3a2f10; --synthetic-ink: #ffd982;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #1a1a19; --surface-2: #232321;
+  --ink: #f0efec; --ink-2: #c3c2b7; --muted: #9a988f; --grid: #2c2c2a; --axis: #383835;
+  --border: rgba(255, 255, 255, 0.10); --brand: #0f2a3b; --accent: #3fb0b3;
+  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500; --series-gray: #6a6862;
+  --seq-1: #13304f; --seq-2: #184f95; --seq-3: #1c5cab; --seq-4: #256abf; --seq-5: #3987e5; --seq-6: #6da7ec; --seq-7: #b7d3f6;
+  --ord-1: #184f95; --ord-2: #1c5cab; --ord-3: #2a78d6; --ord-4: #5598e7; --ord-5: #86b6ef;
+  --good-ink: #0ca30c; --synthetic-bg: #3a2f10; --synthetic-ink: #ffd982;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--page); color: var(--ink);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.synthetic-bar {
+  background: var(--synthetic-bg); color: var(--synthetic-ink); text-align: center;
+  font-size: 13px; font-weight: 600; padding: 7px 16px; letter-spacing: .01em;
+}
+header.top { background: var(--brand); color: var(--brand-ink); }
+header.top .wrap { padding-top: 26px; padding-bottom: 24px; }
+header.top .eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; opacity: .75; margin: 0 0 6px; }
+header.top h1 { font-size: 28px; line-height: 1.2; margin: 0 0 8px; font-weight: 650; }
+header.top p { margin: 0; max-width: 860px; opacity: .88; }
+header.top .meta { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; opacity: .85; }
+.wrap { max-width: 1280px; margin: 0 auto; padding-left: 24px; padding-right: 24px; }
+main.wrap { padding-top: 24px; padding-bottom: 48px; }
+h2.section { font-size: 18px; margin: 34px 0 4px; font-weight: 650; }
+p.section-lede { margin: 0 0 14px; color: var(--ink-2); max-width: 900px; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr)); gap: 12px; }
+.tile { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px 12px; }
+.tile .label { font-size: 13px; color: var(--ink-2); margin: 0 0 4px; }
+.tile .value { font-size: 30px; font-weight: 600; line-height: 1.15; margin: 0; }
+.tile .delta { font-size: 12.5px; color: var(--muted); margin: 6px 0 0; }
+.tile .delta .up { color: var(--good-ink); font-weight: 600; }
+.tile .delta .down { color: var(--critical); font-weight: 600; }
+.tile .note { font-size: 12px; color: var(--muted); margin: 4px 0 0; }
+
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px 12px; min-width: 0; }
+.card.full { grid-column: 1 / -1; }
+.card h3 { font-size: 15.5px; margin: 0 0 2px; font-weight: 650; }
+.card .sub { font-size: 13px; color: var(--ink-2); margin: 0 0 8px; }
+.card .chart { width: 100%; height: 320px; }
+.card .chart.tall { height: 420px; }
+.chart-scroll { overflow-x: auto; }
+.chart-scroll > .chart { min-width: 720px; }
+.funnel { display: grid; gap: 12px; padding: 6px 0 4px; }
+.funnel-label { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--ink-2); margin-bottom: 4px; }
+.funnel-val { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.funnel-track { background: var(--surface-2); border-radius: 4px; height: 18px; }
+.funnel-bar { height: 18px; border-radius: 0 4px 4px 0; min-width: 2px; }
+.card .takeaway { font-size: 13px; color: var(--ink); background: var(--surface-2); border-radius: 8px; padding: 8px 10px; margin: 8px 0 4px; }
+details.data { margin-top: 6px; font-size: 13px; }
+details.data summary { cursor: pointer; color: var(--accent); font-weight: 600; padding: 4px 0; }
+.table-scroll { overflow-x: auto; max-height: 340px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; margin-top: 6px; }
+table.data { border-collapse: collapse; width: 100%; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+table.data th, table.data td { padding: 6px 10px; border-bottom: 1px solid var(--grid); text-align: left; white-space: nowrap; }
+table.data th { position: sticky; top: 0; background: var(--surface-2); color: var(--ink-2); font-weight: 600; }
+table.data td.num, table.data th.num { text-align: right; }
+
+.defs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 12px; }
+.def { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; font-size: 13.5px; }
+.def b { display: block; margin-bottom: 2px; }
+.def .check { color: var(--ink-2); font-size: 12.5px; margin-top: 4px; }
+
+.qa-list { display: grid; gap: 8px; }
+.qa-item { display: grid; grid-template-columns: 110px 1fr; gap: 12px; align-items: start; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 13.5px; }
+.badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 3px 10px 3px 8px; width: fit-content; }
+.badge .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.badge.pass { background: color-mix(in srgb, var(--good) 14%, transparent); color: var(--good-ink); }
+.badge.pass .dot { background: var(--good); }
+.badge.warn { background: color-mix(in srgb, var(--warning) 20%, transparent); color: var(--ink); }
+.badge.warn .dot { background: var(--warning); }
+.badge.fail { background: color-mix(in srgb, var(--critical) 14%, transparent); color: var(--critical); }
+.badge.fail .dot { background: var(--critical); }
+.qa-item .obs { color: var(--ink-2); font-size: 12.5px; margin-top: 2px; }
+
+.scope { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 12px; }
+.scope .def ul { margin: 6px 0 0; padding-left: 18px; }
+footer.foot { color: var(--muted); font-size: 12.5px; border-top: 1px solid var(--border); margin-top: 40px; padding-top: 16px; }
+
+@media (max-width: 860px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .wrap { padding-left: 16px; padding-right: 16px; }
+  header.top h1 { font-size: 23px; }
+  .qa-item { grid-template-columns: 1fr; gap: 6px; }
+  .card .chart { height: 280px; }
+}
+@media print { .synthetic-bar { -webkit-print-color-adjust: exact; print-color-adjust: exact; } details.data { display: none; } }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
+</head>
+<body>
+<div class="synthetic-bar">SYNTHETIC DEMONSTRATION - fictional organization and data. Not operational, medical or financial guidance.</div>
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Portfolio project A · Coralline Infusion Network (fictional)</p>
+    <h1>Referral-to-treatment executive KPIs</h1>
+    <p>Business results for a sales and operations leadership review: new referred patients, first treatment starts,
+       completed treatment visits, the booked schedule, and which referral sources are active or going quiet.</p>
+    <div class="meta"><span>Data as of <b id="asof"></b> (October is partial)</span><span>Seed <span id="seed"></span></span>
+      <span>Built with SQLite + Python + Plotly</span></div>
+  </div>
+</header>
+<main class="wrap">
+  <div class="tiles" id="tiles"></div>
+
+  <h2 class="section">Intake and starts</h2>
+  <p class="section-lede">Three numbers all get called "new business". Only one measures new patients, and the quick flag-based
+     count of first treatments misses real starts.</p>
+  <div class="grid-2">
+    <section class="card">
+      <h3>New referred patients vs order series vs referral events</h3>
+      <p class="sub">Monthly. Hollow markers = October, a partial month.</p>
+      <div class="chart" id="c-intake"></div>
+      <p class="takeaway" id="t-intake"></p>
+      <details class="data"><summary>Show data table</summary><div id="d-intake"></div></details>
+    </section>
+    <section class="card">
+      <h3>New treatment starts: derived vs first-appointment flag</h3>
+      <p class="sub">Derived = month of each patient's first visit that was Complete with medication given.</p>
+      <div class="chart" id="c-starts"></div>
+      <p class="takeaway" id="t-starts"></p>
+      <details class="data"><summary>Show data table</summary><div id="d-starts"></div></details>
+    </section>
+  </div>
+
+  <h2 class="section">Treatment volume and the schedule</h2>
+  <p class="section-lede">A treated visit is one appointment, however many medication lines it carries.</p>
+  <div class="grid-2">
+    <section class="card">
+      <h3>Completed treatment visits vs administration line items</h3>
+      <p class="sub">Bars: distinct treated appointments. Line: what counting line-item IDs would report.</p>
+      <div class="chart" id="c-visits"></div>
+      <p class="takeaway" id="t-visits"></p>
+      <details class="data"><summary>Show data table</summary><div id="d-visits"></div></details>
+    </section>
+    <section class="card">
+      <h3>Booked treatment visits after the snapshot</h3>
+      <p class="sub">By week. This is the schedule as it stands - a pipeline, not a forecast.</p>
+      <div class="chart" id="c-book"></div>
+      <p class="takeaway" id="t-book"></p>
+      <details class="data"><summary>Show data table</summary><div id="d-book"></div></details>
+    </section>
+  </div>
+
+  <h2 class="section">Referral network</h2>
+  <p class="section-lede">Active = at least one referral in the trailing 90 days. Dormant = referred before, none in that window.
+     Geography is the referring provider's county, not the patient's or the site's.</p>
+  <div class="grid-2">
+    <section class="card">
+      <h3>Referral providers by rolling-90-day status</h3>
+      <p class="sub">Month-end snapshots, plus the Oct 24 snapshot. Deduplicated to one row per provider.</p>
+      <div class="chart" id="c-prov"></div>
+      <p class="takeaway" id="t-prov"></p>
+      <details class="data"><summary>Show data table</summary><div id="d-prov"></div></details>
+    </section>
+    <section class="card">
+      <h3>Q2 2026 new-patient cohort: referral to treatment</h3>
+      <p class="sub">Patients created Apr-Jun 2026, followed to Oct 24. Share of cohort reaching each step.</p>
+      <div class="funnel" id="c-funnel" role="list"></div>
+      <p class="takeaway" id="t-funnel"></p>
+      <details class="data"><summary>Show data table</summary><div id="d-funnel"></div></details>
+    </section>
+    <section class="card full">
+      <h3>Referrals in the last 12 months by provider county and specialty</h3>
+      <p class="sub">Referral events, primary specialty only (multi-specialty providers are not double-counted).</p>
+      <div class="chart-scroll"><div class="chart tall" id="c-heat"></div></div>
+      <details class="data"><summary>Show data table</summary><div id="d-heat"></div></details>
+    </section>
+    <section class="card full">
+      <h3>Most active referral sources</h3>
+      <p class="sub">Referrals in the trailing 90 days. Fictional practices.</p>
+      <div id="tbl-active"></div>
+    </section>
+    <section class="card full">
+      <h3>Dormant sources worth a call</h3>
+      <p class="sub">No referral in 90 days, ranked by historical volume.</p>
+      <div id="tbl-dormant"></div>
+    </section>
+  </div>
+
+  <h2 class="section">Metric definitions</h2>
+  <div class="defs">
+    <div class="def"><b>New referred patients</b>Distinct patients whose record was created in the period. Business proxy for new referral intake.
+      <div class="check">Not order series (renewals, therapy changes) and not referral events (duplicates, re-referrals).</div></div>
+    <div class="def"><b>New treatment starts</b>Distinct patients whose first qualifying visit (Complete, medication administered, at least one given line) falls in the period.
+      <div class="check">Derived from events; the system's first-appointment flag is shown only for comparison.</div></div>
+    <div class="def"><b>Completed treatment visits</b>Distinct appointments that were Complete with medication administered.
+      <div class="check">Split lots, add-on lines and duplicate lines never multiply a visit.</div></div>
+    <div class="def"><b>Booked visits</b>Distinct appointments after the snapshot with status Scheduled or Confirmed.
+      <div class="check">Pipeline only. Most visits beyond about three weeks are not booked yet.</div></div>
+    <div class="def"><b>Active / dormant providers</b>Active: 1+ referral in (as-of - 90 days, as-of]. Dormant: earlier referral, none in that window.
+      <div class="check">Never-referred providers are counted separately. Calendar quarters are not a substitute for a rolling window.</div></div>
+    <div class="def"><b>Provider county</b>County of the referring provider's practice ZIP via the primary crosswalk row.
+      <div class="check">Not the patient's home county and not the infusion site's county.</div></div>
+  </div>
+
+  <h2 class="section">Quality checks run on this build</h2>
+  <p class="section-lede">WARN means a real issue was found and handled - documented, excluded, or routed for cleanup.</p>
+  <div class="qa-list" id="qa"></div>
+
+  <h2 class="section">What is real and what is simulated</h2>
+  <div class="scope">
+    <div class="def"><b>On-the-job exposure (real, described only in general terms)</b>
+      <ul><li>Translated leadership asks into separate KPIs with an analytics manager.</li>
+          <li>Built and saved two draft monthly trend reports (patients created; first treated new patients) in a BI tool.</li>
+          <li>Captured the rolling-90-day provider definitions and the provider-county rule.</li></ul></div>
+    <div class="def"><b>Independently built for this portfolio (synthetic)</b>
+      <ul><li>Every number, chart and table on this page.</li>
+          <li>Completed-visit, booked-pipeline, provider-status, county and funnel extensions.</li>
+          <li>The data model, SQL, QA suite and this dashboard. Not a production deployment.</li></ul></div>
+  </div>
+  <footer class="foot">Coralline Infusion Network is fictional. All data is synthetic, generated from seed <span id="seed2"></span>.
+    No patient, provider, payer or employer data was used. SYNTHETIC DEMONSTRATION - not operational, medical or financial guidance.</footer>
+</main>
+<script>window.DATA = {"meta": {"as_of": "October 24, 2026", "seed": "20261024"}, "tiles": [{"label": "New referred patients", "value": "107", "delta": 7.000000000000001, "deltaLabel": "vs Aug 2026", "upIsGood": true, "note": "September 2026, distinct patients created"}, {"label": "New treatment starts", "value": "72", "delta": -27.27272727272727, "deltaLabel": "vs Aug 2026", "upIsGood": true, "note": "Patients whose first treated visit fell in September"}, {"label": "Completed treatment visits", "value": "409", "delta": -7.2562358276643995, "deltaLabel": "vs Aug 2026", "upIsGood": true, "note": "Distinct appointments with medication given"}, {"label": "Booked visits on the schedule", "value": "377", "note": "After Oct 24; 207 in the next two weeks"}, {"label": "Active referring providers", "value": "153", "delta": 6.993006993006993, "deltaLabel": "vs Sep 30", "upIsGood": true, "note": "1+ referral in the trailing 90 days"}, {"label": "Dormant referring providers", "value": "71", "delta": -8.974358974358974, "deltaLabel": "vs Sep 30", "upIsGood": false, "note": "Referred before, none in 90 days"}], "monthly": [{"month_start": "2025-01-01", "is_partial_month": 0, "new_referred_patients": 72, "referral_events": 116, "new_order_series": 105, "new_treatment_starts": 61, "new_treatment_starts_flag_method": 53, "completed_treatment_visits": 252, "administration_line_items": 269, "complete_status_appointments": 261}, {"month_start": "2025-02-01", "is_partial_month": 0, "new_referred_patients": 76, "referral_events": 109, "new_order_series": 96, "new_treatment_starts": 59, "new_treatment_starts_flag_method": 49, "completed_treatment_visits": 246, "administration_line_items": 267, "complete_status_appointments": 253}, {"month_start": "2025-03-01", "is_partial_month": 0, "new_referred_patients": 89, "referral_events": 126, "new_order_series": 116, "new_treatment_starts": 65, "new_treatment_starts_flag_method": 60, "completed_treatment_visits": 293, "administration_line_items": 323, "complete_status_appointments": 302}, {"month_start": "2025-04-01", "is_partial_month": 0, "new_referred_patients": 88, "referral_events": 132, "new_order_series": 126, "new_treatment_starts": 68, "new_treatment_starts_flag_method": 61, "completed_treatment_visits": 300, "administration_line_items": 326, "complete_status_appointments": 305}, {"month_start": "2025-05-01", "is_partial_month": 0, "new_referred_patients": 88, "referral_events": 130, "new_order_series": 115, "new_treatment_starts": 62, "new_treatment_starts_flag_method": 58, "completed_treatment_visits": 280, "administration_line_items": 303, "complete_status_appointments": 295}, {"month_start": "2025-06-01", "is_partial_month": 0, "new_referred_patients": 92, "referral_events": 137, "new_order_series": 120, "new_treatment_starts": 77, "new_treatment_starts_flag_method": 66, "completed_treatment_visits": 316, "administration_line_items": 351, "complete_status_appointments": 328}, {"month_start": "2025-07-01", "is_partial_month": 0, "new_referred_patients": 88, "referral_events": 137, "new_order_series": 126, "new_treatment_starts": 69, "new_treatment_starts_flag_method": 62, "completed_treatment_visits": 332, "administration_line_items": 364, "complete_status_appointments": 343}, {"month_start": "2025-08-01", "is_partial_month": 0, "new_referred_patients": 71, "referral_events": 123, "new_order_series": 106, "new_treatment_starts": 67, "new_treatment_starts_flag_method": 56, "completed_treatment_visits": 308, "administration_line_items": 343, "complete_status_appointments": 326}, {"month_start": "2025-09-01", "is_partial_month": 0, "new_referred_patients": 95, "referral_events": 142, "new_order_series": 123, "new_treatment_starts": 59, "new_treatment_starts_flag_method": 53, "completed_treatment_visits": 332, "administration_line_items": 356, "complete_status_appointments": 341}, {"month_start": "2025-10-01", "is_partial_month": 0, "new_referred_patients": 101, "referral_events": 156, "new_order_series": 140, "new_treatment_starts": 78, "new_treatment_starts_flag_method": 69, "completed_treatment_visits": 381, "administration_line_items": 421, "complete_status_appointments": 388}, {"month_start": "2025-11-01", "is_partial_month": 0, "new_referred_patients": 85, "referral_events": 144, "new_order_series": 134, "new_treatment_starts": 67, "new_treatment_starts_flag_method": 58, "completed_treatment_visits": 333, "administration_line_items": 360, "complete_status_appointments": 353}, {"month_start": "2025-12-01", "is_partial_month": 0, "new_referred_patients": 94, "referral_events": 150, "new_order_series": 148, "new_treatment_starts": 91, "new_treatment_starts_flag_method": 79, "completed_treatment_visits": 431, "administration_line_items": 475, "complete_status_appointments": 446}, {"month_start": "2026-01-01", "is_partial_month": 0, "new_referred_patients": 103, "referral_events": 159, "new_order_series": 142, "new_treatment_starts": 77, "new_treatment_starts_flag_method": 63, "completed_treatment_visits": 400, "administration_line_items": 441, "complete_status_appointments": 414}, {"month_start": "2026-02-01", "is_partial_month": 0, "new_referred_patients": 86, "referral_events": 139, "new_order_series": 138, "new_treatment_starts": 72, "new_treatment_starts_flag_method": 62, "completed_treatment_visits": 366, "administration_line_items": 388, "complete_status_appointments": 377}, {"month_start": "2026-03-01", "is_partial_month": 0, "new_referred_patients": 106, "referral_events": 181, "new_order_series": 154, "new_treatment_starts": 79, "new_treatment_starts_flag_method": 66, "completed_treatment_visits": 408, "administration_line_items": 446, "complete_status_appointments": 424}, {"month_start": "2026-04-01", "is_partial_month": 0, "new_referred_patients": 113, "referral_events": 186, "new_order_series": 176, "new_treatment_starts": 97, "new_treatment_starts_flag_method": 82, "completed_treatment_visits": 432, "administration_line_items": 472, "complete_status_appointments": 450}, {"month_start": "2026-05-01", "is_partial_month": 0, "new_referred_patients": 111, "referral_events": 183, "new_order_series": 165, "new_treatment_starts": 73, "new_treatment_starts_flag_method": 70, "completed_treatment_visits": 407, "administration_line_items": 451, "complete_status_appointments": 421}, {"month_start": "2026-06-01", "is_partial_month": 0, "new_referred_patients": 108, "referral_events": 192, "new_order_series": 164, "new_treatment_starts": 101, "new_treatment_starts_flag_method": 89, "completed_treatment_visits": 431, "administration_line_items": 469, "complete_status_appointments": 445}, {"month_start": "2026-07-01", "is_partial_month": 0, "new_referred_patients": 109, "referral_events": 163, "new_order_series": 165, "new_treatment_starts": 76, "new_treatment_starts_flag_method": 70, "completed_treatment_visits": 423, "administration_line_items": 469, "complete_status_appointments": 436}, {"month_start": "2026-08-01", "is_partial_month": 0, "new_referred_patients": 100, "referral_events": 161, "new_order_series": 146, "new_treatment_starts": 99, "new_treatment_starts_flag_method": 82, "completed_treatment_visits": 441, "administration_line_items": 475, "complete_status_appointments": 463}, {"month_start": "2026-09-01", "is_partial_month": 0, "new_referred_patients": 107, "referral_events": 181, "new_order_series": 158, "new_treatment_starts": 72, "new_treatment_starts_flag_method": 64, "completed_treatment_visits": 409, "administration_line_items": 443, "complete_status_appointments": 427}, {"month_start": "2026-10-01", "is_partial_month": 1, "new_referred_patients": 85, "referral_events": 149, "new_order_series": 147, "new_treatment_starts": 67, "new_treatment_starts_flag_method": 58, "completed_treatment_visits": 323, "administration_line_items": 346, "complete_status_appointments": 334}], "bookings": [{"week_start": "2026-10-26", "booked_visits": 110, "confirmed_visits": 34, "booked_patients": 110}, {"week_start": "2026-11-02", "booked_visits": 97, "confirmed_visits": 0, "booked_patients": 97}, {"week_start": "2026-11-09", "booked_visits": 56, "confirmed_visits": 0, "booked_patients": 56}, {"week_start": "2026-11-16", "booked_visits": 63, "confirmed_visits": 0, "booked_patients": 63}, {"week_start": "2026-11-23", "booked_visits": 20, "confirmed_visits": 0, "booked_patients": 20}, {"week_start": "2026-11-30", "booked_visits": 13, "confirmed_visits": 0, "booked_patients": 13}, {"week_start": "2026-12-07", "booked_visits": 9, "confirmed_visits": 0, "booked_patients": 9}, {"week_start": "2026-12-14", "booked_visits": 9, "confirmed_visits": 0, "booked_patients": 9}], "provider_monthly": [{"as_of": "2025-01-31", "active_providers": 116, "newly_active_providers": 31, "dormant_providers": 19, "never_referred_providers": 19, "providers_on_file": 154}, {"as_of": "2025-02-28", "active_providers": 117, "newly_active_providers": 24, "dormant_providers": 22, "never_referred_providers": 19, "providers_on_file": 158}, {"as_of": "2025-03-31", "active_providers": 117, "newly_active_providers": 21, "dormant_providers": 27, "never_referred_providers": 15, "providers_on_file": 159}, {"as_of": "2025-04-30", "active_providers": 117, "newly_active_providers": 11, "dormant_providers": 28, "never_referred_providers": 20, "providers_on_file": 165}, {"as_of": "2025-05-31", "active_providers": 124, "newly_active_providers": 16, "dormant_providers": 31, "never_referred_providers": 19, "providers_on_file": 174}, {"as_of": "2025-06-30", "active_providers": 126, "newly_active_providers": 16, "dormant_providers": 34, "never_referred_providers": 21, "providers_on_file": 181}, {"as_of": "2025-07-31", "active_providers": 124, "newly_active_providers": 18, "dormant_providers": 40, "never_referred_providers": 20, "providers_on_file": 184}, {"as_of": "2025-08-31", "active_providers": 120, "newly_active_providers": 12, "dormant_providers": 47, "never_referred_providers": 22, "providers_on_file": 189}, {"as_of": "2025-09-30", "active_providers": 120, "newly_active_providers": 9, "dormant_providers": 50, "never_referred_providers": 24, "providers_on_file": 194}, {"as_of": "2025-10-31", "active_providers": 136, "newly_active_providers": 14, "dormant_providers": 42, "never_referred_providers": 18, "providers_on_file": 196}, {"as_of": "2025-11-30", "active_providers": 135, "newly_active_providers": 12, "dormant_providers": 44, "never_referred_providers": 20, "providers_on_file": 199}, {"as_of": "2025-12-31", "active_providers": 134, "newly_active_providers": 10, "dormant_providers": 46, "never_referred_providers": 28, "providers_on_file": 208}, {"as_of": "2026-01-31", "active_providers": 135, "newly_active_providers": 10, "dormant_providers": 53, "never_referred_providers": 28, "providers_on_file": 216}, {"as_of": "2026-02-28", "active_providers": 141, "newly_active_providers": 14, "dormant_providers": 52, "never_referred_providers": 25, "providers_on_file": 218}, {"as_of": "2026-03-31", "active_providers": 138, "newly_active_providers": 18, "dormant_providers": 60, "never_referred_providers": 26, "providers_on_file": 224}, {"as_of": "2026-04-30", "active_providers": 146, "newly_active_providers": 15, "dormant_providers": 57, "never_referred_providers": 27, "providers_on_file": 230}, {"as_of": "2026-05-31", "active_providers": 154, "newly_active_providers": 16, "dormant_providers": 55, "never_referred_providers": 25, "providers_on_file": 234}, {"as_of": "2026-06-30", "active_providers": 151, "newly_active_providers": 12, "dormant_providers": 59, "never_referred_providers": 25, "providers_on_file": 235}, {"as_of": "2026-07-31", "active_providers": 145, "newly_active_providers": 10, "dormant_providers": 69, "never_referred_providers": 22, "providers_on_file": 236}, {"as_of": "2026-08-31", "active_providers": 144, "newly_active_providers": 8, "dormant_providers": 73, "never_referred_providers": 23, "providers_on_file": 240}, {"as_of": "2026-09-30", "active_providers": 143, "newly_active_providers": 10, "dormant_providers": 78, "never_referred_providers": 25, "providers_on_file": 246}, {"as_of": "2026-10-24", "active_providers": 153, "newly_active_providers": 10, "dormant_providers": 71, "never_referred_providers": 23, "providers_on_file": 247}], "top_active": [{"provider_id": "PRV0204", "fictional_practice": "Marshland Neurology Associates of Cypressmoor (fictional)", "specialty_label": "Neurology", "county_name": "Cypressmoor County", "state_code": "GA", "record_count": 1, "created_date": "2024-03-14", "first_referral": "2024-07-01", "last_referral": "2026-10-09", "referrals_90d": 17, "referrals_prior_90d": 10, "referrals_12m": 40, "referrals_all_time": 92, "new_patients_all_time": 61, "status_90d": "Active", "is_newly_active": 0, "days_since_last_referral": 15}, {"provider_id": "PRV0015", "fictional_practice": "Sandhill Kidney Care (fictional)", "specialty_label": "Nephrology", "county_name": "Wren Hollow County", "state_code": "GA", "record_count": 1, "created_date": "2022-09-25", "first_referral": "2024-07-31", "last_referral": "2026-10-21", "referrals_90d": 15, "referrals_prior_90d": 18, "referrals_12m": 66, "referrals_all_time": 135, "new_patients_all_time": 93, "status_90d": "Active", "is_newly_active": 0, "days_since_last_referral": 3}, {"provider_id": "PRV0227", "fictional_practice": "Sandhill Pulmonary Care (fictional)", "specialty_label": "Pulmonology", "county_name": "Gullwing County", "state_code": "SC", "record_count": 1, "created_date": "2025-06-12", "first_referral": "2025-06-26", "last_referral": "2026-10-19", "referrals_90d": 15, "referrals_prior_90d": 12, "referrals_12m": 48, "referrals_all_time": 62, "new_patients_all_time": 42, "status_90d": "Active", "is_newly_active": 0, "days_since_last_referral": 5}, {"provider_id": "PRV0120", "fictional_practice": "Sandhill Allergy & Immunology (fictional)", "specialty_label": "Immunology/Allergy", "county_name": "Tallow Creek County", "state_code": "GA", "record_count": 1, "created_date": "2024-10-31", "first_referral": "2024-11-20", "last_referral": "2026-10-06", "referrals_90d": 13, "referrals_prior_90d": 12, "referrals_12m": 48, "referrals_all_time": 77, "new_patients_all_time": 54, "status_90d": "Active", "is_newly_active": 0, "days_since_last_referral": 18}, {"provider_id": "PRV0104", "fictional_practice": "Riverbend Digestive Health (fictional)", "specialty_label": "Gastroenterology", "county_name": "Larkspur County", "state_code": "GA", "record_count": 1, "created_date": "2022-03-20", "first_referral": "2024-10-08", "last_referral": "2026-10-16", "referrals_90d": 13, "referrals_prior_90d": 8, "referrals_12m": 30, "referrals_all_time": 45, "new_patients_all_time": 31, "status_90d": "Active", "is_newly_active": 0, "days_since_last_referral": 8}, {"provider_id": "PRV0152", "fictional_practice": "Bayline Family Medicine (fictional)", "specialty_label": "Primary Care", "county_name": "Larkspur County", "state_code": "GA", "record_count": 1, "created_date": "2026-06-22", "first_referral": "2026-07-07", "last_referral": "2026-10-16", "referrals_90d": 13, "referrals_prior_90d": 3, "referrals_12m": 16, "referrals_all_time": 16, "new_patients_all_time": 15, "status_90d": "Active", "is_newly_active": 0, "days_since_last_referral": 8}, {"provider_id": "PRV0230", "fictional_practice": "Sandhill Pulmonary Care (fictional)", "specialty_label": "Pulmonology", "county_name": "Gullwing County", "state_code": "SC", "record_count": 2, "created_date": "2021-08-15", "first_referral": "2024-07-16", "last_referral": "2026-10-08", "referrals_90d": 12, "referrals_prior_90d": 4, "referrals_12m": 30, "referrals_all_time": 74, "new_patients_all_time": 48, "status_90d": "Active", "is_newly_active": 0, "days_since_last_referral": 16}, {"provider_id": "PRV0194", "fictional_practice": "Seabreeze Neurology Associates of Gullwing (fictional)", "specialty_label": "Neurology", "county_name": "Gullwing County", "state_code": "SC", "record_count": 1, "created_date": "2023-03-11", "first_referral": "2024-07-02", "last_referral": "2026-10-15", "referrals_90d": 11, "referrals_prior_90d": 8, "referrals_12m": 37, "referrals_all_time": 63, "new_patients_all_time": 36, "status_90d": "Active", "is_newly_active": 0, "days_since_last_referral": 9}, {"provider_id": "PRV0001", "fictional_practice": "Marshland Family Medicine (fictional)", "specialty_label": "Primary Care", "county_name": "Tallow Creek County", "state_code": "GA", "record_count": 1, "created_date": "2022-09-22", "first_referral": "2024-07-29", "last_referral": "2026-10-12", "referrals_90d": 10, "referrals_prior_90d": 6, "referrals_12m": 31, "referrals_all_time": 59, "new_patients_all_time": 45, "status_90d": "Active", "is_newly_active": 0, "days_since_last_referral": 12}, {"provider_id": "PRV0035", "fictional_practice": "Oakmoss Neurology Associates (fictional)", "specialty_label": "Neurology", "county_name": "Tallow Creek County", "state_code": "GA", "record_count": 1, "created_date": "2026-08-20", "first_referral": "2026-09-08", "last_referral": "2026-10-22", "referrals_90d": 9, "referrals_prior_90d": 0, "referrals_12m": 9, "referrals_all_time": 9, "new_patients_all_time": 7, "status_90d": "Active", "is_newly_active": 1, "days_since_last_referral": 2}, {"provider_id": "PRV0232", "fictional_practice": "Harbor Pulmonary Care of Cypressmoor (fictional)", "specialty_label": "Pulmonology", "county_name": "Cypressmoor County", "state_code": "GA", "record_count": 1, "created_date": "2023-03-02", "first_referral": "2024-07-17", "last_referral": "2026-10-13", "referrals_90d": 8, "referrals_prior_90d": 6, "referrals_12m": 28, "referrals_all_time": 58, "new_patients_all_time": 30, "status_90d": "Active", "is_newly_active": 0, "days_since_last_referral": 11}, {"provider_id": "PRV0042", "fictional_practice": "Tidal Kidney Care (fictional)", "specialty_label": "Nephrology", "county_name": "Wren Hollow County", "state_code": "GA", "record_count": 1, "created_date": "2021-08-23", "first_referral": "2024-11-12", "last_referral": "2026-10-12", "referrals_90d": 8, "referrals_prior_90d": 1, "referrals_12m": 17, "referrals_all_time": 30, "new_patients_all_time": 22, "status_90d": "Active", "is_newly_active": 0, "days_since_last_referral": 12}], "dormant": [{"provider_id": "PRV0018", "fictional_practice": "Pinewood Allergy & Immunology (fictional)", "specialty_label": "Immunology/Allergy", "county_name": "Gullwing County", "state_code": "SC", "record_count": 1, "created_date": "2023-08-01", "first_referral": "2024-07-15", "last_referral": "2025-10-15", "referrals_90d": 0, "referrals_prior_90d": 0, "referrals_12m": 0, "referrals_all_time": 46, "new_patients_all_time": 32, "status_90d": "Dormant", "is_newly_active": 0, "days_since_last_referral": 374}, {"provider_id": "PRV0079", "fictional_practice": "Harbor Pulmonary Care of Indigo (fictional)", "specialty_label": "Pulmonology", "county_name": "Indigo Flats County", "state_code": "SC", "record_count": 1, "created_date": "2024-12-27", "first_referral": "2025-01-23", "last_referral": "2026-06-11", "referrals_90d": 0, "referrals_prior_90d": 2, "referrals_12m": 12, "referrals_all_time": 43, "new_patients_all_time": 23, "status_90d": "Dormant", "is_newly_active": 0, "days_since_last_referral": 135}, {"provider_id": "PRV0041", "fictional_practice": "Bluestem Rheumatology (fictional)", "specialty_label": "Rheumatology", "county_name": "Ospreyford County", "state_code": "NC", "record_count": 1, "created_date": "2025-02-05", "first_referral": "2025-02-26", "last_referral": "2025-12-17", "referrals_90d": 0, "referrals_prior_90d": 0, "referrals_12m": 6, "referrals_all_time": 31, "new_patients_all_time": 20, "status_90d": "Dormant", "is_newly_active": 0, "days_since_last_referral": 311}, {"provider_id": "PRV0170", "fictional_practice": "Riverbend Rheumatology of Cypressmoor (fictional)", "specialty_label": "Rheumatology", "county_name": "Cypressmoor County", "state_code": "GA", "record_count": 1, "created_date": "2023-11-12", "first_referral": "2024-09-06", "last_referral": "2026-01-13", "referrals_90d": 0, "referrals_prior_90d": 0, "referrals_12m": 7, "referrals_all_time": 24, "new_patients_all_time": 15, "status_90d": "Dormant", "is_newly_active": 0, "days_since_last_referral": 284}, {"provider_id": "PRV0004", "fictional_practice": "Lowcountry Neurology Associates (fictional)", "specialty_label": "Neurology", "county_name": "Cedar Landing County", "state_code": "NC", "record_count": 1, "created_date": "2023-07-22", "first_referral": "2024-07-17", "last_referral": "2026-06-29", "referrals_90d": 0, "referrals_prior_90d": 2, "referrals_12m": 12, "referrals_all_time": 22, "new_patients_all_time": 13, "status_90d": "Dormant", "is_newly_active": 0, "days_since_last_referral": 117}, {"provider_id": "PRV0072", "fictional_practice": "Oakmoss Pulmonary Care (fictional)", "specialty_label": "Pulmonology", "county_name": "Larkspur County", "state_code": "GA", "record_count": 1, "created_date": "2022-10-08", "first_referral": "2024-08-26", "last_referral": "2026-06-29", "referrals_90d": 0, "referrals_prior_90d": 2, "referrals_12m": 4, "referrals_all_time": 21, "new_patients_all_time": 11, "status_90d": "Dormant", "is_newly_active": 0, "days_since_last_referral": 117}, {"provider_id": "PRV0046", "fictional_practice": "Riverbend Rheumatology (fictional)", "specialty_label": "Rheumatology", "county_name": "Sablecrest County", "state_code": "SC", "record_count": 1, "created_date": "2023-09-14", "first_referral": "2024-07-23", "last_referral": "2026-02-23", "referrals_90d": 0, "referrals_prior_90d": 0, "referrals_12m": 2, "referrals_all_time": 21, "new_patients_all_time": 13, "status_90d": "Dormant", "is_newly_active": 0, "days_since_last_referral": 243}, {"provider_id": "PRV0111", "fictional_practice": "Sandhill Rheumatology of Quarry (fictional)", "specialty_label": "Rheumatology", "county_name": "Quarry Hill County", "state_code": "NC", "record_count": 1, "created_date": "2026-01-12", "first_referral": "2026-01-09", "last_referral": "2026-06-29", "referrals_90d": 0, "referrals_prior_90d": 5, "referrals_12m": 20, "referrals_all_time": 20, "new_patients_all_time": 13, "status_90d": "Dormant", "is_newly_active": 0, "days_since_last_referral": 117}, {"provider_id": "PRV0220", "fictional_practice": "Oakmoss Allergy & Immunology (fictional)", "specialty_label": "Immunology/Allergy", "county_name": "Saltmeadow County", "state_code": "GA", "record_count": 1, "created_date": "2023-09-23", "first_referral": "2024-09-09", "last_referral": "2025-11-21", "referrals_90d": 0, "referrals_prior_90d": 0, "referrals_12m": 1, "referrals_all_time": 17, "new_patients_all_time": 9, "status_90d": "Dormant", "is_newly_active": 0, "days_since_last_referral": 337}, {"provider_id": "PRV0084", "fictional_practice": "Magnolia Digestive Health (fictional)", "specialty_label": "Gastroenterology", "county_name": "Cypressmoor County", "state_code": "GA", "record_count": 1, "created_date": "2022-01-22", "first_referral": "2024-07-09", "last_referral": "2026-07-06", "referrals_90d": 0, "referrals_prior_90d": 3, "referrals_12m": 7, "referrals_all_time": 14, "new_patients_all_time": 11, "status_90d": "Dormant", "is_newly_active": 0, "days_since_last_referral": 110}, {"provider_id": "PRV0148", "fictional_practice": "Bayline Allergy & Immunology (fictional)", "specialty_label": "Immunology/Allergy", "county_name": "Indigo Flats County", "state_code": "SC", "record_count": 1, "created_date": "2024-03-17", "first_referral": "2024-11-13", "last_referral": "2026-06-29", "referrals_90d": 0, "referrals_prior_90d": 1, "referrals_12m": 6, "referrals_all_time": 14, "new_patients_all_time": 6, "status_90d": "Dormant", "is_newly_active": 0, "days_since_last_referral": 117}, {"provider_id": "PRV0007", "fictional_practice": "Bluestem Dermatology (fictional)", "specialty_label": "Dermatology", "county_name": "Cypressmoor County", "state_code": "GA", "record_count": 1, "created_date": "2022-09-03", "first_referral": "2024-07-29", "last_referral": "2026-06-01", "referrals_90d": 0, "referrals_prior_90d": 1, "referrals_12m": 3, "referrals_all_time": 14, "new_patients_all_time": 7, "status_90d": "Dormant", "is_newly_active": 0, "days_since_last_referral": 145}], "heat": {"y": ["Cypressmoor County (GA)", "Larkspur County (GA)", "Saltmeadow County (GA)", "Tallow Creek County (GA)", "Wren Hollow County (GA)", "Brinemoor County (NC)", "Cedar Landing County (NC)", "Ospreyford County (NC)", "Palmetto Reach County (NC)", "Quarry Hill County (NC)", "Gullwing County (SC)", "Heronmouth County (SC)", "Indigo Flats County (SC)", "Sablecrest County (SC)"], "x": ["Dermatology", "Gastroenterology", "Hematology", "Immunology/Allergy", "Nephrology", "Neurology", "Primary Care", "Pulmonology", "Rheumatology"], "z": [[15, 17, 9, 0, 0, 86, 17, 28, 76], [17, 83, 0, 0, 15, 82, 37, 50, 0], [26, 35, 0, 19, 0, 19, 0, 0, 5], [16, 23, 0, 73, 4, 28, 37, 1, 0], [0, 0, 0, 0, 123, 0, 0, 0, 36], [0, 17, 13, 0, 0, 0, 0, 43, 13], [0, 31, 0, 0, 33, 44, 0, 1, 22], [0, 0, 0, 23, 0, 9, 0, 0, 6], [0, 20, 0, 0, 33, 0, 0, 50, 29], [0, 0, 0, 0, 0, 25, 0, 0, 41], [1, 0, 0, 13, 0, 91, 0, 144, 19], [17, 0, 0, 0, 0, 15, 0, 4, 52], [0, 0, 0, 6, 39, 4, 0, 28, 43], [0, 1, 0, 4, 44, 20, 0, 46, 9]]}, "funnel": [{"stage": "New referred patients", "patients": 332, "pct_of_cohort": 1.0}, {"stage": "Order series created", "patients": 308, "pct_of_cohort": 0.927710843373494}, {"stage": "Cleared to schedule", "patients": 275, "pct_of_cohort": 0.8283132530120482}, {"stage": "First visit booked", "patients": 275, "pct_of_cohort": 0.8283132530120482}, {"stage": "Treated by snapshot", "patients": 262, "pct_of_cohort": 0.7891566265060241}, {"stage": "Treated within 60 days", "patients": 253, "pct_of_cohort": 0.7620481927710844}], "lead": [{"step": "Referral to order series", "median_days": 1.9}, {"step": "Order to cleared for scheduling", "median_days": 13.7}, {"step": "Cleared to first treatment", "median_days": 13.7}, {"step": "Referral to first treatment (end to end)", "median_days": 28.9}], "qa": [{"check": "Patients count is a unique-patient count", "status": "pass", "observed": "2,502 rows = 2,502 distinct patient keys", "rule": "COUNT(*) must equal COUNT(DISTINCT patient_key)"}, {"check": "New referred patients kept separate from order series and referral events", "status": "pass", "observed": "Jan 2025-Oct 2026: 2,067 new patients vs 3,010 order series (+46%) vs 3,296 referral events", "rule": "Patient created date measures new business; order series include renewals and therapy changes"}, {"check": "First treatment derived from events, not the first-appointment flag", "status": "warn", "observed": "Derived: 1,929 patients ever started; flag method finds 1,692 (237 missed, 12.3%); 5 patients carry the flag twice", "rule": "Flag sits on the first BOOKED appointment, which may have been cancelled, missed or held"}, {"check": "Treated visits counted as distinct appointments, not line items", "status": "pass", "observed": "9,424 administration lines vs 8,642 treated visits; 638 visits carry 2+ given lines (split lots, add-on pre-medication, duplicates)", "rule": "COUNT(DISTINCT appt_key) on qualifying visits"}, {"check": "Completed visits where no medication was given are excluded", "status": "pass", "observed": "315 Complete appointments had medication held", "rule": "status = Complete AND meds_administered = 1"}, {"check": "Administration lines on cancelled appointments", "status": "warn", "observed": "3 line(s) found and excluded; routed to source-data cleanup", "rule": "A cancelled visit cannot be a treatment"}, {"check": "Duplicate administration lines cannot inflate visit counts", "status": "pass", "observed": "10 exact duplicate line(s) present; distinct-appointment logic is unaffected", "rule": "Distinct appointment grain"}, {"check": "Referral providers deduplicated by stable identity", "status": "pass", "observed": "250 provider records -> 247 people (3 duplicate records merged)", "rule": "Group by source_identity_key; keep the earliest record's attributes"}, {"check": "Specialty cut does not double-count multi-specialty providers", "status": "pass", "observed": "Heatmap total 2,030 = 2,030 referrals in window (joining the specialty bridge would give 2,176)", "rule": "Use primary specialty only"}, {"check": "Every provider maps to exactly one county (split ZIP handled)", "status": "pass", "observed": "0 unmapped; ZIP 00150 straddles two counties and resolves to its primary county", "rule": "Crosswalk join restricted to is_primary = 1"}, {"check": "Provider status partitions are complete and exclusive", "status": "pass", "observed": "153 active + 71 dormant + 23 never referred = 247 on file", "rule": "Never-referred providers are not dormant"}, {"check": "Rolling-90 status reproduces in independent Python with no future data", "status": "pass", "observed": "22/22 month-end snapshots match", "rule": "Only referrals <= as_of"}, {"check": "Late-arriving visit updates", "status": "warn", "observed": "8 past visits still show Scheduled/Confirmed at the snapshot; the last two weeks will rise as updates land", "rule": "Refresh daily even if leadership reviews weekly"}, {"check": "Months bucketed on site-local time", "status": "pass", "observed": "3 treated visit(s) would shift month if bucketed in UTC", "rule": "Use start_local for reporting months"}, {"check": "Partial month labelled", "status": "pass", "observed": "October 2026 contains data through Oct 24 only and is marked partial", "rule": "Never compare a partial month with full months without a label"}]};</script>
+<script>/* Shared dashboard helpers - inlined into every project dashboard at build time.
+   Charts read colors from CSS variables, so light/dark themes stay in one place. */
+(function () {
+  // ?theme=light|dark forces a theme (used for README screenshots); otherwise follow the OS.
+  const forced = new URLSearchParams(location.search).get("theme");
+  if (forced === "light" || forced === "dark") document.documentElement.setAttribute("data-theme", forced);
+  const charts = [];
+  const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const fmt = new Intl.NumberFormat("en-US");
+
+  function colors() {
+    return {
+      ink: css("--ink"), ink2: css("--ink-2"), muted: css("--muted"), grid: css("--grid"), axis: css("--axis"),
+      surface: css("--surface"), s1: css("--series-1"), s2: css("--series-2"), s3: css("--series-3"),
+      gray: css("--series-gray"), good: css("--good"), warning: css("--warning"), critical: css("--critical"),
+      seq: [1, 2, 3, 4, 5, 6, 7].map((i) => css(`--seq-${i}`)),
+      ord: [1, 2, 3, 4, 5].map((i) => css(`--ord-${i}`)),
+    };
+  }
+
+  function layout(extra) {
+    const c = colors();
+    const axis = { gridcolor: c.grid, linecolor: c.axis, zeroline: false, tickfont: { color: c.muted, size: 11 },
+                   title: { font: { color: c.ink2, size: 12 } }, automargin: true };
+    const base = {
+      paper_bgcolor: "rgba(0,0,0,0)", plot_bgcolor: "rgba(0,0,0,0)",
+      font: { family: 'system-ui, -apple-system, "Segoe UI", sans-serif', color: c.ink, size: 12 },
+      margin: { l: 48, r: 18, t: 10, b: 40 }, hovermode: "x unified",
+      hoverlabel: { bgcolor: c.surface, bordercolor: c.axis, font: { color: c.ink } },
+      legend: { orientation: "h", x: 0, y: 1.12, font: { color: c.ink2, size: 12 } },
+      xaxis: Object.assign({}, axis, { showgrid: false, showline: true }),
+      yaxis: Object.assign({}, axis, { showline: false, rangemode: "tozero" }),
+      bargap: 0.35,
+    };
+    return deepMerge(base, extra || {});
+  }
+
+  function deepMerge(a, b) {
+    const out = Array.isArray(a) ? a.slice() : Object.assign({}, a);
+    for (const k of Object.keys(b)) {
+      if (b[k] && typeof b[k] === "object" && !Array.isArray(b[k]) && a[k] && typeof a[k] === "object") out[k] = deepMerge(a[k], b[k]);
+      else out[k] = b[k];
+    }
+    return out;
+  }
+
+  const config = { displayModeBar: false, responsive: true };
+
+  function register(fn) { charts.push(fn); }
+  function renderAll() { const c = colors(); charts.forEach((fn) => fn(c)); }
+
+  function table(el, columns, rows) {
+    const head = columns.map((c) => `<th class="${c.num ? "num" : ""}">${c.label}</th>`).join("");
+    const body = rows.map((r) => "<tr>" + columns.map((c) => {
+      let v = r[c.key];
+      if (c.num && typeof v === "number") v = c.pct ? (v * 100).toFixed(1) + "%" : (Number.isInteger(v) ? fmt.format(v) : v.toFixed(c.dp ?? 1));
+      return `<td class="${c.num ? "num" : ""}">${v ?? ""}</td>`;
+    }).join("") + "</tr>").join("");
+    el.innerHTML = `<div class="table-scroll"><table class="data"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+  }
+
+  function tiles(el, items) {
+    el.innerHTML = items.map((t) => {
+      let delta = "";
+      if (t.delta !== undefined && t.delta !== null) {
+        const up = t.delta >= 0;
+        const good = t.upIsGood === undefined ? null : (up === t.upIsGood);
+        const cls = good === null ? "" : (good ? "up" : "down");
+        const sign = up ? "+" : "−";
+        delta = `<p class="delta"><span class="${cls}">${sign}${Math.abs(t.delta).toFixed(1)}%</span> ${t.deltaLabel || ""}</p>`;
+      }
+      return `<div class="tile"><p class="label">${t.label}</p><p class="value">${t.value}</p>${delta}${t.note ? `<p class="note">${t.note}</p>` : ""}</div>`;
+    }).join("");
+  }
+
+  window.Dash = { register, renderAll, layout, config, table, tiles, colors, fmt };
+  document.addEventListener("DOMContentLoaded", renderAll);
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", renderAll);
+  new MutationObserver(renderAll).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+})();
+</script>
+<script>
+(function () {
+  const D = window.DATA, fmt = Dash.fmt;
+  const months = D.monthly.map((r) => r.month_start);
+  const label = (iso) => new Date(iso + "T00:00:00").toLocaleString("en-US", { month: "short", year: "numeric" });
+  const partial = D.monthly.map((r) => r.is_partial_month === 1);
+  document.getElementById("asof").textContent = D.meta.as_of;
+  document.getElementById("seed").textContent = D.meta.seed;
+  document.getElementById("seed2").textContent = D.meta.seed;
+  Dash.tiles(document.getElementById("tiles"), D.tiles);
+
+  const full = D.monthly.filter((r) => !r.is_partial_month);
+  const sum = (rows, k) => rows.reduce((a, r) => a + r[k], 0);
+  const last = full[full.length - 1];
+
+  function line(name, ys, color, opts) {
+    return Object.assign({
+      type: "scatter", mode: "lines+markers", name, x: months, y: ys,
+      line: { color, width: 2, shape: "linear" },
+      marker: { size: partial.map((p) => (p ? 9 : 5)), color: partial.map((p) => (p ? "rgba(0,0,0,0)" : color)),
+                line: { color, width: partial.map((p) => (p ? 2 : 0)) } },
+      hovertemplate: "%{y:,}<extra>" + name + "</extra>",
+    }, opts || {});
+  }
+  const monthAxis = { xaxis: { tickformat: "%b %y", dtick: "M3", ticklabelmode: "period" } };
+
+  // 1. Intake definitions
+  Dash.register((c) => {
+    Plotly.react("c-intake", [
+      line("Referral events", D.monthly.map((r) => r.referral_events), c.s1),
+      line("New order series", D.monthly.map((r) => r.new_order_series), c.s2),
+      line("New referred patients", D.monthly.map((r) => r.new_referred_patients), c.s3),
+    ], Dash.layout(monthAxis), Dash.config);
+  });
+  const np = sum(full, "new_referred_patients"), no = sum(full, "new_order_series");
+  document.getElementById("t-intake").textContent =
+    `Order series ran ${Math.round((no - np) / np * 100)}% above new patients over 21 full months: renewals and therapy changes create new series for existing patients.`;
+  Dash.table(document.getElementById("d-intake"), [
+    { key: "month", label: "Month" }, { key: "new_referred_patients", label: "New referred patients", num: true },
+    { key: "new_order_series", label: "New order series", num: true }, { key: "referral_events", label: "Referral events", num: true }],
+    D.monthly.map((r) => Object.assign({ month: label(r.month_start) + (r.is_partial_month ? " (partial)" : "") }, r)));
+
+  // 2. Starts: derived vs flag
+  Dash.register((c) => {
+    Plotly.react("c-starts", [
+      line("Derived from treated visits", D.monthly.map((r) => r.new_treatment_starts), c.s1, { fill: "none" }),
+      line("First-appointment flag method", D.monthly.map((r) => r.new_treatment_starts_flag_method), c.s2),
+    ], Dash.layout(monthAxis), Dash.config);
+  });
+  const ds = sum(full, "new_treatment_starts"), fs = sum(full, "new_treatment_starts_flag_method");
+  document.getElementById("t-starts").textContent =
+    `The flag method missed ${ds - fs} of ${fmt.format(ds)} starts (${((ds - fs) / ds * 100).toFixed(1)}%): their first booked visit was cancelled, missed, or held.`;
+  Dash.table(document.getElementById("d-starts"), [
+    { key: "month", label: "Month" }, { key: "new_treatment_starts", label: "Derived", num: true },
+    { key: "new_treatment_starts_flag_method", label: "Flag method", num: true }, { key: "gap", label: "Missed by flag", num: true }],
+    D.monthly.map((r) => Object.assign({ month: label(r.month_start) + (r.is_partial_month ? " (partial)" : ""),
+      gap: r.new_treatment_starts - r.new_treatment_starts_flag_method }, r)));
+
+  // 3. Visits vs lines
+  Dash.register((c) => {
+    Plotly.react("c-visits", [
+      { type: "bar", name: "Completed treatment visits", x: months, y: D.monthly.map((r) => r.completed_treatment_visits),
+        marker: { color: c.s1, opacity: partial.map((p) => (p ? 0.45 : 1)), cornerradius: 4 },
+        hovertemplate: "%{y:,}<extra>Treated visits</extra>" },
+      line("Administration line items", D.monthly.map((r) => r.administration_line_items), c.s2),
+    ], Dash.layout(Object.assign({ bargap: 0.45 }, monthAxis)), Dash.config);
+  });
+  const tv = sum(full, "completed_treatment_visits"), li = sum(full, "administration_line_items");
+  document.getElementById("t-visits").textContent =
+    `${fmt.format(last.completed_treatment_visits)} treated visits in ${label(last.month_start)}. Counting line items would overstate volume by ${((li - tv) / tv * 100).toFixed(1)}%.`;
+  Dash.table(document.getElementById("d-visits"), [
+    { key: "month", label: "Month" }, { key: "completed_treatment_visits", label: "Treated visits", num: true },
+    { key: "administration_line_items", label: "Line items", num: true }, { key: "complete_status_appointments", label: "Status = Complete", num: true }],
+    D.monthly.map((r) => Object.assign({ month: label(r.month_start) + (r.is_partial_month ? " (partial)" : "") }, r)));
+
+  // 4. Bookings
+  Dash.register((c) => {
+    Plotly.react("c-book", [{
+      type: "bar", name: "Booked visits", x: D.bookings.map((b) => b.week_start), y: D.bookings.map((b) => b.booked_visits),
+      marker: { color: c.s1, cornerradius: 4 }, text: D.bookings.map((b) => b.booked_visits), textposition: "outside",
+      textfont: { color: c.ink2, size: 11 }, cliponaxis: false,
+      hovertemplate: "Week of %{x|%b %d}: %{y:,} booked<extra></extra>" }],
+      Dash.layout({ showlegend: false, hovermode: "closest", xaxis: { tickformat: "%b %d", type: "date" } }), Dash.config);
+  });
+  const b0 = D.bookings[0] ? D.bookings[0].booked_visits : 0, btot = sum(D.bookings, "booked_visits");
+  document.getElementById("t-book").textContent =
+    `${fmt.format(btot)} visits are booked after Oct 24; ${b0} of them next week. The drop-off is booking lead time, not falling demand.`;
+  Dash.table(document.getElementById("d-book"), [
+    { key: "week_start", label: "Week of" }, { key: "booked_visits", label: "Booked", num: true },
+    { key: "confirmed_visits", label: "Confirmed", num: true }, { key: "booked_patients", label: "Patients", num: true }], D.bookings);
+
+  // 5. Provider status
+  Dash.register((c) => {
+    const x = D.provider_monthly.map((r) => r.as_of);
+    const mk = (name, key, color) => ({ type: "scatter", mode: "lines+markers", name, x, y: D.provider_monthly.map((r) => r[key]),
+      line: { color, width: 2 }, marker: { size: 5, color }, hovertemplate: "%{y}<extra>" + name + "</extra>" });
+    Plotly.react("c-prov", [mk("Active (90 days)", "active_providers", c.s1), mk("Dormant", "dormant_providers", c.s2),
+      mk("Never referred", "never_referred_providers", c.s3)],
+      Dash.layout({ xaxis: { tickformat: "%b %y", dtick: "M3" } }), Dash.config);
+  });
+  const ps = D.provider_monthly[D.provider_monthly.length - 1], p0 = D.provider_monthly[0];
+  document.getElementById("t-prov").textContent =
+    `${ps.active_providers} active and ${ps.dormant_providers} dormant sources on Oct 24 (vs ${p0.active_providers} and ${p0.dormant_providers} in Jan 2025). The dormant pool keeps growing as the network ages - a re-engagement list, not a failure metric.`;
+  Dash.table(document.getElementById("d-prov"), [
+    { key: "as_of", label: "As of" }, { key: "active_providers", label: "Active", num: true },
+    { key: "newly_active_providers", label: "Newly active", num: true }, { key: "dormant_providers", label: "Dormant", num: true },
+    { key: "never_referred_providers", label: "Never referred", num: true }], D.provider_monthly);
+
+  // 6. Funnel - plain HTML bars (ordinal ramp, darkest = first step) so labels never collide on phones
+  const steps = ["--ord-5", "--ord-4", "--ord-3", "--ord-3", "--ord-2", "--ord-1"];
+  document.getElementById("c-funnel").innerHTML = D.funnel.map((s, i) => {
+    const pct = (s.pct_of_cohort * 100);
+    return `<div class="funnel-row" role="listitem" title="${s.stage}: ${s.patients} patients (${pct.toFixed(1)}%)">
+      <div class="funnel-label"><span>${s.stage}</span><span class="funnel-val">${pct.toFixed(0)}% · ${s.patients}</span></div>
+      <div class="funnel-track"><div class="funnel-bar" style="width:${pct}%;background:var(${steps[i]})"></div></div></div>`;
+  }).join("");
+  const leadTxt = D.lead.map((l) => `${l.step}: ${l.median_days ?? "n/a"} days`).join(" · ");
+  document.getElementById("t-funnel").textContent = `Median calendar days - ${leadTxt}.`;
+  Dash.table(document.getElementById("d-funnel"), [
+    { key: "stage", label: "Step" }, { key: "patients", label: "Patients", num: true },
+    { key: "pct_of_cohort", label: "Share of cohort", num: true, pct: true }], D.funnel);
+
+  // 7. Heatmap
+  Dash.register((c) => {
+    Plotly.react("c-heat", [{
+      type: "heatmap", x: D.heat.x, y: D.heat.y, z: D.heat.z, xgap: 2, ygap: 2,
+      colorscale: [[0, c.seq[0]], [0.17, c.seq[1]], [0.33, c.seq[2]], [0.5, c.seq[3]], [0.67, c.seq[4]], [0.83, c.seq[5]], [1, c.seq[6]]],
+      colorbar: { title: { text: "Referrals", font: { color: c.ink2, size: 11 } }, tickfont: { color: c.muted }, thickness: 12, outlinewidth: 0 },
+      hovertemplate: "%{y}<br>%{x}: %{z} referrals<extra></extra>" }],
+      Dash.layout({ hovermode: "closest", margin: { l: 210, b: 70 }, xaxis: { showline: false, tickangle: -25 },
+                    yaxis: { autorange: "reversed", rangemode: "normal" } }), Dash.config);
+  });
+  const heatRows = [];
+  D.heat.y.forEach((county, i) => D.heat.x.forEach((sp, j) => { if (D.heat.z[i][j]) heatRows.push({ county, specialty: sp, referrals: D.heat.z[i][j] }); }));
+  Dash.table(document.getElementById("d-heat"), [{ key: "county", label: "Provider county" }, { key: "specialty", label: "Specialty" },
+    { key: "referrals", label: "Referrals (12 mo)", num: true }], heatRows);
+
+  // 8. Provider tables (page is already labelled fictional; drop the suffix to keep rows readable)
+  const tidy = (rows) => rows.map((r) => Object.assign({}, r, { fictional_practice: r.fictional_practice.replace(" (fictional)", "") }));
+  D.top_active = tidy(D.top_active); D.dormant = tidy(D.dormant);
+  Dash.table(document.getElementById("tbl-active"), [
+    { key: "provider_id", label: "Provider" }, { key: "fictional_practice", label: "Practice" }, { key: "specialty_label", label: "Specialty" },
+    { key: "county_name", label: "County" }, { key: "state_code", label: "State" }, { key: "referrals_90d", label: "Referrals, last 90 days", num: true },
+    { key: "referrals_prior_90d", label: "Prior 90 days", num: true }, { key: "last_referral", label: "Last referral" }], D.top_active);
+  Dash.table(document.getElementById("tbl-dormant"), [
+    { key: "provider_id", label: "Provider" }, { key: "fictional_practice", label: "Practice" }, { key: "specialty_label", label: "Specialty" },
+    { key: "county_name", label: "County" }, { key: "last_referral", label: "Last referral" }, { key: "days_since_last_referral", label: "Days quiet", num: true },
+    { key: "referrals_all_time", label: "Referrals, all time", num: true }], D.dormant);
+
+  // 9. QA
+  const icon = { pass: "Pass", warn: "Warn", fail: "Fail" };
+  document.getElementById("qa").innerHTML = D.qa.map((q) =>
+    `<div class="qa-item"><span class="badge ${q.status}"><span class="dot"></span>${icon[q.status]}</span>
+      <div><b>${q.check}</b><div class="obs">${q.observed}</div><div class="obs">Rule: ${q.rule}</div></div></div>`).join("");
+})();
+</script>
+</body>
+</html>

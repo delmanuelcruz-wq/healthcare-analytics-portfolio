@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Incremental Refresh Demo</title>
+<meta name="description" content="Synthetic portfolio page: idempotent daily incremental refresh with an audit table, late corrections and goals vs actuals.">
+<style>/*__SHARED_CSS__*/
+.flow { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(170px, 100%), 1fr)); gap: 10px; }
+.flow .step { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 13px; position: relative; }
+.flow .step b { display: block; font-size: 13.5px; margin-bottom: 2px; }
+.flow .step code { font-size: 12px; color: var(--accent); }
+</style>
+<script src="__PLOTLY_CDN__"></script>
+</head>
+<body>
+<div class="synthetic-bar">SYNTHETIC DEMONSTRATION - fictional organization and data. Not operational, medical or financial guidance.</div>
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Tier 2 · Workstream 19 · Coralline Infusion Network (fictional)</p>
+    <h1>Incremental refresh with an audit trail</h1>
+    <p>Daily appointment-change files loaded with an idempotent upsert, so re-sent, late and out-of-order files cannot double count
+       or move a visit backwards - then completed appointments reported against monthly goals, with late corrections made visible.</p>
+    <div class="meta"><span>Initial load to Aug 31 + daily drops Sep 1 - Oct 24, 2026</span><span>Data as of <b id="asof"></b></span>
+      <span>Seed <span id="seed"></span></span></div>
+  </div>
+</header>
+<main class="wrap">
+  <div class="tiles" id="tiles"></div>
+
+  <h2 class="section">How each file is loaded</h2>
+  <div class="flow">
+    <div class="step"><b>1 · Daily drop</b>Every status change recorded yesterday and today (a deliberate two-day overlap).</div>
+    <div class="step"><b>2 · Stage</b>File rows land in a staging table inside one transaction per file.</div>
+    <div class="step"><b>3 · History</b><code>INSERT OR IGNORE</code> on the natural key <code>(appt_key, changed_at)</code>.</div>
+    <div class="step"><b>4 · Current state</b>Upsert one row per appointment, only <code>WHERE new.changed_at &gt; current.changed_at</code>.</div>
+    <div class="step"><b>5 · Audit</b>One row per delivery: rows read, inserted, ignored, stale, late, restated.</div>
+    <div class="step"><b>6 · Goals vs actuals</b>Completed appointments by site and month against the 2026 goals.</div>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px">
+    <section class="card full">
+      <h3>Every delivery, in arrival order</h3>
+      <p class="sub">New rows vs rows ignored because they were already loaded. Labelled bars are the simulated delivery incidents.</p>
+      <div class="chart" id="c-loads"></div>
+      <details class="data"><summary>Show the audit table</summary><div id="d-audit"></div></details>
+    </section>
+    <section class="card">
+      <h3>Late corrections restate closed months</h3>
+      <p class="sub">Completed appointments for August and September as each delivery landed. August had closed before the first file; September builds up during the month, then every rise after the dotted line is a late correction to a closed month.</p>
+      <div class="chart" id="c-restate"></div>
+      <div id="tbl-restate"></div>
+    </section>
+    <section class="card">
+      <h3>Idempotency proof</h3>
+      <p class="sub">Five independent runs. Same content hash = same history and current-state tables.</p>
+      <div id="tbl-runs"></div>
+      <p class="takeaway" id="t-runs"></p>
+    </section>
+  </div>
+
+  <h2 class="section">Goals vs actuals, 2026</h2>
+  <p class="section-lede">Actual = distinct appointments whose current status is Complete, by site-local visit month. October is partial (through Oct 24).</p>
+  <div class="grid-2">
+    <section class="card">
+      <h3>Network: completed appointments vs goal</h3>
+      <p class="sub">Bars: actual. Line: sum of site goals. Faded bar = partial month.</p>
+      <div class="chart" id="c-monthly"></div>
+    </section>
+    <section class="card">
+      <h3>September 2026 by site</h3>
+      <p class="sub">Latest full month. Completed visits with a blank site appear as "Unassigned" (no goal) in the table below.</p>
+      <div class="chart" id="c-sites"></div>
+      <details class="data"><summary>Show all months by site</summary><div id="d-gva"></div></details>
+    </section>
+  </div>
+
+  <h2 class="section">Quality checks run on this build</h2>
+  <p class="section-lede">WARN means a real issue was found and handled - here, mostly the simulated delivery incidents doing what they should.</p>
+  <div class="qa-list" id="qa"></div>
+
+  <h2 class="section">What is real and what is simulated</h2>
+  <div class="scope">
+    <div class="def"><b>On-the-job exposure (general terms only)</b>
+      <ul><li>A recurring appointment-goals report was assigned; refresh architecture and reporting requirements were documented.</li>
+          <li>Automation was demonstrated, not deployed. Nothing here claims a production pipeline.</li></ul></div>
+    <div class="def"><b>Independently built for this portfolio (synthetic)</b>
+      <ul><li>The drop files, delivery incidents, load logic, audit table, proofs, goals report, tests and this page.</li>
+          <li>A personal project on fabricated data.</li></ul></div>
+  </div>
+  <footer class="foot">Coralline Infusion Network is fictional. All data is synthetic, generated from seed <span id="seed2"></span>.
+    SYNTHETIC DEMONSTRATION - not operational, medical or financial guidance.</footer>
+</main>
+<script>/*__DATA__*/</script>
+<script>/*__SHARED_JS__*/</script>
+<script>
+(function () {
+  const D = window.DATA, fmt = Dash.fmt;
+  document.getElementById("asof").textContent = D.meta.as_of;
+  document.getElementById("seed").textContent = D.meta.seed;
+  document.getElementById("seed2").textContent = D.meta.seed;
+  Dash.tiles(document.getElementById("tiles"), D.tiles);
+  const loads = D.audit.filter((a) => a.load_seq > 0);
+  const lbl = (a) => `${a.load_seq}. ${a.file_date.slice(5)}`;
+  const incident = (a) => a.note !== "Scheduled delivery";
+
+  Dash.register((c) => {
+    const x = loads.map(lbl);
+    const ann = loads.filter(incident).map((a) => ({ x: lbl(a), y: a.rows_in_file, yshift: 12, showarrow: false,
+      text: a.note.startsWith("Re-") ? "re-sent" : a.note.startsWith("Arrived") ? "out of order" : "outage",
+      font: { size: 10, color: c.critical } }));
+    Plotly.react("c-loads", [
+      { type: "bar", name: "New rows inserted", x, y: loads.map((a) => a.rows_inserted), marker: { color: c.s1 },
+        customdata: loads.map((a) => [a.file_name, a.arrived_at, a.note]),
+        hovertemplate: "%{customdata[0]}<br>arrived %{customdata[1]}<br>%{customdata[2]}<br>new: %{y}<extra></extra>" },
+      { type: "bar", name: "Already loaded (ignored)", x, y: loads.map((a) => a.duplicates_ignored),
+        marker: { color: loads.map((a) => (incident(a) ? c.critical : c.gray)) }, hovertemplate: "ignored: %{y}<extra></extra>" }],
+      Dash.layout({ barmode: "stack", hovermode: "closest", annotations: ann, bargap: 0.2,
+                    xaxis: { tickangle: -60, tickfont: { size: 9 } }, margin: { b: 70 } }), Dash.config);
+  });
+  Dash.table(document.getElementById("d-audit"), [
+    { key: "load_seq", label: "#", num: true }, { key: "file_name", label: "File" }, { key: "arrived_at", label: "Arrived" },
+    { key: "rows_in_file", label: "Rows", num: true }, { key: "rows_inserted", label: "Inserted", num: true },
+    { key: "duplicates_ignored", label: "Ignored", num: true }, { key: "appts_new", label: "New appts", num: true },
+    { key: "appts_updated", label: "Updated", num: true }, { key: "stale_rows_skipped", label: "Stale skipped", num: true },
+    { key: "late_updates", label: "Late", num: true }, { key: "restates_closed_month", label: "Closed month", num: true },
+    { key: "sha256_12", label: "SHA-256 (12)" }, { key: "note", label: "Note" }], D.audit);
+
+  Dash.register((c) => {
+    const x = D.trend.map((t) => t.arrived_at);
+    const mk = (name, key, color) => ({ type: "scatter", mode: "lines", line: { shape: "hv", width: 2, color }, name, x,
+      y: D.trend.map((t) => t[key]), hovertemplate: "%{y}<extra>" + name + "</extra>" });
+    Plotly.react("c-restate", [mk("August completed", "august_completed", c.s2), mk("September completed", "september_completed", c.s1)],
+      Dash.layout({ xaxis: { type: "date", tickformat: "%b %d" }, yaxis: { rangemode: "tozero" },
+        shapes: [{ type: "line", x0: "2026-10-01 06:10:00", x1: "2026-10-01 06:10:00", yref: "paper", y0: 0, y1: 1,
+                   line: { dash: "dot", width: 1.5, color: c.muted } }],
+        annotations: [{ x: "2026-10-01 06:10:00", yref: "paper", y: 0.06, xanchor: "left", text: " September closes",
+                        showarrow: false, font: { size: 11, color: c.ink2 } }] }), Dash.config);
+  });
+  Dash.table(document.getElementById("tbl-restate"), [{ key: "month", label: "Month" },
+    { key: "first_reported_at", label: "First reported" }, { key: "first_reported", label: "Then", num: true },
+    { key: "final", label: "Oct 24", num: true }, { key: "change", label: "Restated by", num: true }], D.restate);
+
+  Dash.table(document.getElementById("tbl-runs"), [{ key: "run", label: "Run" }, { key: "history_rows", label: "History", num: true },
+    { key: "current_rows", label: "Current", num: true }, { key: "content_sha256_12", label: "Content hash" }, { key: "note", label: "Note" }], D.runs);
+  const same = new Set(D.runs.map((r) => r.content_sha256_12)).size === 1;
+  document.getElementById("t-runs").textContent = same
+    ? `All ${D.runs.length} runs produce identical tables (${D.runs[0].content_sha256_12}), and the incremental result matches a full refresh of the source.`
+    : "Runs disagree - see QA.";
+
+  Dash.register((c) => {
+    const x = D.monthly.map((m) => m.month);
+    Plotly.react("c-monthly", [
+      { type: "bar", name: "Completed (actual)", x, y: D.monthly.map((m) => m.actual),
+        marker: { color: c.s1, opacity: D.monthly.map((m) => (m.partial ? 0.45 : 1)), cornerradius: 4 },
+        hovertemplate: "%{y:,}<extra>Actual</extra>" },
+      { type: "scatter", mode: "lines+markers", name: "Goal", x, y: D.monthly.map((m) => m.goal), line: { color: c.s2, width: 2 },
+        marker: { size: 6, color: c.s2 }, hovertemplate: "%{y:,}<extra>Goal</extra>" }],
+      Dash.layout({ xaxis: { tickformat: "%b", dtick: "M1", type: "date" } }), Dash.config);
+  });
+  const sep = D.gva.filter((r) => r.target_month === "2026-09-01");
+  Dash.register((c) => {
+    Plotly.react("c-sites", [
+      { type: "bar", name: "Actual", x: sep.map((r) => r.site_key), y: sep.map((r) => r.actual), marker: { color: c.s1 },
+        hovertemplate: "%{x}: %{y}<extra>Actual</extra>" },
+      { type: "bar", name: "Goal", x: sep.map((r) => r.site_key), y: sep.map((r) => r.goal), marker: { color: c.gray },
+        hovertemplate: "%{x}: %{y}<extra>Goal</extra>" }],
+      Dash.layout({ barmode: "group", bargap: 0.3 }), Dash.config);
+  });
+  Dash.table(document.getElementById("d-gva"), [{ key: "target_month", label: "Month" }, { key: "site_key", label: "Site" },
+    { key: "goal", label: "Goal", num: true }, { key: "actual", label: "Actual", num: true },
+    { key: "attainment", label: "Attainment", num: true, pct: true }, { key: "is_partial_month", label: "Partial", num: true }], D.gva);
+
+  const icon = { pass: "Pass", warn: "Warn", fail: "Fail" };
+  document.getElementById("qa").innerHTML = D.qa.map((x) =>
+    `<div class="qa-item"><span class="badge ${x.status}"><span class="dot"></span>${icon[x.status]}</span>
+      <div><b>${x.check}</b><div class="obs">${x.observed}</div><div class="obs">Rule: ${x.rule}</div></div></div>`).join("");
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+quarter,therapy_key,therapy_label,treated_visits,patients,line_items,vials
+Q2 2026,THERAPY_I,Complement-inhibitor infusion (mock),229,58,246,786
+Q2 2026,THERAPY_B,Anti-inflammatory biologic infusion (mock),184,102,191,640
+Q2 2026,THERAPY_G,Anti-IgE injection (mock),180,79,191,369
+Q2 2026,THERAPY_F,Anti-IL injection (mock),151,66,151,156
+Q2 2026,THERAPY_D,Integrin-blocker infusion (mock),119,55,119,119
+Q2 2026,THERAPY_E,IV iron replacement (mock),112,44,114,173
+Q2 2026,THERAPY_A,Immune globulin infusion (mock),93,44,100,444
+Q2 2026,THERAPY_J,IL-6 blocker infusion (mock),83,37,84,166
+Q2 2026,THERAPY_C,Anti-CD20 infusion (mock),73,54,77,101
+Q2 2026,THERAPY_K,Pre-medication bundle (mock),52,50,52,52
+Q2 2026,THERAPY_H,Bone-health injection (mock),46,46,46,46
+Q3 2026,THERAPY_F,Anti-IL injection (mock),190,79,191,201
+Q3 2026,THERAPY_B,Anti-inflammatory biologic infusion (mock),183,103,195,606
+Q3 2026,THERAPY_I,Complement-inhibitor infusion (mock),161,43,174,553
+Q3 2026,THERAPY_G,Anti-IgE injection (mock),156,70,164,337
+Q3 2026,THERAPY_E,IV iron replacement (mock),151,53,158,224
+Q3 2026,THERAPY_A,Immune globulin infusion (mock),136,61,142,643
+Q3 2026,THERAPY_D,Integrin-blocker infusion (mock),127,54,128,130
+Q3 2026,THERAPY_J,IL-6 blocker infusion (mock),84,39,90,164
+Q3 2026,THERAPY_K,Pre-medication bundle (mock),43,42,43,43
+Q3 2026,THERAPY_H,Bone-health injection (mock),43,43,43,43
+Q3 2026,THERAPY_C,Anti-CD20 infusion (mock),42,35,44,62
